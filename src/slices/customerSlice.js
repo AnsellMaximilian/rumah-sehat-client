@@ -30,6 +30,25 @@ export const destroyCustomer = createAsyncThunk(
   }
 );
 
+export const fetchCustomer = createAsyncThunk("customers/show", async (id) => {
+  const res = await http.get(`/customers/${id}`);
+  return await res.data.data;
+});
+
+export const updateCustomer = createAsyncThunk(
+  "customers/update",
+  async (updateData) => {
+    const { id, fullName, phone, address } = updateData;
+
+    const res = await http.patch(`/customers/${id}`, {
+      fullName,
+      phone,
+      address,
+    });
+    return await res.data.data;
+  }
+);
+
 export const customerSlice = createSlice({
   name: "customers",
   initialState,

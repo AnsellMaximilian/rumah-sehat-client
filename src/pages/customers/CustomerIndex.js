@@ -36,7 +36,11 @@ export default function CustomerIndex() {
       renderCell: (params) => {
         return (
           <>
-            <IconButton color="warning">
+            <IconButton
+              color="warning"
+              component={Link}
+              to={`/customers/edit/${params.row.id}`}
+            >
               <Edit />
             </IconButton>
             <IconButton
