@@ -3,7 +3,7 @@ import { Routes, Route, BrowserRouter } from "react-router-dom";
 import "./App.css";
 import Layout from "./components/Layout";
 import CustomerIndex from "./pages/customers/CustomerIndex";
-import DrIdItemIndex from "./pages/drSecret/id/itemIndex";
+import DrIdItemIndex from "./pages/drSecret/id/ItemIndex";
 
 function App() {
   return (
