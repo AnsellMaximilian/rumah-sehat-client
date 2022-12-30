@@ -99,7 +99,7 @@ function Layout() {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Dashboard
+              Rumah Sehat
             </Typography>
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
