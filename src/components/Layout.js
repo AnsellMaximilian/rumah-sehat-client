@@ -18,7 +18,7 @@ import Link from "@mui/material/Link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import { mainListItems, secondaryListItems } from "./Sidebar";
+import Sidebar from "./Sidebar";
 import { useState } from "react";
 
 const drawerWidth = 240;
@@ -127,11 +127,7 @@ function Layout() {
             </IconButton>
           </Toolbar>
           <Divider />
-          <List component="nav">
-            {mainListItems}
-            <Divider sx={{ my: 1 }} />
-            {secondaryListItems}
-          </List>
+          <Sidebar />
         </Drawer>
         <Box
           component="main"
@@ -146,6 +142,7 @@ function Layout() {
           }}
         >
           <Toolbar />
+          <Outlet />
         </Box>
       </Box>
     </ThemeProvider>
