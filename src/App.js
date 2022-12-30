@@ -1,6 +1,7 @@
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 
 import "./App.css";
+import DataLayout from "./components/DataLayout";
 import Layout from "./components/Layout";
 import CustomerIndex from "./pages/customers/CustomerIndex";
 import DrIdItemIndex from "./pages/drSecret/id/ItemIndex";
@@ -12,7 +13,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<h1>Dashboard</h1>} />
-            <Route path="customers" element={<CustomerIndex />} />
+            <Route path="customers" element={<DataLayout title="Customers" />}>
+              <Route path="" element={<CustomerIndex />} />
+            </Route>
             <Route path="other" element={<h1>Other Page</h1>} />
             <Route path="*" element={<h1>404 Not Found</h1>} />
             <Route path="dr-secret">
