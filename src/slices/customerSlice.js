@@ -22,6 +22,14 @@ export const storeCustomer = createAsyncThunk(
   }
 );
 
+export const destroyCustomer = createAsyncThunk(
+  "customers/destroy",
+  async (id) => {
+    const res = await http.delete(`/customers/${id}`);
+    return await res.data.data;
+  }
+);
+
 export const customerSlice = createSlice({
   name: "customers",
   initialState,
@@ -32,6 +40,11 @@ export const customerSlice = createSlice({
     });
     builder.addCase(storeCustomer.fulfilled, (state, action) => {
       state.customers.push(action.payload);
+    });
+    builder.addCase(destroyCustomer.fulfilled, (state, action) => {
+      state.customers = state.customers.filter(
+        (customer) => customer.id !== action.payload.id
+      );
     });
   },
 });
