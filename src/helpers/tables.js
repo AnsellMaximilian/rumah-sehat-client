@@ -13,3 +13,13 @@ export function getComparator(order, orderBy) {
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
+
+export function createTableRow(name, calories, fat, carbs, protein) {
+  return {
+    name,
+    calories,
+    fat,
+    carbs,
+    protein,
+  };
+}
