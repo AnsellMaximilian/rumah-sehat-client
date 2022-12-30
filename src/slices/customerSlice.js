@@ -10,6 +10,18 @@ export const fetchCustomers = createAsyncThunk("customers/index", async () => {
   return await res.data.data;
 });
 
+export const storeCustomer = createAsyncThunk(
+  "customers/store",
+  async ({ fullName, phone, address }) => {
+    const res = await http.post("/customers", {
+      fullName,
+      phone,
+      address,
+    });
+    return await res.data.data;
+  }
+);
+
 export const customerSlice = createSlice({
   name: "customers",
   initialState,
@@ -18,10 +30,12 @@ export const customerSlice = createSlice({
     builder.addCase(fetchCustomers.fulfilled, (state, action) => {
       state.customers = action.payload;
     });
+    builder.addCase(storeCustomer.fulfilled, (state, action) => {
+      state.customers.push(action.payload);
+    });
   },
 });
 
-// Action creators are generated for each case reducer function
 export const { increment, decrement, incrementByAmount } =
   customerSlice.actions;
 
