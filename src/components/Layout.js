@@ -126,6 +126,7 @@ function Layout() {
         </Drawer>
         <Box
           component="main"
+          paddingX={2}
           sx={{
             backgroundColor: (theme) =>
               theme.palette.mode === "light"
