@@ -3,6 +3,7 @@ import http from "../http-common";
 
 const initialState = {
   customers: [],
+  error: null,
 };
 
 export const fetchCustomers = createAsyncThunk("customers/index", async () => {
@@ -45,25 +46,33 @@ export const updateCustomer = createAsyncThunk(
       phone,
       address,
     });
-    return await res.data.data;
+    return await res.data;
   }
 );
 
 export const customerSlice = createSlice({
   name: "customers",
   initialState,
-  reducers: {},
+  reducers: {
+    clearError: (state) => {
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchCustomers.fulfilled, (state, action) => {
       const { data, error } = action.payload;
       if (!error) {
         state.customers = data;
+      } else {
+        state.error = error.name;
       }
     });
     builder.addCase(storeCustomer.fulfilled, (state, action) => {
       const { data, error } = action.payload;
       if (!error) {
         state.customers.push(data);
+      } else {
+        state.error = error.name;
       }
     });
     builder.addCase(destroyCustomer.fulfilled, (state, action) => {
@@ -72,12 +81,20 @@ export const customerSlice = createSlice({
         state.customers = state.customers.filter(
           (customer) => customer.id !== data.id
         );
+      } else {
+        state.error = error.name;
+      }
+    });
+    builder.addCase(updateCustomer.fulfilled, (state, action) => {
+      const { error } = action.payload;
+      if (!error) {
+      } else {
+        state.error = error.name;
       }
     });
   },
 });
 
-export const { increment, decrement, incrementByAmount } =
-  customerSlice.actions;
+export const { clearError } = customerSlice.actions;
 
 export default customerSlice.reducer;
