@@ -8,6 +8,7 @@ import Edit from "@mui/icons-material/ModeEdit";
 import { IconButton } from "@mui/material";
 import http from "../../../http-common";
 import SmartTable from "../../../components/SmartTable";
+import { toast } from "react-toastify";
 
 const DrIdItemIndex = () => {
   const [items, setItems] = useState([]);
@@ -18,6 +19,8 @@ const DrIdItemIndex = () => {
 
       if (!error) {
         setItems((items) => items.filter((item) => item.id !== id));
+      } else {
+        toast.error("Failed to delete");
       }
     })();
   };

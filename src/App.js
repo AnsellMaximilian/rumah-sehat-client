@@ -10,6 +10,7 @@ import DrIdItemIndex from "./pages/dr/id/ItemIndex";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DrIdItemCreate from "./pages/dr/id/ItemCreate";
+import DrIdItemEdit from "./pages/dr/id/ItemEdit";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
                 <Route path="items">
                   <Route path="" element={<DrIdItemIndex />} />
                   <Route path="create" element={<DrIdItemCreate />} />
+                  <Route path="edit/:id" element={<DrIdItemEdit />} />
                 </Route>
               </Route>
             </Route>
