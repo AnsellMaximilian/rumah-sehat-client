@@ -6,7 +6,7 @@ import Layout from "./components/Layout";
 import CustomerCreate from "./pages/customers/CustomerCreate";
 import CustomerEdit from "./pages/customers/CustomerEdit";
 import CustomerIndex from "./pages/customers/CustomerIndex";
-import DrIdItemIndex from "./pages/drSecret/id/ItemIndex";
+import DrIdItemIndex from "./pages/dr/id/ItemIndex";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -22,13 +22,17 @@ function App() {
               <Route path="create" element={<CustomerCreate />} />
               <Route path="edit/:id" element={<CustomerEdit />} />
             </Route>
-            <Route path="other" element={<h1>Other Page</h1>} />
-            <Route path="*" element={<h1>404 Not Found</h1>} />
-            <Route path="dr-secret">
-              <Route path="id">
+
+            <Route path="dr">
+              <Route
+                path="id"
+                element={<DataLayout title="Dr's Secret Indonesia" />}
+              >
                 <Route path="items" element={<DrIdItemIndex />} />
               </Route>
             </Route>
+            <Route path="other" element={<h1>Other Page</h1>} />
+            <Route path="*" element={<h1>404 Not Found</h1>} />
           </Route>
         </Routes>
       </BrowserRouter>
