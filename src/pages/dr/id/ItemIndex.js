@@ -15,7 +15,7 @@ const DrIdItemIndex = () => {
 
   const handleDelete = (id) => {
     (async () => {
-      const { error } = await http.delete(`/dr/id/items/${id}`);
+      const { error } = (await http.delete(`/dr/id/items/${id}`)).data;
 
       if (!error) {
         setItems((items) => items.filter((item) => item.id !== id));
