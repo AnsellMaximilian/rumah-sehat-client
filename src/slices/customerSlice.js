@@ -7,7 +7,7 @@ const initialState = {
 
 export const fetchCustomers = createAsyncThunk("customers/index", async () => {
   const res = await http.get("/customers");
-  return await res.data.data;
+  return await res.data;
 });
 
 export const storeCustomer = createAsyncThunk(
@@ -18,7 +18,7 @@ export const storeCustomer = createAsyncThunk(
       phone,
       address,
     });
-    return await res.data.data;
+    return await res.data;
   }
 );
 
@@ -26,13 +26,13 @@ export const destroyCustomer = createAsyncThunk(
   "customers/destroy",
   async (id) => {
     const res = await http.delete(`/customers/${id}`);
-    return await res.data.data;
+    return await res.data;
   }
 );
 
 export const fetchCustomer = createAsyncThunk("customers/show", async (id) => {
   const res = await http.get(`/customers/${id}`);
-  return await res.data.data;
+  return await res.data;
 });
 
 export const updateCustomer = createAsyncThunk(
@@ -55,15 +55,24 @@ export const customerSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchCustomers.fulfilled, (state, action) => {
-      state.customers = action.payload;
+      const { data, error } = action.payload;
+      if (!error) {
+        state.customers = data;
+      }
     });
     builder.addCase(storeCustomer.fulfilled, (state, action) => {
-      state.customers.push(action.payload);
+      const { data, error } = action.payload;
+      if (!error) {
+        state.customers.push(data);
+      }
     });
     builder.addCase(destroyCustomer.fulfilled, (state, action) => {
-      state.customers = state.customers.filter(
-        (customer) => customer.id !== action.payload.id
-      );
+      const { data, error } = action.payload;
+      if (!error) {
+        state.customers = state.customers.filter(
+          (customer) => customer.id !== data.id
+        );
+      }
     });
   },
 });
