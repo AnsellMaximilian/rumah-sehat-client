@@ -9,6 +9,7 @@ import CustomerIndex from "./pages/customers/CustomerIndex";
 import DrIdItemIndex from "./pages/dr/id/ItemIndex";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import DrIdItemCreate from "./pages/dr/id/ItemCreate";
 
 function App() {
   return (
@@ -28,7 +29,10 @@ function App() {
                 path="id"
                 element={<DataLayout title="Dr's Secret Indonesia" />}
               >
-                <Route path="items" element={<DrIdItemIndex />} />
+                <Route path="items">
+                  <Route path="" element={<DrIdItemIndex />} />
+                  <Route path="create" element={<DrIdItemCreate />} />
+                </Route>
               </Route>
             </Route>
             <Route path="other" element={<h1>Other Page</h1>} />
