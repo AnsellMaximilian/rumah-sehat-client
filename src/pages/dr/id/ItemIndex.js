@@ -12,6 +12,16 @@ import SmartTable from "../../../components/SmartTable";
 const DrIdItemIndex = () => {
   const [items, setItems] = useState([]);
 
+  const handleDelete = (id) => {
+    (async () => {
+      const { error } = await http.delete(`/dr/id/items/${id}`);
+
+      if (!error) {
+        setItems((items) => items.filter((item) => item.id !== id));
+      }
+    })();
+  };
+
   useEffect(() => {
     (async () => {
       setItems((await http.get("/dr/id/items")).data.data);
@@ -40,7 +50,13 @@ const DrIdItemIndex = () => {
             >
               <Edit />
             </IconButton>
-            <IconButton color="error">
+            <IconButton
+              color="error"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete(params.row.id);
+              }}
+            >
               <Delete />
             </IconButton>
           </>
