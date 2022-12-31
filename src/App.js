@@ -7,6 +7,8 @@ import CustomerCreate from "./pages/customers/CustomerCreate";
 import CustomerEdit from "./pages/customers/CustomerEdit";
 import CustomerIndex from "./pages/customers/CustomerIndex";
 import DrIdItemIndex from "./pages/drSecret/id/ItemIndex";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
@@ -30,6 +32,7 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
+      <ToastContainer />
     </div>
   );
 }
