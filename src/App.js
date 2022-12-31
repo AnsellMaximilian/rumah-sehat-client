@@ -6,11 +6,11 @@ import Layout from "./components/Layout";
 import CustomerCreate from "./pages/customers/CustomerCreate";
 import CustomerEdit from "./pages/customers/CustomerEdit";
 import CustomerIndex from "./pages/customers/CustomerIndex";
-import DrIdItemIndex from "./pages/dr/id/ItemIndex";
+import DrIdItemIndex from "./pages/dr/id/items/ItemIndex";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import DrIdItemCreate from "./pages/dr/id/ItemCreate";
-import DrIdItemEdit from "./pages/dr/id/ItemEdit";
+import DrIdItemCreate from "./pages/dr/id/items/ItemCreate";
+import DrIdItemEdit from "./pages/dr/id/items/ItemEdit";
 
 function App() {
   return (

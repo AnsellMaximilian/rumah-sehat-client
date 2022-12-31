@@ -6,8 +6,8 @@ import { Link } from "react-router-dom";
 import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/ModeEdit";
 import { IconButton } from "@mui/material";
-import http from "../../../http-common";
-import SmartTable from "../../../components/SmartTable";
+import http from "../../../../http-common";
+import SmartTable from "../../../../components/SmartTable";
 import { toast } from "react-toastify";
 
 const DrIdItemIndex = () => {

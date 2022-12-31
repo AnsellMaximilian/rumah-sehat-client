@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import http from "../../../http-common";
+import http from "../../../../http-common";
 
 export default function DrIdItemEdit() {
   const { register, handleSubmit, reset } = useForm();
