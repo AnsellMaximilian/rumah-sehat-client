@@ -4,6 +4,7 @@ import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
+import DiscountIcon from "@mui/icons-material/Discount";
 import SanitizerIcon from "@mui/icons-material/Sanitizer";
 import React, { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
@@ -85,6 +86,11 @@ const Sidebar = () => {
           />
         </List>
       </Collapse>
+      <SidebarLink
+        to="/dr/discount-models"
+        text="Discount Models"
+        icon={<DiscountIcon />}
+      />
     </List>
   );
 };

@@ -12,6 +12,8 @@ import "react-toastify/dist/ReactToastify.css";
 import DrIdItemCreate from "./pages/dr/id/items/ItemCreate";
 import DrIdItemEdit from "./pages/dr/id/items/ItemEdit";
 import DrIdDeliveryIndex from "./pages/dr/id/deliveries/DeliveryIndex";
+import DrDiscountModelIndex from "./pages/dr/discountModels/DiscountModelIndex";
+import DrDiscountModelCreate from "./pages/dr/discountModels/DiscountModelCreate";
 
 function App() {
   return (
@@ -50,6 +52,16 @@ function App() {
                 >
                   <Route path="" element={<DrIdDeliveryIndex />} />
                 </Route>
+              </Route>
+              <Route
+                path="discount-models"
+                element={
+                  <DataLayout title="Discount Models" titleVariant="subtitle" />
+                }
+              >
+                <Route path="" element={<DrDiscountModelIndex />} />
+                <Route path="create" element={<DrDiscountModelCreate />} />
+                {/* <Route path="edit/:id" element={<DrIdItemEdit />} /> */}
               </Route>
             </Route>
             <Route path="other" element={<h1>Other Page</h1>} />
