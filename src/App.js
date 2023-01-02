@@ -11,6 +11,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DrIdItemCreate from "./pages/dr/id/items/ItemCreate";
 import DrIdItemEdit from "./pages/dr/id/items/ItemEdit";
+import DrIdDeliveryIndex from "./pages/dr/id/deliveries/DeliveryIndex";
 
 function App() {
   return (
@@ -30,10 +31,16 @@ function App() {
                 path="id"
                 element={<DataLayout title="Dr's Secret Indonesia" />}
               >
-                <Route path="items">
+                <Route path="items" element={<DataLayout title="Items" />}>
                   <Route path="" element={<DrIdItemIndex />} />
                   <Route path="create" element={<DrIdItemCreate />} />
                   <Route path="edit/:id" element={<DrIdItemEdit />} />
+                </Route>
+                <Route
+                  path="deliveries"
+                  element={<DataLayout title="Deliveries" />}
+                >
+                  <Route path="" element={<DrIdDeliveryIndex />} />
                 </Route>
               </Route>
             </Route>

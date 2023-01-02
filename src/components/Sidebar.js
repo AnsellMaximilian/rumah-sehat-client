@@ -55,7 +55,7 @@ const Sidebar = () => {
             sx={{ pl: 4 }}
           />
           <SidebarLink
-            to="/"
+            to="/dr/id/deliveries"
             text="Delivery"
             icon={<LocalShipping />}
             sx={{ pl: 4 }}
