@@ -14,6 +14,7 @@ import DrIdItemEdit from "./pages/dr/id/items/ItemEdit";
 import DrIdDeliveryIndex from "./pages/dr/id/deliveries/DeliveryIndex";
 import DrDiscountModelIndex from "./pages/dr/discountModels/DiscountModelIndex";
 import DrDiscountModelCreate from "./pages/dr/discountModels/DiscountModelCreate";
+import DrIdDeliveryCreate from "./pages/dr/id/deliveries/DeliveryCreate";
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
                   element={<DataLayout title="Deliveries" titleVariant="h5" />}
                 >
                   <Route path="" element={<DrIdDeliveryIndex />} />
+                  <Route path="create" element={<DrIdDeliveryCreate />} />
                 </Route>
               </Route>
               <Route
