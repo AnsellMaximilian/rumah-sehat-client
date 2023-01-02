@@ -20,7 +20,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<h1>Dashboard</h1>} />
-            <Route path="customers" element={<DataLayout title="Customers" />}>
+            <Route
+              path="customers"
+              element={<DataLayout title="Customers" titleVariant="subtitle" />}
+            >
               <Route path="" element={<CustomerIndex />} />
               <Route path="create" element={<CustomerCreate />} />
               <Route path="edit/:id" element={<CustomerEdit />} />
@@ -29,16 +32,21 @@ function App() {
             <Route path="dr">
               <Route
                 path="id"
-                element={<DataLayout title="Dr's Secret Indonesia" />}
+                element={
+                  <DataLayout title="DR'S SECRET ID" titleVariant="subtitle" />
+                }
               >
-                <Route path="items" element={<DataLayout title="Items" />}>
+                <Route
+                  path="items"
+                  element={<DataLayout title="Items" titleVariant="h5" />}
+                >
                   <Route path="" element={<DrIdItemIndex />} />
                   <Route path="create" element={<DrIdItemCreate />} />
                   <Route path="edit/:id" element={<DrIdItemEdit />} />
                 </Route>
                 <Route
                   path="deliveries"
-                  element={<DataLayout title="Deliveries" />}
+                  element={<DataLayout title="Deliveries" titleVariant="h5" />}
                 >
                   <Route path="" element={<DrIdDeliveryIndex />} />
                 </Route>
