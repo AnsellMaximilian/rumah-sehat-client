@@ -15,63 +15,77 @@ import DrIdDeliveryIndex from "./pages/dr/id/deliveries/DeliveryIndex";
 import DrDiscountModelIndex from "./pages/dr/discountModels/DiscountModelIndex";
 import DrDiscountModelCreate from "./pages/dr/discountModels/DiscountModelCreate";
 import DrIdDeliveryCreate from "./pages/dr/id/deliveries/DeliveryCreate";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<h1>Dashboard</h1>} />
-            <Route
-              path="customers"
-              element={<DataLayout title="Customers" titleVariant="subtitle" />}
-            >
-              <Route path="" element={<CustomerIndex />} />
-              <Route path="create" element={<CustomerCreate />} />
-              <Route path="edit/:id" element={<CustomerEdit />} />
-            </Route>
+      <LocalizationProvider dateAdapter={AdapterMoment}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<h1>Dashboard</h1>} />
+              <Route
+                path="customers"
+                element={
+                  <DataLayout title="Customers" titleVariant="subtitle" />
+                }
+              >
+                <Route path="" element={<CustomerIndex />} />
+                <Route path="create" element={<CustomerCreate />} />
+                <Route path="edit/:id" element={<CustomerEdit />} />
+              </Route>
 
-            <Route path="dr">
-              <Route
-                path="id"
-                element={
-                  <DataLayout title="DR'S SECRET ID" titleVariant="subtitle" />
-                }
-              >
+              <Route path="dr">
                 <Route
-                  path="items"
-                  element={<DataLayout title="Items" titleVariant="h5" />}
+                  path="id"
+                  element={
+                    <DataLayout
+                      title="DR'S SECRET ID"
+                      titleVariant="subtitle"
+                    />
+                  }
                 >
-                  <Route path="" element={<DrIdItemIndex />} />
-                  <Route path="create" element={<DrIdItemCreate />} />
-                  <Route path="edit/:id" element={<DrIdItemEdit />} />
+                  <Route
+                    path="items"
+                    element={<DataLayout title="Items" titleVariant="h5" />}
+                  >
+                    <Route path="" element={<DrIdItemIndex />} />
+                    <Route path="create" element={<DrIdItemCreate />} />
+                    <Route path="edit/:id" element={<DrIdItemEdit />} />
+                  </Route>
+                  <Route
+                    path="deliveries"
+                    element={
+                      <DataLayout title="Deliveries" titleVariant="h5" />
+                    }
+                  >
+                    <Route path="" element={<DrIdDeliveryIndex />} />
+                    <Route path="create" element={<DrIdDeliveryCreate />} />
+                  </Route>
                 </Route>
                 <Route
-                  path="deliveries"
-                  element={<DataLayout title="Deliveries" titleVariant="h5" />}
+                  path="discount-models"
+                  element={
+                    <DataLayout
+                      title="Discount Models"
+                      titleVariant="subtitle"
+                    />
+                  }
                 >
-                  <Route path="" element={<DrIdDeliveryIndex />} />
-                  <Route path="create" element={<DrIdDeliveryCreate />} />
+                  <Route path="" element={<DrDiscountModelIndex />} />
+                  <Route path="create" element={<DrDiscountModelCreate />} />
+                  {/* <Route path="edit/:id" element={<DrIdItemEdit />} /> */}
                 </Route>
               </Route>
-              <Route
-                path="discount-models"
-                element={
-                  <DataLayout title="Discount Models" titleVariant="subtitle" />
-                }
-              >
-                <Route path="" element={<DrDiscountModelIndex />} />
-                <Route path="create" element={<DrDiscountModelCreate />} />
-                {/* <Route path="edit/:id" element={<DrIdItemEdit />} /> */}
-              </Route>
+              <Route path="other" element={<h1>Other Page</h1>} />
+              <Route path="*" element={<h1>404 Not Found</h1>} />
             </Route>
-            <Route path="other" element={<h1>Other Page</h1>} />
-            <Route path="*" element={<h1>404 Not Found</h1>} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-      <ToastContainer />
+          </Routes>
+        </BrowserRouter>
+        <ToastContainer />
+      </LocalizationProvider>
     </div>
   );
 }
