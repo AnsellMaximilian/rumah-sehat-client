@@ -8,6 +8,7 @@ import Edit from "@mui/icons-material/ModeEdit";
 import { IconButton } from "@mui/material";
 import http from "../../../../http-common";
 import SmartTable from "../../../../components/SmartTable";
+import NumericFormatRp from "../../../../components/NumericFormatRp";
 import { toast } from "react-toastify";
 
 const DrIdDeliveryIndex = () => {
@@ -27,26 +28,33 @@ const DrIdDeliveryIndex = () => {
   };
 
   useEffect(() => {
-    // (async () => {
-    //   setDeliveries((await http.get("/dr/id/deliveries")).data.data);
-    // })();
+    (async () => {
+      setDeliveries((await http.get("/dr/id/deliveries")).data.data);
+    })();
   }, []);
 
   const columns = [
     { field: "id", headerName: "ID", width: 50 },
     { field: "date", headerName: "Date", width: 100 },
     { field: "customer", headerName: "Customer", width: 100 },
-    { field: "cost", headerName: "Cost", width: 100 },
+    { field: "cost", headerName: "Delivery Cost", width: 100 },
     {
       field: "discount",
       headerName: "Discount",
-      width: 75,
+      width: 120,
+      renderCell: (params) => (
+        <NumericFormatRp value={params.row.totalDiscount} />
+      ),
     },
     {
-      field: "note",
-      headerName: "Note",
-      width: 200,
+      field: "totalPriceRP",
+      headerName: "Total (Rp)",
+      width: 100,
+      renderCell: (params) => (
+        <NumericFormatRp value={params.row.totalPriceRP} />
+      ),
     },
+
     {
       field: "actions",
       headerName: "Actions",
@@ -90,9 +98,13 @@ const DrIdDeliveryIndex = () => {
         <SmartTable
           rows={deliveries.map((delivery) => ({
             id: delivery.id,
-            name: delivery.name,
-            priceRP: delivery.priceRP,
-            points: delivery.points,
+            cost: delivery.cost,
+            date: delivery.date,
+            customer: delivery.Customer.fullName,
+            totalDiscount: delivery.DrDiscountModelId
+              ? delivery.totalDiscount
+              : "No",
+            totalPriceRP: delivery.totalPriceRP,
           }))}
           columns={columns}
         />
