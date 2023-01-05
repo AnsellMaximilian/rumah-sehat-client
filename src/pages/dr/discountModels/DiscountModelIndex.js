@@ -5,6 +5,9 @@ import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
 import http from "../../../http-common";
 import SmartTable from "../../../components/SmartTable";
+import { IconButton } from "@mui/material";
+import Delete from "@mui/icons-material/Delete";
+import { toast } from "react-toastify";
 
 const DrDiscountModelIndex = () => {
   const [models, setModels] = useState([]);
@@ -14,6 +17,18 @@ const DrDiscountModelIndex = () => {
       setModels((await http.get("/dr/discount-models")).data.data);
     })();
   }, []);
+
+  const handleDelete = (id) => {
+    (async () => {
+      const { error } = (await http.delete(`/dr/discount-models/${id}`)).data;
+
+      if (!error) {
+        setModels((models) => models.filter((item) => item.id !== id));
+      } else {
+        toast.error(error);
+      }
+    })();
+  };
 
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
@@ -28,6 +43,24 @@ const DrDiscountModelIndex = () => {
       field: "percentage",
       headerName: "Percentage",
       width: 200,
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      renderCell: (params) => {
+        return (
+          <IconButton
+            color="error"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete(params.row.id);
+            }}
+          >
+            <Delete />
+          </IconButton>
+        );
+      },
+      width: 300,
     },
   ];
   return (
