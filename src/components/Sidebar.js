@@ -73,7 +73,7 @@ const Sidebar = () => {
       <Collapse in={drSgOpen} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <SidebarLink
-            to="/"
+            to="/dr/sg/items"
             text="Items"
             icon={<SanitizerIcon />}
             sx={{ pl: 4 }}

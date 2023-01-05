@@ -18,6 +18,9 @@ import DrIdDeliveryCreate from "./pages/dr/id/deliveries/DeliveryCreate";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import DrIdDeliveryShow from "./pages/dr/id/deliveries/DeliveryShow";
+import DrSgItemIndex from "./pages/dr/sg/items/ItemIndex";
+import DrSgItemCreate from "./pages/dr/sg/items/ItemCreate";
+import DrSgItemEdit from "./pages/dr/sg/items/ItemEdit";
 
 function App() {
   return (
@@ -66,6 +69,34 @@ function App() {
                     <Route path="create" element={<DrIdDeliveryCreate />} />
                     <Route path=":id" element={<DrIdDeliveryShow />} />
                   </Route>
+                </Route>
+                <Route
+                  path="sg"
+                  element={
+                    <DataLayout
+                      title="DR'S SECRET SG"
+                      titleVariant="subtitle"
+                    />
+                  }
+                >
+                  <Route
+                    path="items"
+                    element={<DataLayout title="Items" titleVariant="h5" />}
+                  >
+                    <Route path="" element={<DrSgItemIndex />} />
+                    <Route path="create" element={<DrSgItemCreate />} />
+                    <Route path="edit/:id" element={<DrSgItemEdit />} />
+                  </Route>
+                  {/* <Route
+                    path="deliveries"
+                    element={
+                      <DataLayout title="Deliveries" titleVariant="h5" />
+                    }
+                  >
+                    <Route path="" element={<DrIdDeliveryIndex />} />
+                    <Route path="create" element={<DrIdDeliveryCreate />} />
+                    <Route path=":id" element={<DrIdDeliveryShow />} />
+                  </Route> */}
                 </Route>
                 <Route
                   path="discount-models"
