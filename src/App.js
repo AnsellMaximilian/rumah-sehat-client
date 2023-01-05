@@ -17,6 +17,7 @@ import DrDiscountModelCreate from "./pages/dr/discountModels/DiscountModelCreate
 import DrIdDeliveryCreate from "./pages/dr/id/deliveries/DeliveryCreate";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import DrIdDeliveryShow from "./pages/dr/id/deliveries/DeliveryShow";
 
 function App() {
   return (
@@ -63,6 +64,7 @@ function App() {
                   >
                     <Route path="" element={<DrIdDeliveryIndex />} />
                     <Route path="create" element={<DrIdDeliveryCreate />} />
+                    <Route path=":id" element={<DrIdDeliveryShow />} />
                   </Route>
                 </Route>
                 <Route
