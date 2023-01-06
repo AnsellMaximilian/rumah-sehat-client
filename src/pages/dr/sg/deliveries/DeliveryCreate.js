@@ -105,6 +105,7 @@ export default function DrSgDeliveryCreate() {
         cost: cost,
         CustomerId: d.CustomerId,
         exchangeRate: exchangeRate,
+        deliveryCostType: deliveryCostType,
         DrDiscountModelId: useDiscount ? discountModelId : null,
         note: d.note,
         deliveryDetails: deliveryDetails.map((detail) => {
@@ -117,7 +118,8 @@ export default function DrSgDeliveryCreate() {
             priceSGD,
             points,
             DrSgItemId: id,
-            deliveryCost,
+            deliveryCost:
+              deliveryCostType === "individual" ? deliveryCost : null,
           };
         }),
         date: moment().format("YYYY-MM-DD"),
