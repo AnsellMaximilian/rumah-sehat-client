@@ -19,6 +19,7 @@ export default function DrSgItemEdit() {
           name: d.name,
           priceSGD: d.priceSGD,
           points: d.points,
+          deliveryCost: d.deliveryCost,
         })
       ).data;
 
@@ -44,6 +45,7 @@ export default function DrSgItemEdit() {
         name: item.name,
         priceSGD: item.priceSGD,
         points: item.points,
+        deliveryCost: item.deliveryCost,
       });
     }
   }, [item, reset]);
@@ -73,6 +75,14 @@ export default function DrSgItemEdit() {
           label="Price (SGD)"
           type="number"
           {...register("priceSGD")}
+        />
+        <TextField
+          margin="normal"
+          fullWidth
+          required
+          label="Delivery Cost (Rp)"
+          type="number"
+          {...register("deliveryCost")}
         />
         <TextField
           margin="normal"
