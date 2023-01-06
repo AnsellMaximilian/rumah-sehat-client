@@ -21,6 +21,8 @@ import DrIdDeliveryShow from "./pages/dr/id/deliveries/DeliveryShow";
 import DrSgItemIndex from "./pages/dr/sg/items/ItemIndex";
 import DrSgItemCreate from "./pages/dr/sg/items/ItemCreate";
 import DrSgItemEdit from "./pages/dr/sg/items/ItemEdit";
+import DrSgDeliveryIndex from "./pages/dr/sg/deliveries/DeliveryIndex";
+import DrSgDeliveryCreate from "./pages/dr/sg/deliveries/DeliveryCreate";
 
 function App() {
   return (
@@ -87,16 +89,16 @@ function App() {
                     <Route path="create" element={<DrSgItemCreate />} />
                     <Route path="edit/:id" element={<DrSgItemEdit />} />
                   </Route>
-                  {/* <Route
+                  <Route
                     path="deliveries"
                     element={
                       <DataLayout title="Deliveries" titleVariant="h5" />
                     }
                   >
-                    <Route path="" element={<DrIdDeliveryIndex />} />
-                    <Route path="create" element={<DrIdDeliveryCreate />} />
-                    <Route path=":id" element={<DrIdDeliveryShow />} />
-                  </Route> */}
+                    <Route path="" element={<DrSgDeliveryIndex />} />
+                    <Route path="create" element={<DrSgDeliveryCreate />} />
+                    {/* <Route path=":id" element={<DrIdDeliveryShow />} /> */}
+                  </Route>
                 </Route>
                 <Route
                   path="discount-models"
