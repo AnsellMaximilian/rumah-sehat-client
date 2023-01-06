@@ -35,6 +35,7 @@ const DrSgItemIndex = () => {
     { field: "id", headerName: "ID", width: 70 },
     { field: "name", headerName: "Name", width: 130 },
     { field: "priceSGD", headerName: "Price (SGD)", width: 130 },
+    { field: "deliveryCost", headerName: "Delivery Cost (Rp)", width: 130 },
     {
       field: "points",
       headerName: "Points",
@@ -81,6 +82,7 @@ const DrSgItemIndex = () => {
             id: item.id,
             name: item.name,
             priceSGD: item.priceSGD,
+            deliveryCost: item.deliveryCost,
             points: item.points,
           }))}
           columns={columns}

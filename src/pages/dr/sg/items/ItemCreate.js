@@ -10,6 +10,7 @@ export default function DrSgItemCreate() {
     http.post("/dr/sg/items", {
       name: d.name,
       priceSGD: d.priceSGD,
+      deliveryCost: d.deliveryCost,
       points: d.points,
     });
     navigate("/dr/sg/items");
@@ -39,6 +40,13 @@ export default function DrSgItemCreate() {
           type="number"
           label="Price (SGD)"
           {...register("priceSGD")}
+        />
+        <TextField
+          margin="normal"
+          fullWidth
+          type="number"
+          label="Deivery Cost (Rp)"
+          {...register("deliveryCost")}
         />
         <TextField
           margin="normal"
