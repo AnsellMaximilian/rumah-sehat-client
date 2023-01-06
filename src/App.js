@@ -24,6 +24,8 @@ import DrSgItemEdit from "./pages/dr/sg/items/ItemEdit";
 import DrSgDeliveryIndex from "./pages/dr/sg/deliveries/DeliveryIndex";
 import DrSgDeliveryCreate from "./pages/dr/sg/deliveries/DeliveryCreate";
 import DrSgDeliveryShow from "./pages/dr/sg/deliveries/DeliveryShow";
+import DrInvoiceIndex from "./pages/dr/invoices/InvoiceIndex";
+import DrInvoiceCreate from "./pages/dr/invoices/InvoiceCreate";
 
 function App() {
   return (
@@ -45,6 +47,16 @@ function App() {
               </Route>
 
               <Route path="dr">
+                <Route
+                  path="invoices"
+                  element={
+                    <DataLayout title="Invoices" titleVariant="subtitle" />
+                  }
+                >
+                  <Route path="" element={<DrInvoiceIndex />} />
+                  <Route path="create" element={<DrInvoiceCreate />} />
+                  {/* <Route path="edit/:id" element={<DrIdItemEdit />} /> */}
+                </Route>
                 <Route
                   path="id"
                   element={

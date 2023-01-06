@@ -5,6 +5,8 @@ import ListSubheader from "@mui/material/ListSubheader";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
 import DiscountIcon from "@mui/icons-material/Discount";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+
 import SanitizerIcon from "@mui/icons-material/Sanitizer";
 import React, { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
@@ -86,6 +88,7 @@ const Sidebar = () => {
           />
         </List>
       </Collapse>
+      <SidebarLink to="/dr/invoices" text="Invoices" icon={<ReceiptIcon />} />
       <SidebarLink
         to="/dr/discount-models"
         text="Discount Models"
