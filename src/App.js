@@ -23,6 +23,7 @@ import DrSgItemCreate from "./pages/dr/sg/items/ItemCreate";
 import DrSgItemEdit from "./pages/dr/sg/items/ItemEdit";
 import DrSgDeliveryIndex from "./pages/dr/sg/deliveries/DeliveryIndex";
 import DrSgDeliveryCreate from "./pages/dr/sg/deliveries/DeliveryCreate";
+import DrSgDeliveryShow from "./pages/dr/sg/deliveries/DeliveryShow";
 
 function App() {
   return (
@@ -97,7 +98,7 @@ function App() {
                   >
                     <Route path="" element={<DrSgDeliveryIndex />} />
                     <Route path="create" element={<DrSgDeliveryCreate />} />
-                    {/* <Route path=":id" element={<DrIdDeliveryShow />} /> */}
+                    <Route path=":id" element={<DrSgDeliveryShow />} />
                   </Route>
                 </Route>
                 <Route
