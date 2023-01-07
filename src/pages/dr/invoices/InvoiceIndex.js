@@ -75,7 +75,7 @@ const DrInvoiceIndex = () => {
               color="primary"
               onClick={(e) => {
                 e.stopPropagation();
-                navigate(`/dr/id/deliveries/${params.row.id}`);
+                navigate(`/dr/invoices/${params.row.id}`);
               }}
             >
               <ShowIcon />

@@ -26,6 +26,7 @@ import DrSgDeliveryCreate from "./pages/dr/sg/deliveries/DeliveryCreate";
 import DrSgDeliveryShow from "./pages/dr/sg/deliveries/DeliveryShow";
 import DrInvoiceIndex from "./pages/dr/invoices/InvoiceIndex";
 import DrInvoiceCreate from "./pages/dr/invoices/InvoiceCreate";
+import DrInvoiceShow from "./pages/dr/invoices/InvoiceShow";
 
 function App() {
   return (
@@ -55,7 +56,7 @@ function App() {
                 >
                   <Route path="" element={<DrInvoiceIndex />} />
                   <Route path="create" element={<DrInvoiceCreate />} />
-                  {/* <Route path="edit/:id" element={<DrIdItemEdit />} /> */}
+                  <Route path=":id" element={<DrInvoiceShow />} />
                 </Route>
                 <Route
                   path="id"

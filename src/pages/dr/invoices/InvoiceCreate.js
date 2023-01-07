@@ -46,6 +46,7 @@ export default function DrInvoiceCreate() {
           note,
           DrIdDeliveryIds: selectedIdDeliveries.map((delivery) => delivery.id),
           DrSgDeliveryIds: selectedSgDeliveries.map((delivery) => delivery.id),
+          CustomerId: selectedCustomerId,
         })
       ).data;
       if (error) {
