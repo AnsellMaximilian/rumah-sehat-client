@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
 
 const DrInvoiceIndex = () => {
-  const [deliveries, setDeliveries] = useState([]);
+  const [invoices, setInvoices] = useState([]);
   const navigate = useNavigate();
 
   const handleDelete = (id) => {
@@ -31,23 +31,15 @@ const DrInvoiceIndex = () => {
 
   useEffect(() => {
     (async () => {
-      setDeliveries((await http.get("/dr/id/deliveries")).data.data);
+      setInvoices((await http.get("/dr/invoices")).data.data);
     })();
   }, []);
 
   const columns = [
     { field: "id", headerName: "ID", width: 50 },
     { field: "date", headerName: "Date", width: 100 },
-    { field: "customer", headerName: "Customer", width: 100 },
-    { field: "cost", headerName: "Delivery Cost", width: 100 },
-    {
-      field: "discount",
-      headerName: "Discount",
-      width: 120,
-      renderCell: (params) => (
-        <NumericFormatRp value={params.row.totalDiscount} />
-      ),
-    },
+    { field: "note", headerName: "Note", width: 100 },
+
     {
       field: "totalPriceRP",
       headerName: "Total (Rp)",
@@ -103,14 +95,10 @@ const DrInvoiceIndex = () => {
       </Box>
       <Card>
         <SmartTable
-          rows={deliveries.map((delivery) => ({
+          rows={invoices.map((delivery) => ({
             id: delivery.id,
-            cost: delivery.cost,
+            note: delivery.note,
             date: delivery.date,
-            customer: delivery.Customer.fullName,
-            totalDiscount: delivery.DrDiscountModelId
-              ? delivery.totalDiscount
-              : "No",
             totalPriceRP: delivery.totalPriceRP,
           }))}
           columns={columns}
