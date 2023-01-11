@@ -17,16 +17,17 @@ const DrIdDeliveryIndex = () => {
   const navigate = useNavigate();
 
   const handleDelete = (id) => {
-    // (async () => {
-    //   const { error } = (await http.delete(`/dr/id/deliveries/${id}`)).data;
-    //   if (!error) {
-    //     setDeliveries((deliveries) =>
-    //       deliveries.filter((delivery) => delivery.id !== id)
-    //     );
-    //   } else {
-    //     toast.error("Failed to delete");
-    //   }
-    // })();
+    (async () => {
+      try {
+        await http.delete(`/dr/id/deliveries/${id}`);
+        setDeliveries((deliveries) =>
+          deliveries.filter((delivery) => delivery.id !== id)
+        );
+        toast.success("Delivery deleted.");
+      } catch ({ response: { data: error } }) {
+        toast.error(error);
+      }
+    })();
   };
 
   useEffect(() => {

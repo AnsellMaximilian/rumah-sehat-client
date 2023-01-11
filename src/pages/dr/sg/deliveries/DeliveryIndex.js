@@ -10,22 +10,24 @@ import http from "../../../../http-common";
 import SmartTable from "../../../../components/SmartTable";
 import NumericFormatRp from "../../../../components/NumericFormatRp";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
+import { toast } from "react-toastify";
 
 const DrSgDeliveryIndex = () => {
   const [deliveries, setDeliveries] = useState([]);
   const navigate = useNavigate();
 
   const handleDelete = (id) => {
-    // (async () => {
-    //   const { error } = (await http.delete(`/dr/sg/deliveries/${id}`)).data;
-    //   if (!error) {
-    //     setDeliveries((deliveries) =>
-    //       deliveries.filter((delivery) => delivery.id !== id)
-    //     );
-    //   } else {
-    //     toast.error("Failed to delete");
-    //   }
-    // })();
+    (async () => {
+      try {
+        await http.delete(`/dr/sg/deliveries/${id}`);
+        setDeliveries((deliveries) =>
+          deliveries.filter((delivery) => delivery.id !== id)
+        );
+        toast.success("Deleted delivery.");
+      } catch ({ response: { data: error } }) {
+        toast.error(error);
+      }
+    })();
   };
 
   useEffect(() => {

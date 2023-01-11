@@ -1,18 +1,26 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import http from "../../../../http-common";
 
 export default function DrIdItemCreate() {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const onSubmit = (d) => {
-    http.post("/dr/id/items", {
-      name: d.name,
-      priceRP: d.priceRP,
-      points: d.points,
-    });
-    navigate("/dr/id/items");
+    (async () => {
+      try {
+        await http.post("/dr/id/items", {
+          name: d.name,
+          priceRP: d.priceRP,
+          points: d.points,
+        });
+
+        navigate("/dr/id/items");
+      } catch ({ response: { data: error } }) {
+        toast.error(error);
+      }
+    })();
   };
   return (
     <Box>

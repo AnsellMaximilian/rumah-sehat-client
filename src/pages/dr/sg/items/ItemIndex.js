@@ -15,12 +15,12 @@ const DrSgItemIndex = () => {
 
   const handleDelete = (id) => {
     (async () => {
-      const { error } = (await http.delete(`/dr/sg/items/${id}`)).data;
-
-      if (!error) {
+      try {
+        await http.delete(`/dr/sg/items/${id}`);
         setItems((items) => items.filter((item) => item.id !== id));
-      } else {
-        toast.error("Failed to delete");
+        toast.success("Deleted item.");
+      } catch ({ response: { data: error } }) {
+        toast.error(error);
       }
     })();
   };

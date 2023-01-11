@@ -14,19 +14,17 @@ export default function DrSgItemEdit() {
 
   const onSubmit = (d) => {
     (async () => {
-      const { error } = (
+      try {
         await http.patch(`/dr/sg/items/${id}`, {
           name: d.name,
           priceSGD: d.priceSGD,
           points: d.points,
           deliveryCost: d.deliveryCost,
-        })
-      ).data;
-
-      if (!error) {
+        });
+        toast.success("Successfully updated item.");
         navigate("/dr/sg/items");
-      } else {
-        toast.error(error.name);
+      } catch ({ response: { data: error } }) {
+        toast.error(error);
       }
     })();
   };

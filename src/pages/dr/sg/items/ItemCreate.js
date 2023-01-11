@@ -1,19 +1,26 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import http from "../../../../http-common";
 
 export default function DrSgItemCreate() {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const onSubmit = (d) => {
-    http.post("/dr/sg/items", {
-      name: d.name,
-      priceSGD: d.priceSGD,
-      deliveryCost: d.deliveryCost,
-      points: d.points,
-    });
-    navigate("/dr/sg/items");
+    (async () => {
+      try {
+        await http.post("/dr/sg/items", {
+          name: d.name,
+          priceSGD: d.priceSGD,
+          deliveryCost: d.deliveryCost,
+          points: d.points,
+        });
+        navigate("/dr/sg/items");
+      } catch ({ response: { data: error } }) {
+        toast.error(error);
+      }
+    })();
   };
   return (
     <Box>

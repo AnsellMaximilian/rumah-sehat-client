@@ -14,18 +14,15 @@ export default function DrIdItemEdit() {
 
   const onSubmit = (d) => {
     (async () => {
-      const { error } = (
+      try {
         await http.patch(`/dr/id/items/${id}`, {
           name: d.name,
           priceRP: d.priceRP,
           points: d.points,
-        })
-      ).data;
-
-      if (!error) {
+        });
         navigate("/dr/id/items");
-      } else {
-        toast.error(error.name);
+      } catch ({ response: { data: error } }) {
+        toast.error(error);
       }
     })();
   };
