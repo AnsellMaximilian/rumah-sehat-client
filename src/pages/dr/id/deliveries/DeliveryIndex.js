@@ -45,9 +45,12 @@ const DrIdDeliveryIndex = () => {
       field: "discount",
       headerName: "Discount",
       width: 120,
-      renderCell: (params) => (
-        <NumericFormatRp value={params.row.totalDiscount} />
-      ),
+      renderCell: (params) =>
+        params.row.totalDiscount ? (
+          <NumericFormatRp value={params.row.totalDiscount} />
+        ) : (
+          "No"
+        ),
     },
     {
       field: "totalPriceRP",
@@ -113,9 +116,7 @@ const DrIdDeliveryIndex = () => {
             cost: delivery.cost,
             date: delivery.date,
             customer: delivery.Customer.fullName,
-            totalDiscount: delivery.DrDiscountModelId
-              ? delivery.totalDiscount
-              : "No",
+            totalDiscount: delivery.totalDiscount,
             totalPriceRP: delivery.totalPriceRP,
           }))}
           columns={columns}
