@@ -72,6 +72,9 @@ export default function DrSgDeliveryCreate() {
       {
         key: uuidv4(),
         item: firstItem,
+        priceSGD: firstItem.priceSGD,
+        points: firstItem.points,
+        deliveryCost: firstItem.deliveryCost,
         qty: 0,
       },
     ]);
@@ -84,20 +87,29 @@ export default function DrSgDeliveryCreate() {
   const handleItemSelectChange = (key, itemId) => {
     setDeliveryDetails((prev) =>
       prev.map((detail) => {
-        if (detail.key === key)
-          return { ...detail, item: items.find((item) => item.id === itemId) };
+        if (detail.key === key) {
+          const newItem = items.find((item) => item.id === itemId);
+          return {
+            ...detail,
+            item: newItem,
+            priceSGD: newItem.priceSGD,
+            points: newItem.points,
+            deliveryCost: newItem.deliveryCost,
+          };
+        }
         return detail;
       })
     );
   };
 
-  const handleQtyChange = (key, value) =>
+  const handleDetailAttrChange = (attr, key) => (e) => {
     setDeliveryDetails((prev) =>
       prev.map((detail) => {
-        if (detail.key === key) return { ...detail, qty: value };
+        if (detail.key === key) return { ...detail, [attr]: e.target.value };
         return detail;
       })
     );
+  };
 
   const onSubmit = async (d) => {
     try {
@@ -111,7 +123,10 @@ export default function DrSgDeliveryCreate() {
         deliveryDetails: deliveryDetails.map((detail) => {
           const {
             qty,
-            item: { priceSGD, points, id, deliveryCost },
+            priceSGD,
+            points,
+            deliveryCost,
+            item: { id },
           } = detail;
           return {
             qty,
@@ -303,23 +318,43 @@ export default function DrSgDeliveryCreate() {
                       </Select>
                     </FormControl>
                   </TableCell>
-                  <TableCell align="right">{detail.item.points}</TableCell>
+                  <TableCell align="right">
+                    <TextField
+                      margin="none"
+                      type="number"
+                      value={detail.points}
+                      onChange={handleDetailAttrChange("points", detail.key)}
+                    />
+                  </TableCell>
                   {deliveryCostType === "individual" && (
                     <TableCell align="right">
-                      {detail.item.deliveryCost}
+                      <TextField
+                        margin="none"
+                        type="number"
+                        value={detail.deliveryCost}
+                        onChange={handleDetailAttrChange(
+                          "deliveryCost",
+                          detail.key
+                        )}
+                      />
                     </TableCell>
                   )}
 
-                  <TableCell align="right">{detail.item.priceSGD}</TableCell>
+                  <TableCell align="right">
+                    <TextField
+                      margin="none"
+                      type="number"
+                      value={detail.priceSGD}
+                      onChange={handleDetailAttrChange("priceSGD", detail.key)}
+                    />
+                  </TableCell>
                   <TableCell align="center">
                     <TextField
                       type="number"
                       defaultValue={0}
                       value={detail.item.qty}
                       sx={{ width: 75 }}
-                      onChange={(e) =>
-                        handleQtyChange(detail.key, e.target.value)
-                      }
+                      onChange={handleDetailAttrChange("qty", detail.key)}
                     />
                   </TableCell>
                   <TableCell align="right">

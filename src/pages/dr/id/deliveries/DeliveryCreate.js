@@ -66,6 +66,8 @@ export default function DrIdDeliveryCreate() {
       {
         key: uuidv4(),
         item: firstItem,
+        priceRP: firstItem.priceRP,
+        points: firstItem.points,
         qty: 0,
       },
     ]);
@@ -78,20 +80,28 @@ export default function DrIdDeliveryCreate() {
   const handleItemSelectChange = (key, itemId) => {
     setDeliveryDetails((prev) =>
       prev.map((detail) => {
-        if (detail.key === key)
-          return { ...detail, item: items.find((item) => item.id === itemId) };
+        const newItem = items.find((item) => item.id === itemId);
+        if (detail.key === key) {
+          return {
+            ...detail,
+            item: newItem,
+            priceRP: newItem.priceRP,
+            points: newItem.points,
+          };
+        }
         return detail;
       })
     );
   };
 
-  const handleQtyChange = (key, value) =>
+  const handleDetailAttrChange = (attr, key) => (e) => {
     setDeliveryDetails((prev) =>
       prev.map((detail) => {
-        if (detail.key === key) return { ...detail, qty: value };
+        if (detail.key === key) return { ...detail, [attr]: e.target.value };
         return detail;
       })
     );
+  };
 
   const onSubmit = async (d) => {
     try {
@@ -103,7 +113,9 @@ export default function DrIdDeliveryCreate() {
         deliveryDetails: deliveryDetails.map((detail) => {
           const {
             qty,
-            item: { priceRP, points, id },
+            priceRP,
+            points,
+            item: { id },
           } = detail;
           return {
             qty,
@@ -261,24 +273,36 @@ export default function DrIdDeliveryCreate() {
                       </Select>
                     </FormControl>
                   </TableCell>
-                  <TableCell align="right">{detail.item.points}</TableCell>
-                  <TableCell align="right">{detail.item.priceRP}</TableCell>
+                  <TableCell align="right">
+                    <TextField
+                      margin="none"
+                      type="number"
+                      value={detail.points}
+                      onChange={handleDetailAttrChange("points", detail.key)}
+                    />
+                  </TableCell>
+                  <TableCell align="right">
+                    <TextField
+                      margin="none"
+                      type="number"
+                      value={detail.priceRP}
+                      onChange={handleDetailAttrChange("priceRP", detail.key)}
+                    />
+                  </TableCell>
                   <TableCell align="center">
                     <TextField
                       type="number"
                       defaultValue={0}
                       value={detail.item.qty}
                       sx={{ width: 75 }}
-                      onChange={(e) =>
-                        handleQtyChange(detail.key, e.target.value)
-                      }
+                      onChange={handleDetailAttrChange("qty", detail.key)}
                     />
                   </TableCell>
                   <TableCell align="right">
-                    {detail.item.points * detail.qty}
+                    {detail.points * detail.qty}
                   </TableCell>
                   <TableCell align="right">
-                    <NumericFormatRp value={detail.item.priceRP * detail.qty} />
+                    <NumericFormatRp value={detail.priceRP * detail.qty} />
                   </TableCell>
                 </TableRow>
               ))}

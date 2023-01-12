@@ -6,6 +6,6 @@
 
 export const getSubtotal = (deliveryDetails, attribute) =>
   deliveryDetails.reduce(
-    (sum, detail) => sum + detail.item[attribute] * detail.qty,
+    (sum, detail) => sum + detail[attribute] * detail.qty,
     0
   );
