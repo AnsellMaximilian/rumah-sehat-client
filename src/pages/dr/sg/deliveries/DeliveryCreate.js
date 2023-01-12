@@ -28,7 +28,7 @@ import Cancel from "@mui/icons-material/Cancel";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import http from "../../../../http-common";
 import { v4 as uuidv4 } from "uuid";
 import { getSubtotal } from "../../../../helpers/drId";
@@ -36,7 +36,7 @@ import { getDiscountTotal } from "../../../../helpers/dr";
 import NumericFormatSGD from "../../../../components/NumericFormatSGD";
 import NumericFormatRp from "../../../../components/NumericFormatRp";
 
-export default function DrSgDeliveryCreate() {
+export default function DrSgDeliveryCreate({ edit }) {
   const [customers, setCustomers] = useState([]);
   const [discountModels, setDiscountModels] = useState([]);
   const [items, setItems] = useState([]);
@@ -50,6 +50,9 @@ export default function DrSgDeliveryCreate() {
   const { register, handleSubmit, reset } = useForm();
   const navigate = useNavigate();
 
+  // for edit mode
+  const { id } = useParams();
+
   useEffect(() => {
     (async () => {
       setCustomers((await http.get("/customers")).data.data);
@@ -59,11 +62,44 @@ export default function DrSgDeliveryCreate() {
   }, []);
 
   useEffect(() => {
-    if (discountModels.length > 0) setDiscountModelId(discountModels[0].id);
-    reset({
-      date: moment().format("yyyy-MM-DD"),
-    });
-  }, [reset, discountModels]);
+    (async () => {
+      if (discountModels.length > 0) setDiscountModelId(discountModels[0].id);
+      reset({
+        date: moment().format("yyyy-MM-DD"),
+      });
+
+      if (edit) {
+        if (items.length > 0) {
+          const delivery = (await http.get(`/dr/sg/deliveries/${id}`)).data
+            .data;
+          setDeliveryDetails(
+            delivery.DrSgDeliveryDetails.map((detail) => {
+              const item = items.find((item) => item.id === detail.DrSgItemId);
+              return {
+                key: uuidv4(),
+                item: item,
+                priceSGD: detail.priceSGD,
+                points: detail.points,
+                deliveryCost: detail.deliveryCost,
+                qty: detail.qty,
+              };
+            })
+          );
+          reset({
+            customerId: delivery.CustomerId,
+            date: moment(delivery.date).format("yyyy-MM-DD"),
+            note: delivery.note,
+          });
+          setUseDiscount(!!delivery.DrDiscountModelId);
+          setExchangeRate(delivery.exchangeRate);
+          setDeliveryCostType(delivery.deliveryCostType);
+          if (delivery.DrDiscountModelId)
+            setDiscountModelId(delivery.DrDiscountModelId);
+          setCost(delivery.cost);
+        }
+      }
+    })();
+  }, [reset, discountModels, edit, id, items]);
 
   const handleAddRow = () => {
     const firstItem = items[0];
@@ -113,7 +149,7 @@ export default function DrSgDeliveryCreate() {
 
   const onSubmit = async (d) => {
     try {
-      await http.post("/dr/sg/deliveries", {
+      const body = {
         cost: cost,
         CustomerId: d.CustomerId,
         exchangeRate: exchangeRate,
@@ -138,10 +174,18 @@ export default function DrSgDeliveryCreate() {
           };
         }),
         date: moment().format("YYYY-MM-DD"),
-      });
-      navigate("/dr/sg/deliveries");
-    } catch (error) {
-      toast.error(error.error);
+      };
+      if (!edit) {
+        await http.post("/dr/sg/deliveries", body);
+        navigate("/dr/sg/deliveries");
+        toast.success("Created delivery.");
+      } else {
+        await http.patch(`/dr/sg/deliveries/${id}`, body);
+        navigate(`/dr/sg/deliveries/${id}`);
+        toast.success("Updated delivery.");
+      }
+    } catch ({ response: { data: error } }) {
+      toast.error(error);
     }
   };
 
@@ -331,7 +375,7 @@ export default function DrSgDeliveryCreate() {
                       <TextField
                         margin="none"
                         type="number"
-                        value={detail.deliveryCost}
+                        value={detail.deliveryCost || 0}
                         onChange={handleDetailAttrChange(
                           "deliveryCost",
                           detail.key
@@ -351,8 +395,7 @@ export default function DrSgDeliveryCreate() {
                   <TableCell align="center">
                     <TextField
                       type="number"
-                      defaultValue={0}
-                      value={detail.item.qty}
+                      value={detail.qty}
                       sx={{ width: 75 }}
                       onChange={handleDetailAttrChange("qty", detail.key)}
                     />
@@ -478,7 +521,7 @@ export default function DrSgDeliveryCreate() {
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
         >
-          Create
+          {edit ? "Update" : "Create"}
         </Button>
       </Box>
     </Box>

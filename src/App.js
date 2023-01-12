@@ -116,6 +116,10 @@ function App() {
                     <Route path="" element={<DrSgDeliveryIndex />} />
                     <Route path="create" element={<DrSgDeliveryCreate />} />
                     <Route path=":id" element={<DrSgDeliveryShow />} />
+                    <Route
+                      path="edit/:id"
+                      element={<DrSgDeliveryCreate edit />}
+                    />
                   </Route>
                 </Route>
                 <Route

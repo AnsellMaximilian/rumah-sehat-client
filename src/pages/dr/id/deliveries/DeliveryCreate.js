@@ -160,13 +160,15 @@ export default function DrIdDeliveryCreate({ edit }) {
       };
       if (!edit) {
         await http.post("/dr/id/deliveries", body);
+        toast.success("Created delivery.");
         navigate("/dr/id/deliveries");
       } else {
         await http.patch(`/dr/id/deliveries/${id}`, body);
+        toast.success("Updated delivery.");
         navigate(`/dr/id/deliveries/${id}`);
       }
-    } catch (error) {
-      toast.error(error.error);
+    } catch ({ response: { data: error } }) {
+      toast.error(error);
     }
   };
 
@@ -424,7 +426,7 @@ export default function DrIdDeliveryCreate({ edit }) {
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
         >
-          Create
+          {edit ? "Update" : "Create"}
         </Button>
       </Box>
     </Box>
