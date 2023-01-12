@@ -25,14 +25,14 @@ import Cancel from "@mui/icons-material/Cancel";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import http from "../../../../http-common";
 import { v4 as uuidv4 } from "uuid";
 import { getSubtotal } from "../../../../helpers/drId";
 import { getDiscountTotal } from "../../../../helpers/dr";
 import NumericFormatRp from "../../../../components/NumericFormatRp";
 
-export default function DrIdDeliveryCreate() {
+export default function DrIdDeliveryCreate({ edit }) {
   const [customers, setCustomers] = useState([]);
   const [discountModels, setDiscountModels] = useState([]);
   const [items, setItems] = useState([]);
@@ -44,6 +44,9 @@ export default function DrIdDeliveryCreate() {
   const { register, handleSubmit, reset } = useForm();
   const navigate = useNavigate();
 
+  // for edit mode
+  const { id } = useParams();
+
   useEffect(() => {
     (async () => {
       setCustomers((await http.get("/customers")).data.data);
@@ -53,11 +56,40 @@ export default function DrIdDeliveryCreate() {
   }, []);
 
   useEffect(() => {
-    if (discountModels.length > 0) setDiscountModelId(discountModels[0].id);
-    reset({
-      date: moment().format("yyyy-MM-DD"),
-    });
-  }, [reset, discountModels]);
+    (async () => {
+      if (discountModels.length > 0) setDiscountModelId(discountModels[0].id);
+      reset({
+        date: moment().format("yyyy-MM-DD"),
+      });
+      if (edit) {
+        if (items.length > 0) {
+          const delivery = (await http.get(`/dr/id/deliveries/${id}`)).data
+            .data;
+          setDeliveryDetails(
+            delivery.DrIdDeliveryDetails.map((detail) => {
+              const item = items.find((item) => item.id === detail.DrIdItemId);
+              return {
+                key: uuidv4(),
+                item: item,
+                priceRP: detail.priceRP,
+                points: detail.points,
+                qty: detail.qty,
+              };
+            })
+          );
+          reset({
+            customerId: delivery.CustomerId,
+            date: moment(delivery.date).format("yyyy-MM-DD"),
+            note: delivery.note,
+          });
+          setUseDiscount(!!delivery.DrDiscountModelId);
+          if (delivery.DrDiscountModelId)
+            setDiscountModelId(delivery.DrDiscountModelId);
+          setCost(delivery.cost);
+        }
+      }
+    })();
+  }, [reset, discountModels, edit, id, items]);
 
   const handleAddRow = () => {
     const firstItem = items[0];
@@ -105,7 +137,7 @@ export default function DrIdDeliveryCreate() {
 
   const onSubmit = async (d) => {
     try {
-      await http.post("/dr/id/deliveries", {
+      const body = {
         cost: cost,
         CustomerId: d.CustomerId,
         DrDiscountModelId: useDiscount ? discountModelId : null,
@@ -125,8 +157,14 @@ export default function DrIdDeliveryCreate() {
           };
         }),
         date: moment().format("YYYY-MM-DD"),
-      });
-      navigate("/dr/id/deliveries");
+      };
+      if (!edit) {
+        await http.post("/dr/id/deliveries", body);
+        navigate("/dr/id/deliveries");
+      } else {
+        await http.patch(`/dr/id/deliveries/${id}`, body);
+        navigate(`/dr/id/deliveries/${id}`);
+      }
     } catch (error) {
       toast.error(error.error);
     }
@@ -195,7 +233,6 @@ export default function DrIdDeliveryCreate() {
             </InputLabel>
             <Select
               label="Discount Model"
-              defaultValue={discountModels[0].id}
               value={discountModelId}
               onChange={(e) => setDiscountModelId(e.target.value)}
             >
@@ -259,7 +296,6 @@ export default function DrIdDeliveryCreate() {
                   <TableCell>
                     <FormControl fullWidth margin="none">
                       <Select
-                        defaultValue={detail.item.id}
                         onChange={(e) =>
                           handleItemSelectChange(detail.key, e.target.value)
                         }
@@ -292,8 +328,7 @@ export default function DrIdDeliveryCreate() {
                   <TableCell align="center">
                     <TextField
                       type="number"
-                      defaultValue={0}
-                      value={detail.item.qty}
+                      value={detail.qty}
                       sx={{ width: 75 }}
                       onChange={handleDetailAttrChange("qty", detail.key)}
                     />

@@ -84,6 +84,10 @@ function App() {
                     <Route path="" element={<DrIdDeliveryIndex />} />
                     <Route path="create" element={<DrIdDeliveryCreate />} />
                     <Route path=":id" element={<DrIdDeliveryShow />} />
+                    <Route
+                      path="edit/:id"
+                      element={<DrIdDeliveryCreate edit />}
+                    />
                   </Route>
                 </Route>
                 <Route
