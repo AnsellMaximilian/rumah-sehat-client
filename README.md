@@ -6,6 +6,9 @@
 
 ## Rumah Sehat
 
+- [ ] Generate and print sales report between two dates.
+- [ ] Generate supplier invoices to pay.
+
 ## Dr's Secret
 
 - [ ] Manage item/product data from Indonesia and Singapore
