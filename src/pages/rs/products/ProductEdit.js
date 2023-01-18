@@ -1,4 +1,14 @@
-import { Box, Button, Skeleton, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Skeleton,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
@@ -10,7 +20,10 @@ export default function ProductEdit() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const [product, setProducts] = useState(null);
+  const [product, setProduct] = useState(null);
+
+  const [categories, setCategories] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
 
   const onSubmit = (d) => {
     (async () => {
@@ -20,6 +33,8 @@ export default function ProductEdit() {
           price: d.price,
           resellerPrice: d.resellerPrice,
           cost: d.cost,
+          SupplierId: d.SupplierId,
+          ProductCategoryId: d.ProductCategoryId,
         });
         navigate("/rs/products");
       } catch ({ response: { data: error } }) {
@@ -31,7 +46,9 @@ export default function ProductEdit() {
   useEffect(() => {
     (async () => {
       if (id) {
-        setProducts((await http.get(`/rs/products/${id}`)).data.data);
+        setProduct((await http.get(`/rs/products/${id}`)).data.data);
+        setCategories((await http.get("/rs/product-categories")).data.data);
+        setSuppliers((await http.get("/rs/suppliers")).data.data);
       }
     })();
   }, [id]);
@@ -43,10 +60,12 @@ export default function ProductEdit() {
         price: product.price,
         resellerPrice: product.resellerPrice,
         cost: product.cost,
+        SupplierId: product.SupplierId,
+        ProductCategoryId: product.ProductCategoryId,
       });
     }
   }, [product, reset]);
-  return product ? (
+  return product && suppliers.length > 0 && categories.length > 0 ? (
     <Box>
       <Typography component="h1" variant="h5">
         Edit Product
@@ -65,6 +84,34 @@ export default function ProductEdit() {
           autoFocus
           {...register("name")}
         />
+        <FormControl fullWidth margin="normal">
+          <InputLabel id="demo-simple-select-label">Category</InputLabel>
+          <Select
+            label="Category"
+            {...register("ProductCategoryId")}
+            defaultValue={product.ProductCategoryId}
+          >
+            {categories.map((category) => (
+              <MenuItem value={category.id} key={category.id}>
+                {category.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl fullWidth margin="normal">
+          <InputLabel id="demo-simple-select-label">Supplier</InputLabel>
+          <Select
+            label="Supplier"
+            {...register("SupplierId")}
+            defaultValue={product.SupplierId}
+          >
+            {suppliers.map((supplier) => (
+              <MenuItem value={supplier.id} key={supplier.id}>
+                {supplier.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <TextField
           margin="normal"
           required

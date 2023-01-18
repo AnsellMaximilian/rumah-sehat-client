@@ -1,10 +1,30 @@
-import { Box, Button, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import http from "../../../http-common";
 
 export default function ProductCreate() {
+  const [categories, setCategories] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      setCategories((await http.get("/rs/product-categories")).data.data);
+      setSuppliers((await http.get("/rs/suppliers")).data.data);
+    })();
+  }, []);
+
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const onSubmit = (d) => {
@@ -15,6 +35,8 @@ export default function ProductCreate() {
           price: d.price,
           resellerPrice: d.resellerPrice,
           cost: d.cost,
+          SupplierId: d.SupplierId,
+          ProductCategoryId: d.ProductCategoryId,
         });
 
         navigate("/rs/products");
@@ -23,7 +45,7 @@ export default function ProductCreate() {
       }
     })();
   };
-  return (
+  return categories.length > 0 && suppliers.length > 0 ? (
     <Box>
       <Typography component="h1" variant="h5">
         Add New
@@ -34,6 +56,34 @@ export default function ProductCreate() {
         noValidate
         sx={{ mt: 1 }}
       >
+        <FormControl fullWidth margin="normal">
+          <InputLabel id="demo-simple-select-label">Category</InputLabel>
+          <Select
+            label="Category"
+            {...register("ProductCategoryId")}
+            defaultValue={categories[0].id}
+          >
+            {categories.map((category) => (
+              <MenuItem value={category.id} key={category.id}>
+                {category.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl fullWidth margin="normal">
+          <InputLabel id="demo-simple-select-label">Supplier</InputLabel>
+          <Select
+            label="Supplier"
+            {...register("SupplierId")}
+            defaultValue={suppliers[0].id}
+          >
+            {suppliers.map((supplier) => (
+              <MenuItem value={supplier.id} key={supplier.id}>
+                {supplier.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <TextField
           margin="normal"
           required
@@ -77,5 +127,10 @@ export default function ProductCreate() {
         </Button>
       </Box>
     </Box>
+  ) : (
+    <h1>
+      Failed loading suppliers or categories. If you haven't please create at
+      least one of each.
+    </h1>
   );
 }
