@@ -90,7 +90,7 @@ const Sidebar = () => {
       <Collapse in={rsDeliveryOpen} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <SidebarLink
-            to="/rs/delivery-type"
+            to="/rs/delivery-types"
             text="Delivery Type"
             icon={<CategoryIcon />}
             sx={{ pl: 4 }}
