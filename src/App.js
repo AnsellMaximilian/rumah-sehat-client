@@ -33,6 +33,9 @@ import SupplierEdit from "./pages/rs/suppliers/SupplierEdit";
 import ProductCategoryIndex from "./pages/rs/productCategories/ProductCategoryIndex";
 import ProductCategoryCreate from "./pages/rs/productCategories/ProductCategoryCreate";
 import ProductCategoryEdit from "./pages/rs/productCategories/ProductCategoryEdit";
+import ProductIndex from "./pages/rs/products/ProductIndex";
+import ProductCreate from "./pages/rs/products/ProductCreate";
+import ProductEdit from "./pages/rs/products/ProductEdit";
 
 function App() {
   return (
@@ -75,6 +78,14 @@ function App() {
                   <Route path="" element={<ProductCategoryIndex />} />
                   <Route path="create" element={<ProductCategoryCreate />} />
                   <Route path="edit/:id" element={<ProductCategoryEdit />} />
+                </Route>
+                <Route
+                  path="products"
+                  element={<DataLayout title="Products" titleVariant="h5" />}
+                >
+                  <Route path="" element={<ProductIndex />} />
+                  <Route path="create" element={<ProductCreate />} />
+                  <Route path="edit/:id" element={<ProductEdit />} />
                 </Route>
               </Route>
 
