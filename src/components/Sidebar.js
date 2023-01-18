@@ -39,6 +39,7 @@ export const mainListItems = (
 const Sidebar = () => {
   // Rumah Sehat
   const [rsProductOpen, setRsProductOpen] = useState(false);
+  const [rsDeliveryOpen, setRsDeliveryOpen] = useState(false);
 
   // Dr's secret
   const [drIdOpen, setDrIdOpen] = useState(false);
@@ -70,7 +71,7 @@ const Sidebar = () => {
             text="Products"
             icon={<ProductIcon />}
             sx={{ pl: 4 }}
-          />{" "}
+          />
           <SidebarLink
             to="/rs/suppliers"
             text="Suppliers"
@@ -79,12 +80,30 @@ const Sidebar = () => {
           />
         </List>
       </Collapse>
+      <ListItemButton onClick={() => setRsDeliveryOpen(!rsDeliveryOpen)}>
+        <ListItemIcon>
+          <LocalShipping />
+        </ListItemIcon>
+        <ListItemText primary="Deliveries" />
+        {rsDeliveryOpen ? <ExpandLess /> : <ExpandMore />}
+      </ListItemButton>
+      <Collapse in={rsDeliveryOpen} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <SidebarLink
+            to="/rs/delivery-type"
+            text="Delivery Type"
+            icon={<CategoryIcon />}
+            sx={{ pl: 4 }}
+          />
+          <SidebarLink
+            to="/rs/deliveries"
+            text="Deliveries"
+            icon={<LocalShipping />}
+            sx={{ pl: 4 }}
+          />
+        </List>
+      </Collapse>
 
-      <SidebarLink
-        to="/rs/deliveries"
-        text="Deliveries"
-        icon={<LocalShipping />}
-      />
       <SidebarLink to="/rs/invoices" text="Invoices" icon={<ReceiptIcon />} />
       <SidebarLink
         to="/rs/adjustments"
