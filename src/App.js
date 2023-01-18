@@ -27,6 +27,9 @@ import DrSgDeliveryShow from "./pages/dr/sg/deliveries/DeliveryShow";
 import DrInvoiceIndex from "./pages/dr/invoices/InvoiceIndex";
 import DrInvoiceCreate from "./pages/dr/invoices/InvoiceCreate";
 import DrInvoiceShow from "./pages/dr/invoices/InvoiceShow";
+import SupplierIndex from "./pages/rs/suppliers/SupplierIndex";
+import SupplierCreate from "./pages/rs/suppliers/SupplierCreate";
+import SupplierEdit from "./pages/rs/suppliers/SupplierEdit";
 
 function App() {
   return (
@@ -45,6 +48,21 @@ function App() {
                 <Route path="" element={<CustomerIndex />} />
                 <Route path="create" element={<CustomerCreate />} />
                 <Route path="edit/:id" element={<CustomerEdit />} />
+              </Route>
+              <Route
+                path="rs"
+                element={
+                  <DataLayout title="Rumah Sehat" titleVariant="subtitle" />
+                }
+              >
+                <Route
+                  path="suppliers"
+                  element={<DataLayout title="Suppliers" titleVariant="h5" />}
+                >
+                  <Route path="" element={<SupplierIndex />} />
+                  <Route path="create" element={<SupplierCreate />} />
+                  <Route path="edit/:id" element={<SupplierEdit />} />
+                </Route>
               </Route>
 
               <Route path="dr">
