@@ -30,6 +30,9 @@ import DrInvoiceShow from "./pages/dr/invoices/InvoiceShow";
 import SupplierIndex from "./pages/rs/suppliers/SupplierIndex";
 import SupplierCreate from "./pages/rs/suppliers/SupplierCreate";
 import SupplierEdit from "./pages/rs/suppliers/SupplierEdit";
+import ProductCategoryIndex from "./pages/rs/productCategories/ProductCategoryIndex";
+import ProductCategoryCreate from "./pages/rs/productCategories/ProductCategoryCreate";
+import ProductCategoryEdit from "./pages/rs/productCategories/ProductCategoryEdit";
 
 function App() {
   return (
@@ -62,6 +65,16 @@ function App() {
                   <Route path="" element={<SupplierIndex />} />
                   <Route path="create" element={<SupplierCreate />} />
                   <Route path="edit/:id" element={<SupplierEdit />} />
+                </Route>
+                <Route
+                  path="product-categories"
+                  element={
+                    <DataLayout title="Product Categories" titleVariant="h5" />
+                  }
+                >
+                  <Route path="" element={<ProductCategoryIndex />} />
+                  <Route path="create" element={<ProductCategoryCreate />} />
+                  <Route path="edit/:id" element={<ProductCategoryEdit />} />
                 </Route>
               </Route>
 
