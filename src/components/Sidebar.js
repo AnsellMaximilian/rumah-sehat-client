@@ -6,6 +6,10 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
 import DiscountIcon from "@mui/icons-material/Discount";
 import ReceiptIcon from "@mui/icons-material/Receipt";
+import AdjustIcon from "@mui/icons-material/AutoFixNormal";
+import ProductIcon from "@mui/icons-material/Widgets";
+import CategoryIcon from "@mui/icons-material/ManageSearch";
+import SupplierIcon from "@mui/icons-material/Inventory";
 
 import SanitizerIcon from "@mui/icons-material/Sanitizer";
 import React, { useState } from "react";
@@ -33,11 +37,61 @@ export const mainListItems = (
 );
 
 const Sidebar = () => {
+  // Rumah Sehat
+  const [rsProductOpen, setRsProductOpen] = useState(false);
+
+  // Dr's secret
   const [drIdOpen, setDrIdOpen] = useState(false);
   const [drSgOpen, setDrSgOpen] = useState(false);
   return (
-    <List component="nav">
+    <List component="nav" sx={{ maxHeight: "calc(100vh - 65px)" }}>
       {mainListItems}
+      <Divider sx={{ my: 1 }} />
+      <ListSubheader component="div" inset>
+        Rumah Sehat
+      </ListSubheader>
+      <ListItemButton onClick={() => setRsProductOpen(!rsProductOpen)}>
+        <ListItemIcon>
+          <ProductIcon />
+        </ListItemIcon>
+        <ListItemText primary="Products" />
+        {rsProductOpen ? <ExpandLess /> : <ExpandMore />}
+      </ListItemButton>
+      <Collapse in={rsProductOpen} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <SidebarLink
+            to="/rs/product-categories"
+            text="Categories"
+            icon={<CategoryIcon />}
+            sx={{ pl: 4 }}
+          />
+          <SidebarLink
+            to="/rs/products"
+            text="Products"
+            icon={<ProductIcon />}
+            sx={{ pl: 4 }}
+          />{" "}
+          <SidebarLink
+            to="/rs/suppliers"
+            text="Suppliers"
+            icon={<SupplierIcon />}
+            sx={{ pl: 4 }}
+          />
+        </List>
+      </Collapse>
+
+      <SidebarLink
+        to="/rs/deliveries"
+        text="Deliveries"
+        icon={<LocalShipping />}
+      />
+      <SidebarLink to="/rs/invoices" text="Invoices" icon={<ReceiptIcon />} />
+      <SidebarLink
+        to="/rs/adjustments"
+        text="Adjustments"
+        icon={<AdjustIcon />}
+      />
+
       <Divider sx={{ my: 1 }} />
       <ListSubheader component="div" inset>
         Dr's Secret
