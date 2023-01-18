@@ -12,6 +12,7 @@ export default function DeliveryTypeCreate() {
       try {
         await http.post("/rs/delivery-types", {
           name: d.name,
+          defaultCost: d.defaultCost,
         });
 
         navigate("/rs/delivery-types");
@@ -38,6 +39,14 @@ export default function DeliveryTypeCreate() {
           label="Name"
           autoFocus
           {...register("name")}
+        />
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          label="Default Cost"
+          type="number"
+          {...register("defaultCost")}
         />
         <Button
           type="submit"

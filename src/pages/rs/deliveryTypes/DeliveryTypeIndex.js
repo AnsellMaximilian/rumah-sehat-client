@@ -36,6 +36,7 @@ const DeliveryTypeIndex = () => {
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
     { field: "name", headerName: "Name", width: 130 },
+    { field: "defaultCost", headerName: "Default Cost", width: 130 },
     {
       field: "actions",
       headerName: "Actions",
@@ -80,6 +81,7 @@ const DeliveryTypeIndex = () => {
           rows={deliveryTypes.map((item) => ({
             id: item.id,
             name: item.name,
+            defaultCost: item.defaultCost,
           }))}
           columns={columns}
         />

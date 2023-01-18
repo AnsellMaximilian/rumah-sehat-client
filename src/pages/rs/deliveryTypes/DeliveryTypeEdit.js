@@ -17,6 +17,7 @@ export default function DeliveryTypeEdit() {
       try {
         await http.patch(`/rs/delivery-types/${id}`, {
           name: d.name,
+          defaultCost: d.defaultCost,
         });
         navigate("/rs/delivery-types");
       } catch ({ response: { data: error } }) {
@@ -37,6 +38,7 @@ export default function DeliveryTypeEdit() {
     if (deliveryType) {
       reset({
         name: deliveryType.name,
+        defaultCost: deliveryType.defaultCost,
       });
     }
   }, [deliveryType, reset]);
@@ -58,6 +60,14 @@ export default function DeliveryTypeEdit() {
           label="Name"
           autoFocus
           {...register("name")}
+        />
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          label="Default Cost"
+          type="number"
+          {...register("defaultCost")}
         />
         <Button
           type="submit"
