@@ -32,3 +32,13 @@
 - [x] Print invoices
 
 # TODO
+
+- [ ] Track product unit
+
+# Scenarios to Consider
+
+## Recording invoice deliveries for customers
+
+- Recording a delivery sent by supplier, so system has to record supplier delivery, which includes per product charges and delivery cost. (Supplier directly sends products to customers with delivery cost and system has to record both supplier purchase and own delivery in invoice. I.e. Cisarua)
+  - Record own delivery (details, cost, etc.) and supplier purchase (details, cost)
+- Recording a delivery NOT sent by supplier but also simultaneously recording the corresponding supplier delivery sent to stock. (Supplier delivers goods to stock, and then products from stock gets delivered later, so system records supplier delivery/purchase)
