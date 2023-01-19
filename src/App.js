@@ -39,6 +39,8 @@ import ProductEdit from "./pages/rs/products/ProductEdit";
 import DeliveryTypeIndex from "./pages/rs/deliveryTypes/DeliveryTypeIndex";
 import DeliveryTypeCreate from "./pages/rs/deliveryTypes/DeliveryTypeCreate";
 import DeliveryTypeEdit from "./pages/rs/deliveryTypes/DeliveryTypeEdit";
+import DeliveryIndex from "./pages/rs/deliveries/DeliveryIndex";
+import DeliveryCrate from "./pages/rs/deliveries/DeliveryCreate";
 
 function App() {
   return (
@@ -99,6 +101,14 @@ function App() {
                 >
                   <Route path="" element={<DeliveryTypeIndex />} />
                   <Route path="create" element={<DeliveryTypeCreate />} />
+                  <Route path="edit/:id" element={<DeliveryTypeEdit />} />
+                </Route>
+                <Route
+                  path="deliveries"
+                  element={<DataLayout title="Deliveries" titleVariant="h5" />}
+                >
+                  <Route path="" element={<DeliveryIndex />} />
+                  <Route path="create" element={<DeliveryCrate />} />
                   <Route path="edit/:id" element={<DeliveryTypeEdit />} />
                 </Route>
               </Route>
