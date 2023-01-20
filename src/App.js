@@ -42,6 +42,7 @@ import DeliveryTypeEdit from "./pages/rs/deliveryTypes/DeliveryTypeEdit";
 import DeliveryIndex from "./pages/rs/deliveries/DeliveryIndex";
 import DeliveryCrate from "./pages/rs/deliveries/DeliveryCreate";
 import InvoiceIndex from "./pages/rs/invoices/InvoiceIndex";
+import InvoiceCreate from "./pages/rs/invoices/InvoiceCreate";
 
 function App() {
   return (
@@ -117,7 +118,7 @@ function App() {
                   element={<DataLayout title="Invoices" titleVariant="h5" />}
                 >
                   <Route path="" element={<InvoiceIndex />} />
-                  <Route path="create" element={<DeliveryCrate />} />
+                  <Route path="create" element={<InvoiceCreate />} />
                   <Route path="edit/:id" element={<DeliveryTypeEdit />} />
                 </Route>
               </Route>
