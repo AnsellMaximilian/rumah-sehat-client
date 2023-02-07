@@ -15,13 +15,22 @@ import TableBody from "@mui/material/TableBody";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import CloseIcon from "@mui/icons-material/Close";
+import Cancel from "@mui/icons-material/Cancel";
 
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import http from "../../../http-common";
 import moment from "moment";
-import { Button } from "@mui/material";
+import {
+  Button,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  IconButton,
+} from "@mui/material";
+import { getSubtotal } from "../../../helpers/rs";
+import NumericFormatRp from "../../../components/NumericFormatRp";
 
 export default function InvoiceCreate() {
   // Invoice details
@@ -31,7 +40,8 @@ export default function InvoiceCreate() {
 
   // Deliveries
   /*
-    {
+    {   
+        key: string,
         mode: 'supplier' | 'own',
         supplierDelieryData: {
             supplier: SupplierId,
@@ -45,9 +55,11 @@ export default function InvoiceCreate() {
             DeliveryTypeId: DeliveryTypeId
         },
         deliveryDetails: Array<{
+            key: string,
             qty: number,
             price: number,
-            product: Product
+            product: Product,
+            makePurchase: bool
         }>
 
     }
@@ -119,6 +131,7 @@ export default function InvoiceCreate() {
                 price: product.price,
                 qty: 0,
                 product: product,
+                makePurchase: false,
               },
             ],
           };
@@ -157,7 +170,7 @@ export default function InvoiceCreate() {
   };
 
   const handleDeliveryDetailAttrChange =
-    (attr, deliveryKey, detailKey) => (e) => {
+    (attr, deliveryKey, detailKey, customValue) => (e) => {
       setDeliveries((prev) =>
         prev.map((delivery) => {
           if (delivery.key === deliveryKey)
@@ -167,7 +180,8 @@ export default function InvoiceCreate() {
                 if (detail.key === detailKey)
                   return {
                     ...detail,
-                    [attr]: e.target.value,
+                    [attr]:
+                      customValue !== undefined ? customValue : e.target.value,
                   };
                 return detail;
               }),
@@ -177,6 +191,22 @@ export default function InvoiceCreate() {
         })
       );
     };
+
+  const handleRemoveDeliveryDetail = (deliveryKey, detailKey) => {
+    setDeliveries((prev) =>
+      prev.map((delivery) => {
+        if (delivery.key === deliveryKey)
+          return {
+            ...delivery,
+            deliveryDetails: delivery.deliveryDetails.filter(
+              (detail) => detail.key !== detailKey
+            ),
+          };
+
+        return delivery;
+      })
+    );
+  };
 
   return selectedCustomerId &&
     deliveryTypes.length > 0 &&
@@ -406,7 +436,35 @@ export default function InvoiceCreate() {
                             }}
                           >
                             <TableCell component="th" scope="row">
-                              {detail.product.name}
+                              <Box display="flex" gap={2}>
+                                <IconButton
+                                  onClick={() =>
+                                    handleRemoveDeliveryDetail(
+                                      delivery.key,
+                                      detail.key
+                                    )
+                                  }
+                                >
+                                  <Cancel color="error" />
+                                </IconButton>
+                                <FormGroup>
+                                  <FormControlLabel
+                                    control={
+                                      <Checkbox
+                                        size="small"
+                                        checked={detail.makePurchase}
+                                        onChange={handleDeliveryDetailAttrChange(
+                                          "makePurchase",
+                                          delivery.key,
+                                          detail.key,
+                                          !detail.makePurchase
+                                        )}
+                                      />
+                                    }
+                                    label="Make Purchase"
+                                  />
+                                </FormGroup>
+                              </Box>
                             </TableCell>
                             <TableCell align="left">
                               <FormControl margin="none" size="small">
@@ -450,7 +508,7 @@ export default function InvoiceCreate() {
                               <TextField
                                 size="small"
                                 margin="none"
-                                sx={{ width: 75 }}
+                                sx={{ width: 125 }}
                                 type="number"
                                 value={detail.qty}
                                 onChange={handleDeliveryDetailAttrChange(
@@ -458,13 +516,64 @@ export default function InvoiceCreate() {
                                   delivery.key,
                                   detail.key
                                 )}
+                                onFocus={(e) => e.target.select()}
                               />
                             </TableCell>
                             <TableCell align="right">
-                              {detail.price * detail.qty}
+                              <NumericFormatRp
+                                value={detail.price * detail.qty}
+                              />
                             </TableCell>
                           </TableRow>
                         ))}
+                        <TableRow>
+                          <TableCell
+                            colSpan={5}
+                            align="right"
+                            component="th"
+                            sx={{ fontWeight: "500" }}
+                          >
+                            Subtotal
+                          </TableCell>
+                          <TableCell align="right">
+                            <NumericFormatRp
+                              value={getSubtotal(delivery.deliveryDetails)}
+                            />
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell
+                            colSpan={5}
+                            align="right"
+                            component="th"
+                            sx={{ fontWeight: "500" }}
+                          >
+                            Delivery Cost
+                          </TableCell>
+                          <TableCell align="right">
+                            <NumericFormatRp
+                              value={parseInt(delivery.deliveryData.cost)}
+                            />
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell
+                            colSpan={5}
+                            align="right"
+                            component="th"
+                            sx={{ fontWeight: "500" }}
+                          >
+                            Total
+                          </TableCell>
+                          <TableCell align="right">
+                            <NumericFormatRp
+                              value={
+                                getSubtotal(delivery.deliveryDetails) +
+                                parseInt(delivery.deliveryData.cost)
+                              }
+                            />
+                          </TableCell>
+                        </TableRow>
                       </TableBody>
                     </Table>
                   </TableContainer>
