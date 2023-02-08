@@ -213,6 +213,11 @@ export default function InvoiceCreate() {
     );
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(deliveries);
+  };
+
   return selectedCustomerId &&
     deliveryTypes.length > 0 &&
     products.length > 0 &&
@@ -641,6 +646,11 @@ export default function InvoiceCreate() {
             );
           })}
         </Box>
+      </Box>
+      <Box marginY={2}>
+        <Button variant="contained" fullWidth onClick={handleSubmit}>
+          Create
+        </Button>
       </Box>
     </Box>
   ) : (
