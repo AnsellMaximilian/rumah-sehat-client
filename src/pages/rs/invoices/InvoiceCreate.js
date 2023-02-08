@@ -42,10 +42,10 @@ export default function InvoiceCreate() {
     {   
         key: string,
         mode: 'supplier' | 'own',
-        supplierDelieryData: {
-            supplier: SupplierId,
+        supplierDeliveryData: {
+            SupplierId: SupplierId,
             cost: number,
-            data: string
+            date: string
         } | null,
         deliveryData: {
             date: string,
@@ -67,6 +67,7 @@ export default function InvoiceCreate() {
 
   // Select values
   const [customers, setCustomers] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
   const [products, setProducts] = useState([]);
   const [deliveryTypes, setDeliveryTypes] = useState([]);
 
@@ -74,6 +75,7 @@ export default function InvoiceCreate() {
     (async () => {
       setCustomers((await http.get("/customers")).data.data);
       setProducts((await http.get("/rs/products")).data.data);
+      setSuppliers((await http.get("/rs/suppliers")).data.data);
       setDeliveryTypes((await http.get("/rs/delivery-types")).data.data);
     })();
   }, []);
@@ -91,6 +93,10 @@ export default function InvoiceCreate() {
       {
         key: uuidv4(),
         mode: "own",
+        supplierDeliveryData: {
+          SupplierId: suppliers[0].id,
+          cost: 0,
+        },
         deliveryData: {
           date: moment().format("yyyy-MM-DD"),
           cost: 0,
@@ -209,7 +215,8 @@ export default function InvoiceCreate() {
 
   return selectedCustomerId &&
     deliveryTypes.length > 0 &&
-    products.length > 0 ? (
+    products.length > 0 &&
+    suppliers.length > 0 ? (
     <Box>
       <Box
         display="flex"
@@ -310,7 +317,7 @@ export default function InvoiceCreate() {
                     <CloseIcon />
                   </Button>
                 </Box>
-                <Box marginTop={2} marginX={1}>
+                <Box marginTop={2} marginX={1} display="flex" gap={2}>
                   <Box display="flex" gap={2}>
                     <Box display="flex" flexDirection="column" gap={2}>
                       <TextField
@@ -397,6 +404,57 @@ export default function InvoiceCreate() {
                       />
                     </Box>
                   </Box>
+
+                  {delivery.mode === "supplier" && (
+                    <Box
+                      display="flex"
+                      flexDirection="column"
+                      gap={2}
+                      marginLeft="auto"
+                    >
+                      <FormControl margin="none">
+                        <InputLabel id="demo-simple-select-label">
+                          Supplier
+                        </InputLabel>
+                        <Select
+                          size="small"
+                          label="Supplier"
+                          value={delivery.supplierDeliveryData.SupplierId}
+                          onChange={(e) =>
+                            handleChangeDelivery(delivery.key, {
+                              ...delivery,
+                              supplierDeliveryData: {
+                                ...delivery.supplierDeliveryData,
+                                SupplierId: e.target.value,
+                              },
+                            })
+                          }
+                        >
+                          {suppliers.map((supplier) => (
+                            <MenuItem value={supplier.id} key={supplier.id}>
+                              {supplier.name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      <TextField
+                        size="small"
+                        margin="none"
+                        label="Supplier Delivery Cost"
+                        type="number"
+                        value={delivery.supplierDeliveryData.cost}
+                        onChange={(e) =>
+                          handleChangeDelivery(delivery.key, {
+                            ...delivery,
+                            supplierDeliveryData: {
+                              ...delivery.supplierDeliveryData,
+                              cost: e.target.value,
+                            },
+                          })
+                        }
+                      />
+                    </Box>
+                  )}
                 </Box>
                 <Box marginTop={2}>
                   <Box display="flex" gap={1} marginRight={1}>
@@ -446,23 +504,25 @@ export default function InvoiceCreate() {
                                 >
                                   <Cancel color="error" />
                                 </IconButton>
-                                <FormGroup>
-                                  <FormControlLabel
-                                    control={
-                                      <Checkbox
-                                        size="small"
-                                        checked={detail.makePurchase}
-                                        onChange={handleDeliveryDetailAttrChange(
-                                          "makePurchase",
-                                          delivery.key,
-                                          detail.key,
-                                          !detail.makePurchase
-                                        )}
-                                      />
-                                    }
-                                    label="Make Purchase"
-                                  />
-                                </FormGroup>
+                                {delivery.mode === "own" && (
+                                  <FormGroup>
+                                    <FormControlLabel
+                                      control={
+                                        <Checkbox
+                                          size="small"
+                                          checked={detail.makePurchase}
+                                          onChange={handleDeliveryDetailAttrChange(
+                                            "makePurchase",
+                                            delivery.key,
+                                            detail.key,
+                                            !detail.makePurchase
+                                          )}
+                                        />
+                                      }
+                                      label="Make Purchase"
+                                    />
+                                  </FormGroup>
+                                )}
                               </Box>
                             </TableCell>
                             <TableCell align="left">
