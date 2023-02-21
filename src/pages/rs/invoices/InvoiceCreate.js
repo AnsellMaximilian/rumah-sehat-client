@@ -30,6 +30,8 @@ import {
 } from "@mui/material";
 import { getSubtotal } from "../../../helpers/rs";
 import NumericFormatRp from "../../../components/NumericFormatRp";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function InvoiceCreate() {
   // Invoice details
@@ -71,11 +73,13 @@ export default function InvoiceCreate() {
   const [products, setProducts] = useState([]);
   const [deliveryTypes, setDeliveryTypes] = useState([]);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     (async () => {
       setCustomers((await http.get("/customers")).data.data);
       setProducts((await http.get("/rs/products")).data.data);
-      setSuppliers((await http.get("/rs/suppliers")).data.data);
+      setSuppliers((await http.get("/rs/suppliers/active")).data.data);
       setDeliveryTypes((await http.get("/rs/delivery-types")).data.data);
     })();
   }, []);
@@ -123,7 +127,12 @@ export default function InvoiceCreate() {
   };
 
   const handleAddDeliveryRow = (key) => {
-    const product = products[0];
+    const product = products.filter(
+      (product) =>
+        product.SupplierId ===
+        deliveries.find((delivery) => delivery.key === key).supplierDeliveryData
+          .SupplierId
+    )[0];
     setDeliveries((prev) =>
       prev.map((delivery) => {
         if (delivery.key === key)
@@ -213,9 +222,45 @@ export default function InvoiceCreate() {
     );
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(deliveries);
+    try {
+      const body = {
+        date: moment(date).format("YYYY-MM-DD"),
+        CustomerId: selectedCustomerId,
+        note: invoiceNote,
+        deliveries: deliveries.map((delivery) => {
+          const { mode, deliveryData, supplierDeliveryData, deliveryDetails } =
+            delivery;
+          return {
+            mode,
+            deliveryData,
+            supplierDeliveryData: {
+              ...supplierDeliveryData,
+              date: moment(supplierDeliveryData.date).format("YYYY-MM-DD"),
+            },
+            deliveryDetails: deliveryDetails.map((detail) => {
+              const {
+                qty,
+                price,
+                product: { id, cost },
+              } = detail;
+              return {
+                qty,
+                price,
+                cost,
+                ProductId: id,
+              };
+            }),
+          };
+        }),
+      };
+      await http.post("/rs/invoices", body);
+      toast.success("Created invoice.");
+      navigate("/rs/invoices");
+    } catch ({ response: { data: error } }) {
+      toast.error(error);
+    }
   };
 
   return selectedCustomerId &&
@@ -299,12 +344,15 @@ export default function InvoiceCreate() {
                   <ToggleButtonGroup
                     value={delivery.mode}
                     exclusive
-                    onChange={(e, newMode) =>
+                    onChange={(e, newMode) => {
+                      const mode = newMode || "own";
                       handleChangeDelivery(delivery.key, {
                         ...delivery,
-                        mode: newMode || "own",
-                      })
-                    }
+                        mode: mode,
+                        deliveryDetails:
+                          mode === "own" ? delivery.deliveryDetails : [],
+                      });
+                    }}
                     aria-label="text alignment"
                   >
                     <ToggleButton value="own" aria-label="left aligned">
@@ -428,6 +476,7 @@ export default function InvoiceCreate() {
                           onChange={(e) =>
                             handleChangeDelivery(delivery.key, {
                               ...delivery,
+                              deliveryDetails: [],
                               supplierDeliveryData: {
                                 ...delivery.supplierDeliveryData,
                                 SupplierId: e.target.value,
@@ -542,7 +591,15 @@ export default function InvoiceCreate() {
                                     )
                                   }
                                 >
-                                  {products.map((product) => (
+                                  {(delivery.mode === "own"
+                                    ? products
+                                    : products.filter(
+                                        (product) =>
+                                          product.SupplierId ===
+                                          delivery.supplierDeliveryData
+                                            .SupplierId
+                                      )
+                                  ).map((product) => (
                                     <MenuItem
                                       value={product.id}
                                       key={product.id}
