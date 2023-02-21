@@ -10,6 +10,7 @@ import AdjustIcon from "@mui/icons-material/AutoFixNormal";
 import ProductIcon from "@mui/icons-material/Widgets";
 import CategoryIcon from "@mui/icons-material/ManageSearch";
 import SupplierIcon from "@mui/icons-material/Inventory";
+import ShoppingCart from "@mui/icons-material/ShoppingCart";
 
 import SanitizerIcon from "@mui/icons-material/Sanitizer";
 import React, { useState } from "react";
@@ -76,6 +77,12 @@ const Sidebar = () => {
             to="/rs/suppliers"
             text="Suppliers"
             icon={<SupplierIcon />}
+            sx={{ pl: 4 }}
+          />
+          <SidebarLink
+            to="/rs/purchases"
+            text="Purchases"
+            icon={<ShoppingCart />}
             sx={{ pl: 4 }}
           />
         </List>
