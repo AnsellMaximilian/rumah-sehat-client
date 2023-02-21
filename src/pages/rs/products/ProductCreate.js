@@ -33,10 +33,11 @@ export default function ProductCreate() {
         await http.post("/rs/products", {
           name: d.name,
           price: d.price,
-          resellerPrice: d.resellerPrice,
+          resellerPrice: d.resellerPrice ? d.resellerPrice : null,
           cost: d.cost,
           SupplierId: d.SupplierId,
           ProductCategoryId: d.ProductCategoryId,
+          unit: d.unit ? d.unit : null,
         });
 
         navigate("/rs/products");
@@ -91,6 +92,13 @@ export default function ProductCreate() {
           label="Name"
           autoFocus
           {...register("name")}
+        />
+
+        <TextField
+          margin="normal"
+          fullWidth
+          label="Unit"
+          {...register("unit")}
         />
         <TextField
           margin="normal"

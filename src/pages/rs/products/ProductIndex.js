@@ -35,7 +35,8 @@ const ProductIndex = () => {
 
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
-    { field: "name", headerName: "Name", width: 130 },
+    { field: "name", headerName: "Name", width: 200 },
+    { field: "unit", headerName: "Unit", width: 130 },
     { field: "category", headerName: "Category", width: 130 },
     { field: "supplier", headerName: "Supplier", width: 130 },
     { field: "price", headerName: "Price", width: 130 },
@@ -87,6 +88,7 @@ const ProductIndex = () => {
             supplier: product.Supplier.name,
             resellerPrice: product.resellerPrice,
             cost: product.cost,
+            unit: product.unit,
           }))}
           columns={columns}
         />

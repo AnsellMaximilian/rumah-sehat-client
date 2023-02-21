@@ -31,10 +31,11 @@ export default function ProductEdit() {
         await http.patch(`/rs/products/${id}`, {
           name: d.name,
           price: d.price,
-          resellerPrice: d.resellerPrice,
+          resellerPrice: d.resellerPrice ? d.resellerPrice : null,
           cost: d.cost,
           SupplierId: d.SupplierId,
           ProductCategoryId: d.ProductCategoryId,
+          unit: d.unit ? d.unit : null,
         });
         navigate("/rs/products");
       } catch ({ response: { data: error } }) {
@@ -60,6 +61,7 @@ export default function ProductEdit() {
         price: product.price,
         resellerPrice: product.resellerPrice,
         cost: product.cost,
+        unit: product.unit,
         SupplierId: product.SupplierId,
         ProductCategoryId: product.ProductCategoryId,
       });
@@ -83,6 +85,12 @@ export default function ProductEdit() {
           label="Name"
           autoFocus
           {...register("name")}
+        />
+        <TextField
+          margin="normal"
+          fullWidth
+          label="Unit"
+          {...register("unit")}
         />
         <FormControl fullWidth margin="normal">
           <InputLabel id="demo-simple-select-label">Category</InputLabel>
