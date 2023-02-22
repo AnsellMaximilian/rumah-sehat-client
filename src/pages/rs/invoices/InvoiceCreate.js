@@ -31,13 +31,15 @@ import {
 import { getSubtotal } from "../../../helpers/rs";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-export default function InvoiceCreate() {
+export default function InvoiceCreate({ edit }) {
   // Invoice details
   const [selectedCustomerId, setSelectedCustomerId] = useState(null);
   const [date, setDate] = useState(moment().format("yyyy-MM-DD"));
   const [invoiceNote, setInvoiceNote] = useState(undefined);
+
+  const { id } = useParams();
 
   // Deliveries
   /*
@@ -88,8 +90,45 @@ export default function InvoiceCreate() {
   useEffect(() => {
     (async () => {
       if (customers.length > 0) setSelectedCustomerId(customers[0].id);
+      if (edit) {
+        if (products.length > 0) {
+          const invoice = (await http.get(`/rs/invoices/${id}`)).data.data;
+          setInvoiceNote(invoice.note || "");
+          setDate(invoice.date);
+          setSelectedCustomerId(invoice.CustomerId);
+
+          setDeliveries(
+            invoice.Deliveries.map((delivery) => {
+              return {
+                key: uuidv4(),
+                mode: "own",
+                edit: true,
+                deliveryData: {
+                  date: delivery.date,
+                  cost: delivery.cost,
+                  note: delivery.note || "",
+                  DeliveryTypeId: delivery.DeliveryTypeId,
+                  CustomerId: delivery.CustomerId,
+                },
+                deliveryDetails: delivery.DeliveryDetails.map((detail) => {
+                  const product = products.find(
+                    (product) => product.id === detail.ProductId
+                  );
+                  return {
+                    key: uuidv4(),
+                    qty: detail.qty,
+                    price: detail.price,
+                    product: product,
+                    makePurchase: false,
+                  };
+                }),
+              };
+            })
+          );
+        }
+      }
     })();
-  }, [customers]);
+  }, [customers, edit, id, products]);
 
   // Deliveries
   const handleAddDelivery = () => {
@@ -129,12 +168,15 @@ export default function InvoiceCreate() {
   };
 
   const handleAddDeliveryRow = (key) => {
-    const product = products.filter(
-      (product) =>
-        product.SupplierId ===
-        deliveries.find((delivery) => delivery.key === key).supplierDeliveryData
-          .SupplierId
-    )[0];
+    const delivery = deliveries.find((del) => del.key === key);
+    const product = !delivery.edit
+      ? products.filter(
+          (product) =>
+            product.SupplierId ===
+            deliveries.find((delivery) => delivery.key === key)
+              .supplierDeliveryData.SupplierId
+        )[0]
+      : products[0];
     setDeliveries((prev) =>
       prev.map((delivery) => {
         if (delivery.key === key)
@@ -239,10 +281,12 @@ export default function InvoiceCreate() {
           return {
             mode,
             deliveryData,
-            supplierDeliveryData: {
-              ...supplierDeliveryData,
-              date: moment(supplierDeliveryData.date).format("YYYY-MM-DD"),
-            },
+            supplierDeliveryData: !delivery.edit
+              ? {
+                  ...supplierDeliveryData,
+                  date: moment(supplierDeliveryData.date).format("YYYY-MM-DD"),
+                }
+              : {},
             deliveryDetails: deliveryDetails.map((detail) => {
               const {
                 qty,
@@ -263,9 +307,16 @@ export default function InvoiceCreate() {
           };
         }),
       };
-      await http.post("/rs/invoices", body);
-      toast.success("Created invoice.");
-      navigate("/rs/invoices");
+
+      if (!edit) {
+        await http.post("/rs/invoices", body);
+        toast.success("Created invoice.");
+        navigate("/rs/invoices");
+      } else {
+        await http.patch(`/rs/invoices/${id}`, body);
+        toast.success("Updated invoice.");
+        navigate("/rs/invoices");
+      }
     } catch ({ response: { data: error } }) {
       toast.error(error);
     }
@@ -366,9 +417,11 @@ export default function InvoiceCreate() {
                     <ToggleButton value="own" aria-label="left aligned">
                       Own Delivery
                     </ToggleButton>
-                    <ToggleButton value="supplier" aria-label="centered">
-                      Supplier Delivery
-                    </ToggleButton>
+                    {!delivery.edit && (
+                      <ToggleButton value="supplier" aria-label="centered">
+                        Supplier Delivery
+                      </ToggleButton>
+                    )}
                   </ToggleButtonGroup>
                   <Button
                     variant="contained"
@@ -592,7 +645,7 @@ export default function InvoiceCreate() {
                                 >
                                   <Cancel color="error" />
                                 </IconButton>
-                                {delivery.mode === "own" && (
+                                {delivery.mode === "own" && !delivery.edit && (
                                   <FormGroup>
                                     <FormControlLabel
                                       control={
