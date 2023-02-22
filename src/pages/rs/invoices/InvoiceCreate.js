@@ -385,7 +385,7 @@ export default function InvoiceCreate() {
                             ...delivery,
                             deliveryData: {
                               ...delivery.deliveryData,
-                              note: e.target.value,
+                              date: e.target.value,
                             },
                           })
                         }
@@ -400,6 +400,7 @@ export default function InvoiceCreate() {
                         multiline
                         margin="none"
                         label="Invoice Note"
+                        rows={3.45}
                         value={delivery.deliveryData.note}
                         onChange={(e) =>
                           handleChangeDelivery(delivery.key, {
