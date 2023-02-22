@@ -399,7 +399,7 @@ export default function InvoiceCreate() {
                         size="small"
                         multiline
                         margin="none"
-                        label="Invoice Note"
+                        label="Delivery Note"
                         rows={3.45}
                         value={delivery.deliveryData.note}
                         onChange={(e) =>
