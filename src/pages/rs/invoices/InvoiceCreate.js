@@ -193,12 +193,14 @@ export default function InvoiceCreate() {
             return {
               ...delivery,
               deliveryDetails: delivery.deliveryDetails.map((detail) => {
-                if (detail.key === detailKey)
+                if (detail.key === detailKey) {
                   return {
                     ...detail,
                     [attr]:
                       customValue !== undefined ? customValue : e.target.value,
                   };
+                }
+
                 return detail;
               }),
             };
@@ -246,9 +248,13 @@ export default function InvoiceCreate() {
                 qty,
                 price,
                 product: { id, cost },
+                makePurchase,
+                product,
               } = detail;
               return {
                 qty,
+                makePurchase,
+                product,
                 price,
                 cost,
                 ProductId: id,
