@@ -53,7 +53,8 @@ export default function InvoiceCreate() {
             date: string,
             cost: number,
             note: string,
-            DeliveryTypeId: DeliveryTypeId
+            DeliveryTypeId: DeliveryTypeId,
+            CustomerId: CustomerId
         },
         deliveryDetails: Array<{
             key: string,
@@ -106,6 +107,7 @@ export default function InvoiceCreate() {
           cost: 0,
           note: undefined,
           DeliveryTypeId: deliveryTypes[0].id,
+          CustomerId: selectedCustomerId,
         },
         deliveryDetails: [],
       },
@@ -435,6 +437,31 @@ export default function InvoiceCreate() {
                               key={deliveryType.id}
                             >
                               {deliveryType.name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      <FormControl margin="none">
+                        <InputLabel id="demo-simple-select-label">
+                          Recipient
+                        </InputLabel>
+                        <Select
+                          size="small"
+                          label="Recipient"
+                          value={delivery.deliveryData.CustomerId}
+                          onChange={(e) =>
+                            handleChangeDelivery(delivery.key, {
+                              ...delivery,
+                              deliveryData: {
+                                ...delivery.deliveryData,
+                                CustomerId: e.target.value,
+                              },
+                            })
+                          }
+                        >
+                          {customers.map((customer) => (
+                            <MenuItem value={customer.id} key={customer.id}>
+                              {customer.fullName}
                             </MenuItem>
                           ))}
                         </Select>
