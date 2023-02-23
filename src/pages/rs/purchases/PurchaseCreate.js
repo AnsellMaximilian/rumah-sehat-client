@@ -82,7 +82,6 @@ export default function PurchaseCreate({ edit }) {
                 key: uuidv4(),
                 price: detail.price,
                 qty: detail.qty,
-                ProductId: detail.ProductId,
                 product: product,
                 search: "",
               };
@@ -125,24 +124,6 @@ export default function PurchaseCreate({ edit }) {
     });
   };
 
-  const handleChangeProduct = (detailKey) => (e) => {
-    const product = getSupplierProducts().find(
-      (product) => product.id === e.target.value
-    );
-    setPurchaseDetails((prev) => {
-      return prev.map((detail) => {
-        if (detail.key === detailKey)
-          return {
-            ...detail,
-            product: product,
-            ProductId: e.target.value,
-            price: product.cost,
-          };
-        return detail;
-      });
-    });
-  };
-
   const handleRemoveDetail = (detailKey) => () =>
     setPurchaseDetails((prev) =>
       prev.filter((detail) => detail.key !== detailKey)
@@ -156,15 +137,13 @@ export default function PurchaseCreate({ edit }) {
         SupplierId: selectedSupplierId,
         note: note,
         purchaseDetails: purchaseDetails.map((detail) => {
-          const {
-            qty,
-            price,
-            product: { id },
-          } = detail;
+          const { qty, price, product } = detail;
+
+          if (product === null) throw new Error("Select a product");
           return {
             qty,
             price,
-            ProductId: id,
+            ProductId: product.id,
           };
         }),
         date: moment(date).format("YYYY-MM-DD"),
@@ -178,8 +157,10 @@ export default function PurchaseCreate({ edit }) {
         toast.success("Updated purchase.");
         navigate(`/rs/purchases/${id}`);
       }
-    } catch ({ response: { data: error } }) {
-      toast.error(error);
+    } catch (error) {
+      const errorValue = error?.response?.data?.error;
+      const errorMsg = errorValue ? errorValue : error.message;
+      toast.error(errorMsg);
     }
   };
 
@@ -281,7 +262,51 @@ export default function PurchaseCreate({ edit }) {
                     </Box>
                   </TableCell>
                   <TableCell align="left">
-                    <FormControl margin="none" size="small">
+                    <Autocomplete
+                      value={detail.product}
+                      onInputChange={(e, newValue) => {
+                        setPurchaseDetails((prev) => {
+                          return prev.map((currentDetail) => {
+                            if (currentDetail.key === detail.key) {
+                              return {
+                                ...detail,
+                                search: newValue,
+                              };
+                            }
+                            return currentDetail;
+                          });
+                        });
+                      }}
+                      onChange={(event, newValue) => {
+                        setPurchaseDetails((prev) => {
+                          return prev.map((currentDetail) => {
+                            if (currentDetail.key === detail.key) {
+                              return newValue
+                                ? {
+                                    ...detail,
+                                    product: newValue,
+                                    price: newValue.cost,
+                                  }
+                                : {
+                                    ...detail,
+                                    product: newValue,
+                                  };
+                            }
+                            return currentDetail;
+                          });
+                        });
+                      }}
+                      isOptionEqualToValue={(option, value) =>
+                        option.id === value.id
+                      }
+                      getOptionLabel={(option) => option.name}
+                      options={getSupplierProducts()}
+                      sx={{ width: 300 }}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Product" />
+                      )}
+                    />
+                    {/* <FormControl margin="none" size="small">
                       <Select
                         value={detail.product.id}
                         onChange={handleChangeProduct(detail.key)}
@@ -292,7 +317,7 @@ export default function PurchaseCreate({ edit }) {
                           </MenuItem>
                         ))}
                       </Select>
-                    </FormControl>
+                    </FormControl> */}
                   </TableCell>
 
                   <TableCell align="right">
