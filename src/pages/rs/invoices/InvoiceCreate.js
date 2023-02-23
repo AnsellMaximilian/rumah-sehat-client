@@ -36,6 +36,7 @@ import { useNavigate, useParams } from "react-router-dom";
 export default function InvoiceCreate({ edit }) {
   // Invoice details
   const [selectedCustomerId, setSelectedCustomerId] = useState(null);
+  const [status, setStatus] = useState("draft");
   const [date, setDate] = useState(moment().format("yyyy-MM-DD"));
   const [invoiceNote, setInvoiceNote] = useState(undefined);
 
@@ -96,6 +97,7 @@ export default function InvoiceCreate({ edit }) {
           setInvoiceNote(invoice.note || "");
           setDate(invoice.date);
           setSelectedCustomerId(invoice.CustomerId);
+          setStatus(invoice.status);
 
           setDeliveries(
             invoice.Deliveries.map((delivery) => {
@@ -274,6 +276,7 @@ export default function InvoiceCreate({ edit }) {
       const body = {
         date: moment(date).format("YYYY-MM-DD"),
         CustomerId: selectedCustomerId,
+        status,
         note: invoiceNote,
         deliveries: deliveries.map((delivery) => {
           const { mode, deliveryData, supplierDeliveryData, deliveryDetails } =
@@ -358,7 +361,19 @@ export default function InvoiceCreate({ edit }) {
             </Select>
           </FormControl>
         </Box>
-        <Box>
+        <Box display="flex" gap={2}>
+          <FormControl margin="none">
+            <InputLabel id="demo-simple-select-label">Status</InputLabel>
+            <Select
+              label="Status"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+            >
+              <MenuItem value="draft">Draft</MenuItem>
+              <MenuItem value="pending">Pending</MenuItem>
+              <MenuItem value="paid">Paid</MenuItem>
+            </Select>
+          </FormControl>
           <TextField
             multiline
             margin="none"

@@ -46,6 +46,7 @@ const InvoiceIndex = () => {
       width: 100,
       renderCell: (params) => <NumericFormatRp value={params.row.totalPrice} />,
     },
+    { field: "status", headerName: "Status", width: 65 },
 
     {
       field: "actions",
@@ -98,6 +99,7 @@ const InvoiceIndex = () => {
             date: invoice.date,
             customer: invoice.Customer.fullName,
             totalPrice: invoice.totalPrice,
+            status: invoice.status,
           }))}
           columns={columns}
         />
