@@ -207,32 +207,6 @@ export default function InvoiceCreate({ edit }) {
   };
 
   // Delivery details
-  const handleDeliveryDetailProductChange = (
-    deliveryKey,
-    detailKey,
-    productId
-  ) => {
-    const product = products.find((product) => product.id === productId);
-    setDeliveries((prev) =>
-      prev.map((delivery) => {
-        if (delivery.key === deliveryKey)
-          return {
-            ...delivery,
-            deliveryDetails: delivery.deliveryDetails.map((detail) => {
-              if (detail.key === detailKey)
-                return {
-                  ...detail,
-                  price: product.price,
-                  product: product,
-                };
-              return detail;
-            }),
-          };
-
-        return delivery;
-      })
-    );
-  };
 
   const handleDeliveryDetailAttrChange =
     (attr, deliveryKey, detailKey, customValue) => (e) => {
