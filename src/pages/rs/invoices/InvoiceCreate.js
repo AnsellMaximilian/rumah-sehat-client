@@ -28,6 +28,7 @@ import {
   FormControlLabel,
   FormGroup,
   IconButton,
+  Typography,
 } from "@mui/material";
 import { getSubtotal } from "../../../helpers/rs";
 import NumericFormatRp from "../../../components/NumericFormatRp";
@@ -416,29 +417,33 @@ export default function InvoiceCreate({ edit }) {
                   alignItems="flex-start"
                   justifyContent="space-between"
                 >
-                  <ToggleButtonGroup
-                    value={delivery.mode}
-                    exclusive
-                    onChange={(e, newMode) => {
-                      const mode = newMode || "own";
-                      handleChangeDelivery(delivery.key, {
-                        ...delivery,
-                        mode: mode,
-                        deliveryDetails:
-                          mode === "own" ? delivery.deliveryDetails : [],
-                      });
-                    }}
-                    aria-label="text alignment"
-                  >
-                    <ToggleButton value="own" aria-label="left aligned">
-                      Own Delivery
-                    </ToggleButton>
-                    {!delivery.edit && (
+                  {!delivery.edit ? (
+                    <ToggleButtonGroup
+                      value={delivery.mode}
+                      exclusive
+                      onChange={(e, newMode) => {
+                        const mode = newMode || "own";
+                        handleChangeDelivery(delivery.key, {
+                          ...delivery,
+                          mode: mode,
+                          deliveryDetails:
+                            mode === "own" ? delivery.deliveryDetails : [],
+                        });
+                      }}
+                      aria-label="text alignment"
+                    >
+                      <ToggleButton value="own" aria-label="left aligned">
+                        Own Delivery
+                      </ToggleButton>
                       <ToggleButton value="supplier" aria-label="centered">
                         Supplier Delivery
                       </ToggleButton>
-                    )}
-                  </ToggleButtonGroup>
+                    </ToggleButtonGroup>
+                  ) : (
+                    <Typography padding={2} fontWeight="bold">
+                      Previously Created
+                    </Typography>
+                  )}
                   <Button
                     variant="contained"
                     color="error"
@@ -732,35 +737,6 @@ export default function InvoiceCreate({ edit }) {
                                   />
                                 )}
                               />
-                              {/* <FormControl margin="none" size="small">
-                                <Select
-                                  value={detail.product.id}
-                                  onChange={(e) =>
-                                    handleDeliveryDetailProductChange(
-                                      delivery.key,
-                                      detail.key,
-                                      e.target.value
-                                    )
-                                  }
-                                >
-                                  {(delivery.mode === "own"
-                                    ? products
-                                    : products.filter(
-                                        (product) =>
-                                          product.SupplierId ===
-                                          delivery.supplierDeliveryData
-                                            .SupplierId
-                                      )
-                                  ).map((product) => (
-                                    <MenuItem
-                                      value={product.id}
-                                      key={product.id}
-                                    >
-                                      {product.name}
-                                    </MenuItem>
-                                  ))}
-                                </Select>
-                              </FormControl> */}
                             </TableCell>
 
                             <TableCell align="right">
