@@ -15,6 +15,7 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import CloseIcon from "@mui/icons-material/Close";
 import Cancel from "@mui/icons-material/Cancel";
+import Autocomplete from "@mui/material/Autocomplete";
 
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -121,6 +122,8 @@ export default function InvoiceCreate({ edit }) {
                     qty: detail.qty,
                     price: detail.price,
                     product: product,
+                    search: "",
+
                     makePurchase: false,
                   };
                 }),
@@ -192,6 +195,7 @@ export default function InvoiceCreate({ edit }) {
                 qty: 0,
                 product: product,
                 makePurchase: false,
+                search: "",
               },
             ],
           };
@@ -291,20 +295,15 @@ export default function InvoiceCreate({ edit }) {
                 }
               : {},
             deliveryDetails: deliveryDetails.map((detail) => {
-              const {
-                qty,
-                price,
-                product: { id, cost },
-                makePurchase,
-                product,
-              } = detail;
+              const { qty, price, makePurchase, product } = detail;
+              if (product === null) throw new Error("Please select a product.");
               return {
                 qty,
                 makePurchase,
                 product,
                 price,
-                cost,
-                ProductId: id,
+                cost: product.cost,
+                ProductId: product.id,
               };
             }),
           };
@@ -320,8 +319,10 @@ export default function InvoiceCreate({ edit }) {
         toast.success("Updated invoice.");
         navigate("/rs/invoices");
       }
-    } catch ({ response: { data: error } }) {
-      toast.error(error);
+    } catch (error) {
+      const errorValue = error?.response?.data?.error;
+      const errorMsg = errorValue ? errorValue : error.message;
+      toast.error(errorMsg);
     }
   };
 
@@ -682,7 +683,56 @@ export default function InvoiceCreate({ edit }) {
                               </Box>
                             </TableCell>
                             <TableCell align="left">
-                              <FormControl margin="none" size="small">
+                              <Autocomplete
+                                value={detail.product}
+                                onInputChange={(e, newValue) => {
+                                  handleDeliveryDetailAttrChange(
+                                    "search",
+                                    delivery.key,
+                                    detail.key,
+                                    newValue
+                                  )(e);
+                                }}
+                                onChange={(e, newValue) => {
+                                  handleDeliveryDetailAttrChange(
+                                    "product",
+                                    delivery.key,
+                                    detail.key,
+                                    newValue
+                                  )(e);
+
+                                  if (newValue)
+                                    handleDeliveryDetailAttrChange(
+                                      "price",
+                                      delivery.key,
+                                      detail.key,
+                                      newValue.price
+                                    )(e);
+                                }}
+                                isOptionEqualToValue={(option, value) =>
+                                  option.id === value.id
+                                }
+                                getOptionLabel={(option) => option.name}
+                                options={
+                                  delivery.mode === "own"
+                                    ? products
+                                    : products.filter(
+                                        (product) =>
+                                          product.SupplierId ===
+                                          delivery.supplierDeliveryData
+                                            .SupplierId
+                                      )
+                                }
+                                sx={{ width: 300 }}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    size="small"
+                                    sx={{ width: 200 }}
+                                  />
+                                )}
+                              />
+                              {/* <FormControl margin="none" size="small">
                                 <Select
                                   value={detail.product.id}
                                   onChange={(e) =>
@@ -710,7 +760,7 @@ export default function InvoiceCreate({ edit }) {
                                     </MenuItem>
                                   ))}
                                 </Select>
-                              </FormControl>
+                              </FormControl> */}
                             </TableCell>
 
                             <TableCell align="right">
