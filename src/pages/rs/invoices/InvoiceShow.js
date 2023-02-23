@@ -32,7 +32,7 @@ const InvoiceShow = () => {
     <Box>
       <Box display="flex" justifyContent="flex-end" marginBottom={1}>
         <Button
-          href={` http://localhost:1107/dr/invoices/${id}/print`}
+          href={` http://localhost:1107/rs/invoices/${id}/print`}
           target="__blank"
           component="a"
           variant="contained"
