@@ -44,6 +44,9 @@ import DeliveryCrate from "./pages/rs/deliveries/DeliveryCreate";
 import InvoiceIndex from "./pages/rs/invoices/InvoiceIndex";
 import InvoiceCreate from "./pages/rs/invoices/InvoiceCreate";
 import InvoiceShow from "./pages/rs/invoices/InvoiceShow";
+import PurchaseIndex from "./pages/rs/purchases/PurchaseIndex";
+import PurchaseCreate from "./pages/rs/purchases/PurchaseCreate";
+import Test from "./pages/rs/purchases/Test";
 
 function App() {
   return (
@@ -81,9 +84,10 @@ function App() {
                   path="purchases"
                   element={<DataLayout title="Purchases" titleVariant="h5" />}
                 >
-                  {/* <Route path="" element={<SupplierIndex />} /> */}
-                  {/* <Route path="create" element={<SupplierCreate />} /> */}
-                  {/* <Route path="edit/:id" element={<SupplierEdit />} /> */}
+                  <Route path="" element={<PurchaseIndex />} />
+                  <Route path="create" element={<PurchaseCreate />} />
+                  <Route path="bitch" element={<Test />} />
+                  <Route path="edit/:id" element={<PurchaseCreate edit />} />
                 </Route>
                 <Route
                   path="product-categories"
