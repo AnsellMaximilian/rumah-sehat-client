@@ -16,6 +16,7 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import CloseIcon from "@mui/icons-material/Close";
 import Cancel from "@mui/icons-material/Cancel";
 import Autocomplete from "@mui/material/Autocomplete";
+import WarningIcon from "@mui/icons-material/Error";
 
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -28,6 +29,7 @@ import {
   FormControlLabel,
   FormGroup,
   IconButton,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { getSubtotal } from "../../../helpers/rs";
@@ -511,34 +513,42 @@ export default function InvoiceCreate({ edit }) {
                         </Select>
                       </FormControl>
 
-                      <Autocomplete
-                        value={delivery.deliveryData.customer}
-                        onChange={(e, newValue) => {
-                          handleChangeDelivery(delivery.key, {
-                            ...delivery,
-                            deliveryData: {
-                              ...delivery.deliveryData,
-                              customer: newValue,
-                            },
-                          });
-                        }}
-                        isOptionEqualToValue={(option, value) =>
-                          option.id === value.id
-                        }
-                        getOptionLabel={(option) =>
-                          `(#${option.id}) ${option.fullName}`
-                        }
-                        options={customers}
-                        sx={{ width: 300 }}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            size="small"
-                            sx={{ width: 200 }}
-                            label="Recipient"
-                          />
+                      <Box display="flex" gap={1} alignItems="center">
+                        <Autocomplete
+                          value={delivery.deliveryData.customer}
+                          onChange={(e, newValue) => {
+                            handleChangeDelivery(delivery.key, {
+                              ...delivery,
+                              deliveryData: {
+                                ...delivery.deliveryData,
+                                customer: newValue,
+                              },
+                            });
+                          }}
+                          isOptionEqualToValue={(option, value) =>
+                            option.id === value.id
+                          }
+                          getOptionLabel={(option) =>
+                            `(#${option.id}) ${option.fullName}`
+                          }
+                          options={customers}
+                          sx={{ width: 300 }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              size="small"
+                              sx={{ width: 200 }}
+                              label="Recipient"
+                            />
+                          )}
+                        />
+                        {selectedCustomer?.id !==
+                          delivery.deliveryData.customer?.id && (
+                          <Tooltip title="Recipient is different from invoice receiver.">
+                            <WarningIcon color="warning" />
+                          </Tooltip>
                         )}
-                      />
+                      </Box>
 
                       <TextField
                         size="small"
