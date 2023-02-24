@@ -58,7 +58,9 @@ export default function CustomerCreate({ edit }) {
       }
 
       navigate("/customers");
-    } catch (error) {}
+    } catch ({ response: { data: error } }) {
+      toast.error(error);
+    }
   };
   return (
     <Box>
