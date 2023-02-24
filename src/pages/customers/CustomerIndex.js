@@ -45,6 +45,11 @@ export default function CustomerIndex() {
       width: 200,
     },
     {
+      field: "region",
+      headerName: "Region",
+      width: 75,
+    },
+    {
       field: "rsMember",
       headerName: "RS Member",
       width: 100,
@@ -114,6 +119,7 @@ export default function CustomerIndex() {
             fullName: customer.fullName,
             phone: customer.phone,
             address: customer.address,
+            region: customer.Region?.name,
             rsMember: customer.rsMember,
             receiveDrDiscount: customer.receiveDrDiscount,
           }))}

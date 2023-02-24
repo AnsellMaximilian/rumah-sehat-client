@@ -2,8 +2,12 @@ import {
   Box,
   Button,
   Checkbox,
+  FormControl,
   FormControlLabel,
   FormGroup,
+  InputLabel,
+  MenuItem,
+  Select,
   TextField,
   Typography,
 } from "@mui/material";
@@ -20,11 +24,20 @@ export default function CustomerCreate({ edit }) {
   const [address, setAddress] = useState("");
   const [rsMember, setRsMember] = useState(false);
   const [receiveDrDiscount, setReceiveDrDiscount] = useState(false);
+  const [regions, setRegions] = useState([]);
+  const [selectedRegionId, setSelectedRegionId] = useState(null);
 
   const { id } = useParams();
 
   useEffect(() => {
     (async () => {
+      setRegions((await http.get(`/regions`)).data.data);
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      if (regions.length > 0) setSelectedRegionId(regions[0].id);
       if (edit) {
         const customer = (await http.get(`/customers/${id}`)).data.data;
         setFullName(customer.fullName);
@@ -32,9 +45,10 @@ export default function CustomerCreate({ edit }) {
         setPhone(customer.phone || "");
         setRsMember(customer.rsMember);
         setReceiveDrDiscount(customer.receiveDrDiscount);
+        if (customer.RegionId) setSelectedRegionId(customer.RegionId);
       }
     })();
-  }, [edit, id]);
+  }, [edit, id, regions]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,6 +59,7 @@ export default function CustomerCreate({ edit }) {
         address,
         rsMember,
         receiveDrDiscount,
+        RegionId: selectedRegionId,
       };
 
       if (!edit) {
@@ -62,7 +77,7 @@ export default function CustomerCreate({ edit }) {
       toast.error(error);
     }
   };
-  return (
+  return regions.length > 0 && selectedRegionId ? (
     <Box>
       <Typography component="h1" variant="h5">
         {edit ? `Editing Customer #${id}` : "Add New Customer"}
@@ -84,9 +99,8 @@ export default function CustomerCreate({ edit }) {
             autoFocus
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
+            sx={{ flex: 4 }}
           />
-        </Box>
-        <Box display="flex" gap={2}>
           <TextField
             fullWidth
             label="Phone"
@@ -94,6 +108,22 @@ export default function CustomerCreate({ edit }) {
             value={phone}
             sx={{ flex: 2 }}
           />
+        </Box>
+        <Box display="flex" gap={2}>
+          <FormControl margin="none" sx={{ flex: 1 }}>
+            <InputLabel id="demo-simple-select-label">Region</InputLabel>
+            <Select
+              label="Region"
+              value={selectedRegionId}
+              onChange={(e) => setSelectedRegionId(e.target.value)}
+            >
+              {regions.map((region) => (
+                <MenuItem value={region.id} key={region.id}>
+                  {region.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <FormGroup sx={{ flex: 1 }}>
             <FormControlLabel
               control={
@@ -138,5 +168,7 @@ export default function CustomerCreate({ edit }) {
         </Button>
       </Box>
     </Box>
+  ) : (
+    <h1>Loading...</h1>
   );
 }
