@@ -16,6 +16,8 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import CloseIcon from "@mui/icons-material/Close";
 import Cancel from "@mui/icons-material/Cancel";
 import Autocomplete from "@mui/material/Autocomplete";
+import Fab from "@mui/material/Fab";
+
 import WarningIcon from "@mui/icons-material/Error";
 
 import { useEffect, useState } from "react";
@@ -317,7 +319,7 @@ export default function InvoiceCreate({ edit }) {
   return deliveryTypes.length > 0 &&
     products.length > 0 &&
     suppliers.length > 0 ? (
-    <Box>
+    <Box paddingBottom={16}>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -835,10 +837,15 @@ export default function InvoiceCreate({ edit }) {
           })}
         </Box>
       </Box>
-      <Box marginY={2}>
-        <Button variant="contained" fullWidth onClick={handleSubmit}>
-          Create
-        </Button>
+      <Box sx={{ position: "absolute", right: 20, bottom: 20 }}>
+        <Fab
+          variant="extended"
+          color="primary"
+          aria-label="add"
+          onClick={handleSubmit}
+        >
+          {edit ? "Update" : "Create"}
+        </Fab>
       </Box>
     </Box>
   ) : (
