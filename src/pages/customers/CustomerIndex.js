@@ -1,6 +1,8 @@
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
 import SmartTable from "../../components/SmartTable";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import {
@@ -34,7 +36,7 @@ export default function CustomerIndex() {
   };
 
   const columns = [
-    { field: "id", headerName: "ID", width: 70 },
+    { field: "id", headerName: "ID", width: 50 },
     { field: "fullName", headerName: "Full Name", width: 130 },
     { field: "phone", headerName: "Phone", width: 130 },
     {
@@ -42,6 +44,33 @@ export default function CustomerIndex() {
       headerName: "Address",
       width: 200,
     },
+    {
+      field: "rsMember",
+      headerName: "RS Member",
+      width: 100,
+      align: "center",
+      renderCell: (params) => {
+        return params.row.rsMember ? (
+          <CheckCircleIcon color="success" />
+        ) : (
+          <CancelIcon color="error" />
+        );
+      },
+    },
+    {
+      field: "receiveDrDiscount",
+      headerName: "Dr's Discount",
+      width: 100,
+      align: "center",
+      renderCell: (params) => {
+        return params.row.receiveDrDiscount ? (
+          <CheckCircleIcon color="success" />
+        ) : (
+          <CancelIcon color="error" />
+        );
+      },
+    },
+
     {
       field: "actions",
       headerName: "Actions",
@@ -85,6 +114,8 @@ export default function CustomerIndex() {
             fullName: customer.fullName,
             phone: customer.phone,
             address: customer.address,
+            rsMember: customer.rsMember,
+            receiveDrDiscount: customer.receiveDrDiscount,
           }))}
           columns={columns}
         />

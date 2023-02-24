@@ -64,7 +64,7 @@ function App() {
               >
                 <Route path="" element={<CustomerIndex />} />
                 <Route path="create" element={<CustomerCreate />} />
-                <Route path="edit/:id" element={<CustomerEdit />} />
+                <Route path="edit/:id" element={<CustomerCreate edit />} />
               </Route>
               <Route
                 path="rs"
