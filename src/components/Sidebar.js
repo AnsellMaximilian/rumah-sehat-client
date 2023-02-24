@@ -11,6 +11,7 @@ import ProductIcon from "@mui/icons-material/Widgets";
 import CategoryIcon from "@mui/icons-material/ManageSearch";
 import SupplierIcon from "@mui/icons-material/Inventory";
 import ShoppingCart from "@mui/icons-material/ShoppingCart";
+// import MyLocationIcon from "@mui/icons-material/MyLocation";
 
 import SanitizerIcon from "@mui/icons-material/Sanitizer";
 import React, { useState } from "react";
@@ -30,13 +31,6 @@ const SidebarLink = ({ to, text, icon, ...rest }) => {
   );
 };
 
-export const mainListItems = (
-  <React.Fragment>
-    <SidebarLink to="/" text="Dasbhoard" icon={<DashboardIcon />} />
-    <SidebarLink to="/customers" text="Customers" icon={<PeopleIcon />} />
-  </React.Fragment>
-);
-
 const Sidebar = () => {
   // Rumah Sehat
   const [rsProductOpen, setRsProductOpen] = useState(false);
@@ -47,7 +41,9 @@ const Sidebar = () => {
   const [drSgOpen, setDrSgOpen] = useState(false);
   return (
     <List component="nav" sx={{ maxHeight: "calc(100vh - 65px)" }}>
-      {mainListItems}
+      <SidebarLink to="/" text="Dasbhoard" icon={<DashboardIcon />} />
+      <SidebarLink to="/customers" text="Customers" icon={<PeopleIcon />} />
+      {/* <SidebarLink to="/regions" text="Regions" icon={<MyLocationIcon />} /> */}
       <Divider sx={{ my: 1 }} />
       <ListSubheader component="div" inset>
         Rumah Sehat
