@@ -37,7 +37,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 export default function InvoiceCreate({ edit }) {
   // Invoice details
-  const [selectedCustomerId, setSelectedCustomerId] = useState(null);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [status, setStatus] = useState("draft");
   const [date, setDate] = useState(moment().format("yyyy-MM-DD"));
   const [invoiceNote, setInvoiceNote] = useState(undefined);
@@ -92,17 +92,17 @@ export default function InvoiceCreate({ edit }) {
 
   useEffect(() => {
     (async () => {
-      if (customers.length > 0) setSelectedCustomerId(customers[0].id);
+      if (customers.length > 0) setSelectedCustomer(customers[0]);
       if (edit) {
         if (products.length > 0) {
           const invoice = (await http.get(`/rs/invoices/${id}`)).data.data;
           setInvoiceNote(invoice.note || "");
           setDate(invoice.date);
-          setSelectedCustomerId(invoice.CustomerId);
+          setSelectedCustomer(invoice.Customer);
           setStatus(invoice.status);
 
           setDeliveries(
-            invoice.Deliveries.map((delivery) => {
+            invoice.Deliveries.map((delivery, index) => {
               return {
                 key: uuidv4(),
                 mode: "own",
@@ -112,7 +112,7 @@ export default function InvoiceCreate({ edit }) {
                   cost: delivery.cost,
                   note: delivery.note || "",
                   DeliveryTypeId: delivery.DeliveryTypeId,
-                  CustomerId: delivery.CustomerId,
+                  customer: delivery.Customer,
                 },
                 deliveryDetails: delivery.DeliveryDetails.map((detail) => {
                   const product = products.find(
@@ -152,7 +152,7 @@ export default function InvoiceCreate({ edit }) {
           cost: 0,
           note: undefined,
           DeliveryTypeId: deliveryTypes[0].id,
-          CustomerId: selectedCustomerId,
+          customer: selectedCustomer ? selectedCustomer : customers[0],
         },
         deliveryDetails: [],
       },
@@ -252,17 +252,28 @@ export default function InvoiceCreate({ edit }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (selectedCustomer === null)
+        throw new Error("Please select a customer.");
       const body = {
         date: moment(date).format("YYYY-MM-DD"),
-        CustomerId: selectedCustomerId,
+        CustomerId: selectedCustomer.id,
         status,
         note: invoiceNote,
-        deliveries: deliveries.map((delivery) => {
+        deliveries: deliveries.map((delivery, index) => {
           const { mode, deliveryData, supplierDeliveryData, deliveryDetails } =
             delivery;
+          if (delivery.deliveryData.customer === null)
+            throw new Error(
+              `Delivery recipient can't be empty (Delivery ${index + 1}).`
+            );
+          console.log("made it");
+
           return {
             mode,
-            deliveryData,
+            deliveryData: {
+              ...deliveryData,
+              CustomerId: deliveryData.customer.id,
+            },
             supplierDeliveryData: !delivery.edit
               ? {
                   ...supplierDeliveryData,
@@ -301,8 +312,7 @@ export default function InvoiceCreate({ edit }) {
     }
   };
 
-  return selectedCustomerId &&
-    deliveryTypes.length > 0 &&
+  return deliveryTypes.length > 0 &&
     products.length > 0 &&
     suppliers.length > 0 ? (
     <Box>
@@ -322,20 +332,24 @@ export default function InvoiceCreate({ edit }) {
               shrink: true,
             }}
           />
-          <FormControl margin="none">
-            <InputLabel id="demo-simple-select-label">Customer</InputLabel>
-            <Select
-              label="Customer"
-              value={selectedCustomerId}
-              onChange={(e) => setSelectedCustomerId(e.target.value)}
-            >
-              {customers.map((customer) => (
-                <MenuItem value={customer.id} key={customer.id}>
-                  {customer.fullName}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <Autocomplete
+            value={selectedCustomer}
+            onChange={(e, newValue) => {
+              setSelectedCustomer(newValue);
+            }}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            getOptionLabel={(option) => `(#${option.id}) ${option.fullName}`}
+            options={customers}
+            sx={{ width: 300 }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                size="small"
+                sx={{ width: 200 }}
+                label="Customer"
+              />
+            )}
+          />
         </Box>
         <Box display="flex" gap={2}>
           <FormControl margin="none">
@@ -496,31 +510,36 @@ export default function InvoiceCreate({ edit }) {
                           ))}
                         </Select>
                       </FormControl>
-                      <FormControl margin="none">
-                        <InputLabel id="demo-simple-select-label">
-                          Recipient
-                        </InputLabel>
-                        <Select
-                          size="small"
-                          label="Recipient"
-                          value={delivery.deliveryData.CustomerId}
-                          onChange={(e) =>
-                            handleChangeDelivery(delivery.key, {
-                              ...delivery,
-                              deliveryData: {
-                                ...delivery.deliveryData,
-                                CustomerId: e.target.value,
-                              },
-                            })
-                          }
-                        >
-                          {customers.map((customer) => (
-                            <MenuItem value={customer.id} key={customer.id}>
-                              {customer.fullName}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
+
+                      <Autocomplete
+                        value={delivery.deliveryData.customer}
+                        onChange={(e, newValue) => {
+                          handleChangeDelivery(delivery.key, {
+                            ...delivery,
+                            deliveryData: {
+                              ...delivery.deliveryData,
+                              customer: newValue,
+                            },
+                          });
+                        }}
+                        isOptionEqualToValue={(option, value) =>
+                          option.id === value.id
+                        }
+                        getOptionLabel={(option) =>
+                          `(#${option.id}) ${option.fullName}`
+                        }
+                        options={customers}
+                        sx={{ width: 300 }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            size="small"
+                            sx={{ width: 200 }}
+                            label="Recipient"
+                          />
+                        )}
+                      />
+
                       <TextField
                         size="small"
                         margin="none"
