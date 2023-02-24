@@ -4,7 +4,6 @@ import "./App.css";
 import DataLayout from "./components/DataLayout";
 import Layout from "./components/Layout";
 import CustomerCreate from "./pages/customers/CustomerCreate";
-import CustomerEdit from "./pages/customers/CustomerEdit";
 import CustomerIndex from "./pages/customers/CustomerIndex";
 import DrIdItemIndex from "./pages/dr/id/items/ItemIndex";
 import { ToastContainer } from "react-toastify";
