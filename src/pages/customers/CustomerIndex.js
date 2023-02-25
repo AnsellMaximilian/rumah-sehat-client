@@ -37,7 +37,7 @@ export default function CustomerIndex() {
 
   const columns = [
     { field: "id", headerName: "ID", width: 50 },
-    { field: "fullName", headerName: "Full Name", width: 130 },
+    { field: "fullName", headerName: "Full Name", width: 250 },
     { field: "phone", headerName: "Phone", width: 130 },
     {
       field: "address",
