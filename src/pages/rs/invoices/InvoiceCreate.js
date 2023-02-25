@@ -34,7 +34,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { getSubtotal } from "../../../helpers/rs";
+import { getPurchaseSubtotal, getSubtotal } from "../../../helpers/rs";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
@@ -69,6 +69,7 @@ export default function InvoiceCreate({ edit }) {
             key: string,
             qty: number,
             price: number,
+            cost: number,
             product: Product,
             makePurchase: bool
         }>
@@ -126,6 +127,7 @@ export default function InvoiceCreate({ edit }) {
                     key: uuidv4(),
                     qty: detail.qty,
                     price: detail.price,
+                    cost: detail.cost,
                     product: product,
                     search: "",
 
@@ -197,6 +199,7 @@ export default function InvoiceCreate({ edit }) {
               {
                 key: uuidv4(),
                 price: product.price,
+                cost: product.cost,
                 qty: 0,
                 product: product,
                 makePurchase: false,
@@ -286,14 +289,14 @@ export default function InvoiceCreate({ edit }) {
                 }
               : {},
             deliveryDetails: deliveryDetails.map((detail) => {
-              const { qty, price, makePurchase, product } = detail;
+              const { qty, price, cost, makePurchase, product } = detail;
               if (product === null) throw new Error("Please select a product.");
               return {
                 qty,
                 makePurchase,
                 product,
                 price,
-                cost: product.cost,
+                cost,
                 ProductId: product.id,
               };
             }),
@@ -616,6 +619,18 @@ export default function InvoiceCreate({ edit }) {
                           })
                         }
                       />
+                      <Box>
+                        <Typography fontSize={12} color="lightslategray">
+                          Purchase Total
+                        </Typography>
+                        <Typography variant="subtitle">
+                          <NumericFormatRp
+                            value={getPurchaseSubtotal(
+                              delivery.deliveryDetails
+                            )}
+                          />
+                        </Typography>
+                      </Box>
                     </Box>
                   )}
                 </Box>
@@ -714,6 +729,12 @@ export default function InvoiceCreate({ edit }) {
                                       detail.key,
                                       newValue.price
                                     )(e);
+                                  handleDeliveryDetailAttrChange(
+                                    "cost",
+                                    delivery.key,
+                                    detail.key,
+                                    newValue.cost
+                                  )(e);
                                 }}
                                 isOptionEqualToValue={(option, value) =>
                                   option.id === value.id
