@@ -256,6 +256,7 @@ export default function InvoiceCreate({ edit }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (deliveries.length === 0) throw new Error("Invoice is empty.");
       if (selectedCustomer === null)
         throw new Error("Please select a customer.");
       const body = {
