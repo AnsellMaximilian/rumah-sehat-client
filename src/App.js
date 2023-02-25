@@ -46,6 +46,7 @@ import InvoiceShow from "./pages/rs/invoices/InvoiceShow";
 import PurchaseIndex from "./pages/rs/purchases/PurchaseIndex";
 import PurchaseCreate from "./pages/rs/purchases/PurchaseCreate";
 import Test from "./pages/rs/purchases/Test";
+import PurchaseShow from "./pages/rs/purchases/PurchaseShow";
 
 function App() {
   return (
@@ -87,6 +88,7 @@ function App() {
                   <Route path="create" element={<PurchaseCreate />} />
                   <Route path="bitch" element={<Test />} />
                   <Route path="edit/:id" element={<PurchaseCreate edit />} />
+                  <Route path=":id" element={<PurchaseShow />} />
                 </Route>
                 <Route
                   path="product-categories"
