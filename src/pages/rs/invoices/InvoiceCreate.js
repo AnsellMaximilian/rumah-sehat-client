@@ -729,7 +729,6 @@ export default function InvoiceCreate({ edit }) {
                                             .SupplierId
                                       )
                                 }
-                                sx={{ width: 300 }}
                                 renderInput={(params) => (
                                   <TextField
                                     {...params}
@@ -745,6 +744,7 @@ export default function InvoiceCreate({ edit }) {
                                 size="small"
                                 margin="none"
                                 type="number"
+                                sx={{ width: 100 }}
                                 value={detail.price}
                                 onChange={handleDeliveryDetailAttrChange(
                                   "price",
@@ -753,12 +753,14 @@ export default function InvoiceCreate({ edit }) {
                                 )}
                               />
                             </TableCell>
-                            <TableCell align="right">{detail.unit}</TableCell>
+                            <TableCell align="right">
+                              {detail.product?.unit}
+                            </TableCell>
                             <TableCell align="right">
                               <TextField
                                 size="small"
                                 margin="none"
-                                sx={{ width: 125 }}
+                                sx={{ width: 75 }}
                                 type="number"
                                 value={detail.qty}
                                 onChange={handleDeliveryDetailAttrChange(
