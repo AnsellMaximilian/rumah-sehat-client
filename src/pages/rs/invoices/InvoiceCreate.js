@@ -346,12 +346,7 @@ export default function InvoiceCreate({ edit }) {
             options={customers}
             sx={{ width: 300 }}
             renderInput={(params) => (
-              <TextField
-                {...params}
-                size="small"
-                sx={{ width: 200 }}
-                label="Customer"
-              />
+              <TextField {...params} sx={{ width: 220 }} label="Customer" />
             )}
           />
         </Box>
