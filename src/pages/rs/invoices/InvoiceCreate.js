@@ -38,6 +38,7 @@ import { getPurchaseSubtotal, getSubtotal } from "../../../helpers/rs";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
+import BulkAdd from "../../../components/rs/BulkAdd";
 
 export default function InvoiceCreate({ edit }) {
   // Invoice details
@@ -83,6 +84,10 @@ export default function InvoiceCreate({ edit }) {
   const [suppliers, setSuppliers] = useState([]);
   const [products, setProducts] = useState([]);
   const [deliveryTypes, setDeliveryTypes] = useState([]);
+
+  // Bulk Add
+  const [bulkAddProducts, setBulkAddProducts] = useState([]);
+  const [bulkAddDeliveryKey, setBulkAddDeliveryKey] = useState(null);
 
   const navigate = useNavigate();
 
@@ -179,7 +184,7 @@ export default function InvoiceCreate({ edit }) {
     );
   };
 
-  const handleAddDeliveryRow = (key) => {
+  const handleAddDeliveryRow = (key, row) => {
     const delivery = deliveries.find((del) => del.key === key);
     const product = !delivery.edit
       ? products.filter(
@@ -196,15 +201,17 @@ export default function InvoiceCreate({ edit }) {
             ...delivery,
             deliveryDetails: [
               ...delivery.deliveryDetails,
-              {
-                key: uuidv4(),
-                price: product.price,
-                cost: product.cost,
-                qty: 0,
-                product: product,
-                makePurchase: false,
-                search: "",
-              },
+              row
+                ? row
+                : {
+                    key: uuidv4(),
+                    price: product.price,
+                    cost: product.cost,
+                    qty: 0,
+                    product: product,
+                    makePurchase: false,
+                    search: "",
+                  },
             ],
           };
 
@@ -643,6 +650,23 @@ export default function InvoiceCreate({ edit }) {
                     >
                       Products
                     </Box>
+                    {delivery.mode === "supplier" && (
+                      <Button
+                        variant="outlined"
+                        onClick={() => {
+                          setBulkAddDeliveryKey(delivery.key);
+                          setBulkAddProducts(
+                            products.filter(
+                              (product) =>
+                                product.SupplierId ===
+                                delivery.supplierDeliveryData.SupplierId
+                            )
+                          );
+                        }}
+                      >
+                        Bulk Add
+                      </Button>
+                    )}
                     <Button
                       variant="outlined"
                       onClick={() => handleAddDeliveryRow(delivery.key)}
@@ -866,6 +890,28 @@ export default function InvoiceCreate({ edit }) {
           {edit ? "Update" : "Create"}
         </Fab>
       </Box>
+      <BulkAdd
+        products={bulkAddProducts}
+        open={bulkAddDeliveryKey !== null}
+        handleClose={() => {
+          setBulkAddDeliveryKey(null);
+          setBulkAddProducts([]);
+        }}
+        onSubmit={(details) => {
+          console.log(details);
+          for (const detail of details) {
+            handleAddDeliveryRow(bulkAddDeliveryKey, {
+              key: uuidv4(),
+              price: detail.price,
+              cost: detail.cost,
+              qty: detail.qty,
+              product: detail.product,
+              makePurchase: false,
+              search: "",
+            });
+          }
+        }}
+      />
     </Box>
   ) : (
     <h1>Loading...</h1>
