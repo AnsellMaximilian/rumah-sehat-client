@@ -281,7 +281,6 @@ export default function InvoiceCreate({ edit }) {
             throw new Error(
               `Delivery recipient can't be empty (Delivery ${index + 1}).`
             );
-          console.log("made it");
 
           return {
             mode,
@@ -899,7 +898,6 @@ export default function InvoiceCreate({ edit }) {
           setBulkAddProducts([]);
         }}
         onSubmit={(details) => {
-          console.log(details);
           for (const detail of details) {
             handleAddDeliveryRow(bulkAddDeliveryKey, {
               key: uuidv4(),
