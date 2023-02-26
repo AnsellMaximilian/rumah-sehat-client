@@ -335,30 +335,42 @@ export default function InvoiceCreate({ edit }) {
         justifyContent="space-between"
         alignItems="flex-start"
       >
-        <Box display="flex" flexDirection="column" gap={2}>
-          <TextField
-            label="Date"
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            sx={{ width: 220 }}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-          <Autocomplete
-            value={selectedCustomer}
-            onChange={(e, newValue) => {
-              setSelectedCustomer(newValue);
-            }}
-            isOptionEqualToValue={(option, value) => option.id === value.id}
-            getOptionLabel={(option) => `(#${option.id}) ${option.fullName}`}
-            options={customers}
-            sx={{ width: 300 }}
-            renderInput={(params) => (
-              <TextField {...params} sx={{ width: 220 }} label="Customer" />
-            )}
-          />
+        <Box display="flex" gap={2} justifyContent="flex-start">
+          <Box display="flex" flexDirection="column" gap={2}>
+            <TextField
+              label="Date"
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              sx={{ width: "100%" }}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+            <Autocomplete
+              value={selectedCustomer}
+              onChange={(e, newValue) => {
+                setSelectedCustomer(newValue);
+              }}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              getOptionLabel={(option) => `(#${option.id}) ${option.fullName}`}
+              options={customers}
+              sx={{ width: "100%" }}
+              renderInput={(params) => (
+                <TextField {...params} sx={{ width: 220 }} label="Customer" />
+              )}
+            />
+          </Box>
+          <Box>
+            <TextField
+              multiline
+              margin="none"
+              label="Invoice Note"
+              rows={4}
+              value={invoiceNote}
+              onChange={(e) => setInvoiceNote(e.target.value)}
+            />
+          </Box>
         </Box>
         <Box display="flex" gap={2}>
           <FormControl margin="none">
@@ -373,14 +385,6 @@ export default function InvoiceCreate({ edit }) {
               <MenuItem value="paid">Paid</MenuItem>
             </Select>
           </FormControl>
-          <TextField
-            multiline
-            margin="none"
-            label="Invoice Note"
-            rows={4}
-            value={invoiceNote}
-            onChange={(e) => setInvoiceNote(e.target.value)}
-          />
         </Box>
       </Box>
       <Box marginTop={2}>
