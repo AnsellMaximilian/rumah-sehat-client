@@ -632,9 +632,10 @@ export default function InvoiceCreate({ edit }) {
                         </Typography>
                         <Typography variant="subtitle">
                           <NumericFormatRp
-                            value={getPurchaseSubtotal(
-                              delivery.deliveryDetails
-                            )}
+                            value={
+                              getPurchaseSubtotal(delivery.deliveryDetails) +
+                              parseInt(delivery.supplierDeliveryData.cost)
+                            }
                           />
                         </Typography>
                       </Box>
