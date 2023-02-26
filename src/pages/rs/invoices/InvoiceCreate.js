@@ -349,6 +349,11 @@ export default function InvoiceCreate({ edit }) {
             />
             <Autocomplete
               value={selectedCustomer}
+              renderOption={(props, option) => (
+                <li {...props} key={option.id}>
+                  {option.fullName}
+                </li>
+              )}
               onChange={(e, newValue) => {
                 setSelectedCustomer(newValue);
               }}
@@ -539,6 +544,11 @@ export default function InvoiceCreate({ edit }) {
                           isOptionEqualToValue={(option, value) =>
                             option.id === value.id
                           }
+                          renderOption={(props, option) => (
+                            <li {...props} key={option.id}>
+                              {option.fullName}
+                            </li>
+                          )}
                           getOptionLabel={(option) =>
                             `(#${option.id}) ${option.fullName}`
                           }
@@ -768,6 +778,11 @@ export default function InvoiceCreate({ edit }) {
                                   option.id === value.id
                                 }
                                 getOptionLabel={(option) => option.name}
+                                renderOption={(props, option) => (
+                                  <li {...props} key={option.id}>
+                                    {option.name}
+                                  </li>
+                                )}
                                 options={
                                   delivery.mode === "own"
                                     ? products
