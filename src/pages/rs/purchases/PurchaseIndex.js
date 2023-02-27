@@ -16,19 +16,19 @@ const PurchaseIndex = () => {
   const [purchases, setPurchases] = useState([]);
   const navigate = useNavigate();
 
-  //   const handleDelete = (id) => {
-  //     (async () => {
-  //       try {
-  //         await http.delete(`/rs/invoices/${id}`);
-  //         setInvoices((invoices) =>
-  //           invoices.filter((invoice) => invoice.id !== id)
-  //         );
-  //         toast.success("Invoice deleted.");
-  //       } catch ({ response: { data: error } }) {
-  //         toast.error(error);
-  //       }
-  //     })();
-  //   };
+  const handleDelete = (id) => {
+    (async () => {
+      try {
+        await http.delete(`/rs/purchases/${id}`);
+        setPurchases((purchases) =>
+          purchases.filter((purchase) => purchase.id !== id)
+        );
+        toast.success("Purchase deleted.");
+      } catch ({ response: { data: error } }) {
+        toast.error(error);
+      }
+    })();
+  };
 
   useEffect(() => {
     (async () => {
@@ -64,7 +64,7 @@ const PurchaseIndex = () => {
               color="error"
               onClick={(e) => {
                 e.stopPropagation();
-                // handleDelete(params.row.id);
+                handleDelete(params.row.id);
               }}
             >
               <Delete />
