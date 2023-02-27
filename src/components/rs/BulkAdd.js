@@ -58,7 +58,7 @@ export default function BulkAdd({ products, open, handleClose, onSubmit }) {
           <TableHead>
             <TableRow>
               <TableCell align="left">Product</TableCell>
-              <TableCell align="right">Price</TableCell>
+              <TableCell align="right">Cost</TableCell>
               <TableCell align="right">Unit</TableCell>
               <TableCell align="right">Qty</TableCell>
               <TableCell align="right">Subtotal</TableCell>
@@ -81,8 +81,8 @@ export default function BulkAdd({ products, open, handleClose, onSubmit }) {
                     variant="standard"
                     type="number"
                     sx={{ width: 100 }}
-                    value={detail.price}
-                    onChange={handleChangeDetail(detail.key, "price")}
+                    value={detail.cost}
+                    onChange={handleChangeDetail(detail.key, "cost")}
                     inputProps={{ tabIndex: -1 }}
                   />
                 </TableCell>
@@ -99,7 +99,7 @@ export default function BulkAdd({ products, open, handleClose, onSubmit }) {
                   />
                 </TableCell>
                 <TableCell align="right">
-                  <NumericFormatRp value={detail.price * detail.qty} />
+                  <NumericFormatRp value={detail.cost * detail.qty} />
                 </TableCell>
               </TableRow>
             ))}
