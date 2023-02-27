@@ -10,7 +10,7 @@ import TextField from "@mui/material/TextField";
 import { useEffect, useState } from "react";
 import NumericFormatRp from "../NumericFormatRp";
 import AutoSelectTextField from "../AutoSelectTextField";
-import { getSubtotal } from "../../helpers/rs";
+import { getPurchaseSubtotal } from "../../helpers/rs";
 import { Button } from "@mui/material";
 
 export default function BulkAdd({ products, open, handleClose, onSubmit }) {
@@ -113,7 +113,7 @@ export default function BulkAdd({ products, open, handleClose, onSubmit }) {
                 Total
               </TableCell>
               <TableCell align="right">
-                <NumericFormatRp value={getSubtotal(details)} />
+                <NumericFormatRp value={getPurchaseSubtotal(details)} />
               </TableCell>
             </TableRow>
           </TableBody>
