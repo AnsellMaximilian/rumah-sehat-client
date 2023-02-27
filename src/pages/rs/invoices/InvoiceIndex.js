@@ -5,16 +5,25 @@ import Box from "@mui/material/Box";
 import { Link, useNavigate } from "react-router-dom";
 import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/ModeEdit";
-import { IconButton } from "@mui/material";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  IconButton,
+} from "@mui/material";
 import http from "../../../http-common";
 import SmartTable from "../../../components/SmartTable";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import { toast } from "react-toastify";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
+import DeleteAlert from "../../../components/DeleteAlert";
 
 const InvoiceIndex = () => {
   const [invoices, setInvoices] = useState([]);
   const navigate = useNavigate();
+  const [toDeleteId, setToDeleteId] = useState(null);
 
   const handleDelete = (id) => {
     (async () => {
@@ -65,7 +74,7 @@ const InvoiceIndex = () => {
               color="error"
               onClick={(e) => {
                 e.stopPropagation();
-                handleDelete(params.row.id);
+                setToDeleteId(params.row.id);
               }}
             >
               <Delete />
@@ -104,6 +113,14 @@ const InvoiceIndex = () => {
           columns={columns}
         />
       </Card>
+      <DeleteAlert
+        message="Deleting this invoice will also delete any related deliveries and its
+          details."
+        toDeleteId={toDeleteId}
+        handleDelete={handleDelete}
+        setToDeleteId={setToDeleteId}
+        objectName="Invoice"
+      />
     </Box>
   );
 };
