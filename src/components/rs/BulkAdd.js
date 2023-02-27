@@ -83,6 +83,7 @@ export default function BulkAdd({ products, open, handleClose, onSubmit }) {
                     sx={{ width: 100 }}
                     value={detail.price}
                     onChange={handleChangeDetail(detail.key, "price")}
+                    inputProps={{ tabIndex: -1 }}
                   />
                 </TableCell>
                 <TableCell align="right">{detail.product.unit}</TableCell>
