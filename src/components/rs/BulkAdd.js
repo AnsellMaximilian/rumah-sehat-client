@@ -59,8 +59,8 @@ export default function BulkAdd({ products, open, handleClose, onSubmit }) {
             <TableRow>
               <TableCell align="left">Product</TableCell>
               <TableCell align="right">Cost</TableCell>
-              <TableCell align="right">Unit</TableCell>
               <TableCell align="right">Qty</TableCell>
+              <TableCell align="right">Unit</TableCell>
               <TableCell align="right">Subtotal</TableCell>
             </TableRow>
           </TableHead>
@@ -86,7 +86,6 @@ export default function BulkAdd({ products, open, handleClose, onSubmit }) {
                     inputProps={{ tabIndex: -1 }}
                   />
                 </TableCell>
-                <TableCell align="right">{detail.product.unit}</TableCell>
                 <TableCell align="right">
                   <AutoSelectTextField
                     size="small"
@@ -98,6 +97,8 @@ export default function BulkAdd({ products, open, handleClose, onSubmit }) {
                     onChange={handleChangeDetail(detail.key, "qty")}
                   />
                 </TableCell>
+                <TableCell align="right">{detail.product.unit}</TableCell>
+
                 <TableCell align="right">
                   <NumericFormatRp value={detail.cost * detail.qty} />
                 </TableCell>
