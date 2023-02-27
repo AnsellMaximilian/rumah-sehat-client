@@ -760,19 +760,20 @@ export default function InvoiceCreate({ edit }) {
                                     newValue
                                   )(e);
 
-                                  if (newValue)
+                                  if (newValue) {
                                     handleDeliveryDetailAttrChange(
                                       "price",
                                       delivery.key,
                                       detail.key,
                                       newValue.price
                                     )(e);
-                                  handleDeliveryDetailAttrChange(
-                                    "cost",
-                                    delivery.key,
-                                    detail.key,
-                                    newValue.cost
-                                  )(e);
+                                    handleDeliveryDetailAttrChange(
+                                      "cost",
+                                      delivery.key,
+                                      detail.key,
+                                      newValue.cost
+                                    )(e);
+                                  }
                                 }}
                                 isOptionEqualToValue={(option, value) =>
                                   option.id === value.id
