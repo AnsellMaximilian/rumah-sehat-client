@@ -1,13 +1,12 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -88,88 +87,98 @@ export default function ProductCreate({ edit }) {
         Add New
       </Typography>
       <Box component="form" noValidate sx={{ mt: 1 }}>
-        <FormControl fullWidth margin="normal">
-          <InputLabel id="demo-simple-select-label">Category</InputLabel>
-          <Select
-            label="Category"
-            value={selectedCategoryId}
-            onChange={(e) => setSelectedCategoryId(e.target.value)}
-          >
-            {categories.map((category) => (
-              <MenuItem value={category.id} key={category.id}>
-                {category.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl fullWidth margin="normal">
-          <InputLabel id="demo-simple-select-label">Supplier</InputLabel>
-          <Select
-            label="Supplier"
-            value={selectedSupplierId}
-            onChange={(e) => setSelectedSupplierId(e.target.value)}
-          >
-            {suppliers.map((supplier) => (
-              <MenuItem value={supplier.id} key={supplier.id}>
-                {supplier.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          label="Name"
-          autoFocus
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-
-        <TextField
-          margin="normal"
-          fullWidth
-          label="Unit"
-          value={unit || ""}
-          onChange={(e) => setUnit(e.target.value)}
-        />
-        <TextField
-          margin="normal"
-          required
-          type="number"
-          fullWidth
-          label="Price"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-        />
-        <TextField
-          margin="normal"
-          required
-          type="number"
-          fullWidth
-          label="Reseller Price"
-          onChange={(e) => setResellerPrice(e.target.value)}
-          value={resellerPrice || ""}
-        />
-
-        <TextField
-          margin="normal"
-          required
-          type="number"
-          fullWidth
-          label="Cost"
-          value={cost}
-          onChange={(e) => setCost(e.target.value)}
-        />
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          sx={{ mt: 3, mb: 2 }}
-          onClick={handleSubmit}
-        >
-          {edit ? "Update" : "Create"}
-        </Button>
+        <Grid spacing={2} container>
+          <Grid item xs={8}>
+            <TextField
+              required
+              fullWidth
+              label="Name"
+              autoFocus
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Supplier</InputLabel>
+              <Select
+                label="Supplier"
+                value={selectedSupplierId}
+                onChange={(e) => setSelectedSupplierId(e.target.value)}
+              >
+                {suppliers.map((supplier) => (
+                  <MenuItem value={supplier.id} key={supplier.id}>
+                    {supplier.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              required
+              type="number"
+              fullWidth
+              label="Price"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              required
+              type="number"
+              fullWidth
+              label="Cost"
+              value={cost}
+              onChange={(e) => setCost(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              required
+              type="number"
+              fullWidth
+              label="Reseller Price"
+              onChange={(e) => setResellerPrice(e.target.value)}
+              value={resellerPrice || ""}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Category</InputLabel>
+              <Select
+                label="Category"
+                value={selectedCategoryId}
+                onChange={(e) => setSelectedCategoryId(e.target.value)}
+              >
+                {categories.map((category) => (
+                  <MenuItem value={category.id} key={category.id}>
+                    {category.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              fullWidth
+              label="Unit"
+              value={unit || ""}
+              onChange={(e) => setUnit(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              onClick={handleSubmit}
+            >
+              {edit ? "Update" : "Create"}
+            </Button>
+          </Grid>
+        </Grid>
       </Box>
     </Box>
   ) : (
