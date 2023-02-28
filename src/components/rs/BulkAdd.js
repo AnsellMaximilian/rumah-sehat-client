@@ -1,5 +1,6 @@
 import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
+import ButtonGroup from "@mui/material/ButtonGroup";
 import Table from "@mui/material/Table";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
@@ -28,13 +29,13 @@ export default function BulkAdd({ products, open, handleClose, onSubmit }) {
     );
   }, [products]);
 
-  const handleChangeDetail = (detailKey, attr) => (e) => {
+  const handleChangeDetail = (detailKey, attr, customValue) => (e) => {
     setDetails((prev) =>
       prev.map((detail) => {
         if (detailKey === detail.key) {
           return {
             ...detail,
-            [attr]: e.target.value,
+            [attr]: customValue !== undefined ? customValue : e.target.value,
           };
         }
         return detail;
@@ -87,10 +88,36 @@ export default function BulkAdd({ products, open, handleClose, onSubmit }) {
                   />
                 </TableCell>
                 <TableCell align="right">
+                  <ButtonGroup
+                    variant="outlined"
+                    aria-label="text button group"
+                    sx={{ marginRight: 1 }}
+                  >
+                    <Button
+                      onClick={handleChangeDetail(
+                        detail.key,
+                        "qty",
+                        parseFloat(detail.qty) + 0.1
+                      )}
+                      size="small"
+                    >
+                      +0.1
+                    </Button>
+                    <Button
+                      onClick={handleChangeDetail(
+                        detail.key,
+                        "qty",
+                        parseFloat(detail.qty) + 0.25
+                      )}
+                      size="small"
+                    >
+                      +0.25
+                    </Button>
+                  </ButtonGroup>
                   <AutoSelectTextField
                     size="small"
                     margin="none"
-                    sx={{ width: 75 }}
+                    sx={{ width: 50 }}
                     type="number"
                     variant="standard"
                     value={detail.qty}
