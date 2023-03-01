@@ -351,7 +351,14 @@ export default function InvoiceCreate({ edit }) {
               value={selectedCustomer}
               renderOption={(props, option) => (
                 <li {...props} key={option.id}>
-                  {option.fullName}
+                  <Box display="flex" alignItems="center" gap={2}>
+                    <Typography>{option.fullName}</Typography>
+                    {option.activeInvoices.length > 0 && (
+                      <Typography fontSize={10} color="warning.main">
+                        - {option.activeInvoices.length} active invoice(s)
+                      </Typography>
+                    )}
+                  </Box>
                 </li>
               )}
               onChange={(e, newValue) => {
@@ -362,7 +369,7 @@ export default function InvoiceCreate({ edit }) {
               options={customers}
               sx={{ width: "100%" }}
               renderInput={(params) => (
-                <TextField {...params} sx={{ width: 220 }} label="Customer" />
+                <TextField {...params} sx={{ width: 300 }} label="Customer" />
               )}
             />
           </Box>
