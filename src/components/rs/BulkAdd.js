@@ -97,7 +97,7 @@ export default function BulkAdd({ products, open, handleClose, onSubmit }) {
                       onClick={handleChangeDetail(
                         detail.key,
                         "qty",
-                        parseFloat(detail.qty) + 0.1
+                        parseFloat((parseFloat(detail.qty) + 0.1).toFixed(2))
                       )}
                       size="small"
                     >
@@ -107,7 +107,7 @@ export default function BulkAdd({ products, open, handleClose, onSubmit }) {
                       onClick={handleChangeDetail(
                         detail.key,
                         "qty",
-                        parseFloat(detail.qty) + 0.25
+                        parseFloat((parseFloat(detail.qty) + 0.25).toFixed(2))
                       )}
                       size="small"
                     >
