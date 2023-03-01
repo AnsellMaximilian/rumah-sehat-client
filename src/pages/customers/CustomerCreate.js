@@ -1,16 +1,14 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -26,6 +24,7 @@ export default function CustomerCreate({ edit }) {
   const [receiveDrDiscount, setReceiveDrDiscount] = useState(false);
   const [regions, setRegions] = useState([]);
   const [selectedRegionId, setSelectedRegionId] = useState(null);
+  const [note, setNote] = useState("");
 
   const { id } = useParams();
 
@@ -42,6 +41,7 @@ export default function CustomerCreate({ edit }) {
         const customer = (await http.get(`/customers/${id}`)).data.data;
         setFullName(customer.fullName);
         setAddress(customer.address || "");
+        setNote(customer.note || "");
         setPhone(customer.phone || "");
         setRsMember(customer.rsMember);
         setReceiveDrDiscount(customer.receiveDrDiscount);
@@ -58,6 +58,7 @@ export default function CustomerCreate({ edit }) {
         phone,
         address,
         rsMember,
+        note,
         receiveDrDiscount,
         RegionId: selectedRegionId,
       };
@@ -155,6 +156,16 @@ export default function CustomerCreate({ edit }) {
             multiline
             value={address}
             rows={5}
+          />
+        </Box>
+        <Box>
+          <TextField
+            fullWidth
+            label="Note"
+            onChange={(e) => setNote(e.target.value)}
+            multiline
+            value={note}
+            rows={2}
           />
         </Box>
 
