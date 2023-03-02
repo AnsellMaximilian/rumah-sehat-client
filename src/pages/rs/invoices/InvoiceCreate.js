@@ -39,6 +39,7 @@ import NumericFormatRp from "../../../components/NumericFormatRp";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 import BulkAdd from "../../../components/rs/BulkAdd";
+import AutoSelectTextField from "../../../components/AutoSelectTextField";
 
 export default function InvoiceCreate({ edit }) {
   // Invoice details
@@ -578,7 +579,7 @@ export default function InvoiceCreate({ edit }) {
                         )}
                       </Box>
 
-                      <TextField
+                      <AutoSelectTextField
                         size="small"
                         margin="none"
                         label="Delivery Cost"
@@ -630,7 +631,7 @@ export default function InvoiceCreate({ edit }) {
                           ))}
                         </Select>
                       </FormControl>
-                      <TextField
+                      <AutoSelectTextField
                         size="small"
                         margin="none"
                         label="Supplier Delivery Cost"
@@ -812,7 +813,7 @@ export default function InvoiceCreate({ edit }) {
                             </TableCell>
 
                             <TableCell align="right">
-                              <TextField
+                              <AutoSelectTextField
                                 size="small"
                                 margin="none"
                                 type="number"
@@ -829,7 +830,7 @@ export default function InvoiceCreate({ edit }) {
                               {detail.product?.unit}
                             </TableCell>
                             <TableCell align="right">
-                              <TextField
+                              <AutoSelectTextField
                                 size="small"
                                 margin="none"
                                 sx={{ width: 75 }}
@@ -840,7 +841,6 @@ export default function InvoiceCreate({ edit }) {
                                   delivery.key,
                                   detail.key
                                 )}
-                                onFocus={(e) => e.target.select()}
                               />
                             </TableCell>
                             <TableCell align="right">
