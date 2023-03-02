@@ -814,6 +814,7 @@ export default function InvoiceCreate({ edit }) {
 
                             <TableCell align="right">
                               <AutoSelectTextField
+                                variant="standard"
                                 size="small"
                                 margin="none"
                                 type="number"
@@ -833,9 +834,10 @@ export default function InvoiceCreate({ edit }) {
                               <AutoSelectTextField
                                 size="small"
                                 margin="none"
-                                sx={{ width: 75 }}
+                                sx={{ width: 50 }}
                                 type="number"
                                 value={detail.qty}
+                                variant="standard"
                                 onChange={handleDeliveryDetailAttrChange(
                                   "qty",
                                   delivery.key,
