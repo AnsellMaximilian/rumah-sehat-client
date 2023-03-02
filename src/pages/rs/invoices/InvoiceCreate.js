@@ -117,7 +117,7 @@ export default function InvoiceCreate({ edit }) {
               return {
                 key: uuidv4(),
                 mode: "own",
-                edit: true,
+                editId: delivery.id,
                 deliveryData: {
                   date: delivery.date,
                   cost: delivery.cost,
@@ -131,6 +131,7 @@ export default function InvoiceCreate({ edit }) {
                   );
                   return {
                     key: uuidv4(),
+                    editId: detail.id,
                     qty: detail.qty,
                     price: detail.price,
                     cost: detail.cost,
@@ -187,7 +188,7 @@ export default function InvoiceCreate({ edit }) {
 
   const handleAddDeliveryRow = (key, row) => {
     const delivery = deliveries.find((del) => del.key === key);
-    const product = !delivery.edit
+    const product = !delivery.editId
       ? products.filter(
           (product) =>
             product.SupplierId ===
@@ -276,8 +277,13 @@ export default function InvoiceCreate({ edit }) {
         status,
         note: invoiceNote,
         deliveries: deliveries.map((delivery, index) => {
-          const { mode, deliveryData, supplierDeliveryData, deliveryDetails } =
-            delivery;
+          const {
+            mode,
+            deliveryData,
+            supplierDeliveryData,
+            deliveryDetails,
+            editId,
+          } = delivery;
           if (delivery.deliveryData.customer === null)
             throw new Error(
               `Delivery recipient can't be empty (Delivery ${index + 1}).`
@@ -285,21 +291,24 @@ export default function InvoiceCreate({ edit }) {
 
           return {
             mode,
+            editId,
             deliveryData: {
               ...deliveryData,
               CustomerId: deliveryData.customer.id,
             },
-            supplierDeliveryData: !delivery.edit
+            supplierDeliveryData: !delivery.editId
               ? {
                   ...supplierDeliveryData,
                   date: moment(supplierDeliveryData.date).format("YYYY-MM-DD"),
                 }
               : {},
             deliveryDetails: deliveryDetails.map((detail) => {
-              const { qty, price, cost, makePurchase, product } = detail;
+              const { qty, price, cost, makePurchase, product, editId } =
+                detail;
               if (product === null) throw new Error("Please select a product.");
               return {
                 qty,
+                editId,
                 makePurchase,
                 product,
                 price,
@@ -431,7 +440,7 @@ export default function InvoiceCreate({ edit }) {
                   alignItems="flex-start"
                   justifyContent="space-between"
                 >
-                  {!delivery.edit ? (
+                  {!delivery.editId ? (
                     <ToggleButtonGroup
                       value={delivery.mode}
                       exclusive
@@ -728,25 +737,27 @@ export default function InvoiceCreate({ edit }) {
                                 >
                                   <Cancel color="error" />
                                 </IconButton>
-                                {delivery.mode === "own" && !delivery.edit && (
-                                  <FormGroup>
-                                    <FormControlLabel
-                                      control={
-                                        <Checkbox
-                                          size="small"
-                                          checked={detail.makePurchase}
-                                          onChange={handleDeliveryDetailAttrChange(
-                                            "makePurchase",
-                                            delivery.key,
-                                            detail.key,
-                                            !detail.makePurchase
-                                          )}
-                                        />
-                                      }
-                                      label="Make Purchase"
-                                    />
-                                  </FormGroup>
-                                )}
+                                {delivery.mode === "own" &&
+                                  (!delivery.editId ||
+                                    (delivery.editId && !detail.editId)) && (
+                                    <FormGroup>
+                                      <FormControlLabel
+                                        control={
+                                          <Checkbox
+                                            size="small"
+                                            checked={detail.makePurchase}
+                                            onChange={handleDeliveryDetailAttrChange(
+                                              "makePurchase",
+                                              delivery.key,
+                                              detail.key,
+                                              !detail.makePurchase
+                                            )}
+                                          />
+                                        }
+                                        label="Make Purchase"
+                                      />
+                                    </FormGroup>
+                                  )}
                               </Box>
                             </TableCell>
                             <TableCell align="left">
