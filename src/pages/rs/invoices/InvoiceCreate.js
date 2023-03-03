@@ -711,8 +711,11 @@ export default function InvoiceCreate({ edit }) {
                         <TableRow>
                           <TableCell>Actions</TableCell>
                           <TableCell align="left">Product</TableCell>
+                          <TableCell align="right">Cost</TableCell>
+
                           <TableCell align="right">Price</TableCell>
                           <TableCell align="right">Qty</TableCell>
+                          <TableCell align="right">Subtotal Cost</TableCell>
                           <TableCell align="right">Subtotal</TableCell>
                         </TableRow>
                       </TableHead>
@@ -832,6 +835,23 @@ export default function InvoiceCreate({ edit }) {
                                 type="number"
                                 inputProps={{ tabIndex: -1 }}
                                 sx={{ width: 100 }}
+                                value={detail.cost}
+                                onChange={handleDeliveryDetailAttrChange(
+                                  "cost",
+                                  delivery.key,
+                                  detail.key
+                                )}
+                              />
+                            </TableCell>
+
+                            <TableCell align="right">
+                              <AutoSelectTextField
+                                variant="standard"
+                                size="small"
+                                margin="none"
+                                type="number"
+                                inputProps={{ tabIndex: -1 }}
+                                sx={{ width: 100 }}
                                 value={detail.price}
                                 onChange={handleDeliveryDetailAttrChange(
                                   "price",
@@ -840,6 +860,7 @@ export default function InvoiceCreate({ edit }) {
                                 )}
                               />
                             </TableCell>
+
                             <TableCell align="right">
                               <AutoSelectTextField
                                 size="small"
@@ -857,6 +878,11 @@ export default function InvoiceCreate({ edit }) {
                             </TableCell>
                             <TableCell align="right">
                               <NumericFormatRp
+                                value={detail.cost * detail.qty}
+                              />
+                            </TableCell>
+                            <TableCell align="right">
+                              <NumericFormatRp
                                 value={detail.price * detail.qty}
                               />
                             </TableCell>
@@ -864,7 +890,7 @@ export default function InvoiceCreate({ edit }) {
                         ))}
                         <TableRow>
                           <TableCell
-                            colSpan={4}
+                            colSpan={6}
                             align="right"
                             component="th"
                             sx={{ fontWeight: "500" }}
@@ -879,7 +905,7 @@ export default function InvoiceCreate({ edit }) {
                         </TableRow>
                         <TableRow>
                           <TableCell
-                            colSpan={4}
+                            colSpan={6}
                             align="right"
                             component="th"
                             sx={{ fontWeight: "500" }}
@@ -894,7 +920,7 @@ export default function InvoiceCreate({ edit }) {
                         </TableRow>
                         <TableRow>
                           <TableCell
-                            colSpan={4}
+                            colSpan={6}
                             align="right"
                             component="th"
                             sx={{ fontWeight: "500" }}
