@@ -63,6 +63,7 @@ export default function PurchaseCreate({ edit }) {
           setNote(purchase.note || "");
           setDate(moment(purchase.date).format("yyyy-MM-DD"));
           setSelectedSupplierId(purchase.SupplierId);
+          setCost(purchase.cost);
 
           setPurchaseDetails(
             purchase.PurchaseDetails.map((detail) => {
@@ -146,7 +147,7 @@ export default function PurchaseCreate({ edit }) {
       } else {
         await http.patch(`/rs/purchases/${id}`, body);
         toast.success("Updated purchase.");
-        navigate(`/rs/purchases/${id}`);
+        navigate(`/rs/purchases/`);
       }
     } catch (error) {
       const errorValue = error?.response?.data?.error;

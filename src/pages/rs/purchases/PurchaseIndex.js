@@ -11,6 +11,7 @@ import SmartTable from "../../../components/SmartTable";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import { toast } from "react-toastify";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
+import moment from "moment";
 
 const PurchaseIndex = () => {
   const [purchases, setPurchases] = useState([]);
@@ -38,8 +39,22 @@ const PurchaseIndex = () => {
 
   const columns = [
     { field: "id", headerName: "ID", width: 50 },
-    { field: "date", headerName: "Date", width: 100 },
+    { field: "date", headerName: "Date", width: 150 },
     { field: "supplier", headerName: "Supplier", width: 100 },
+    {
+      field: "subtotalPrice",
+      headerName: "Subtotal",
+      width: 100,
+      renderCell: (params) => (
+        <NumericFormatRp value={params.row.subtotalPrice} />
+      ),
+    },
+    {
+      field: "cost",
+      headerName: "Cost",
+      width: 100,
+      renderCell: (params) => <NumericFormatRp value={params.row.cost} />,
+    },
     {
       field: "totalPrice",
       headerName: "Total",
@@ -99,9 +114,11 @@ const PurchaseIndex = () => {
         <SmartTable
           rows={purchases.map((purchase) => ({
             id: purchase.id,
-            date: purchase.date,
+            date: moment(purchase.date).format("DD-MM-YYYY"),
             supplier: purchase.Supplier.name,
             totalPrice: purchase.totalPrice,
+            subtotalPrice: purchase.subtotalPrice,
+            cost: purchase.cost,
             // status: purchase.status,
           }))}
           columns={columns}
