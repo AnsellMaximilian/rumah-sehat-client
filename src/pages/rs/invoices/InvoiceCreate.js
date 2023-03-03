@@ -712,7 +712,6 @@ export default function InvoiceCreate({ edit }) {
                           <TableCell>Actions</TableCell>
                           <TableCell align="left">Product</TableCell>
                           <TableCell align="right">Price</TableCell>
-                          <TableCell align="right">Unit</TableCell>
                           <TableCell align="right">Qty</TableCell>
                           <TableCell align="right">Subtotal</TableCell>
                         </TableRow>
@@ -842,9 +841,6 @@ export default function InvoiceCreate({ edit }) {
                               />
                             </TableCell>
                             <TableCell align="right">
-                              {detail.product?.unit}
-                            </TableCell>
-                            <TableCell align="right">
                               <AutoSelectTextField
                                 size="small"
                                 margin="none"
@@ -868,7 +864,7 @@ export default function InvoiceCreate({ edit }) {
                         ))}
                         <TableRow>
                           <TableCell
-                            colSpan={5}
+                            colSpan={4}
                             align="right"
                             component="th"
                             sx={{ fontWeight: "500" }}
@@ -883,7 +879,7 @@ export default function InvoiceCreate({ edit }) {
                         </TableRow>
                         <TableRow>
                           <TableCell
-                            colSpan={5}
+                            colSpan={4}
                             align="right"
                             component="th"
                             sx={{ fontWeight: "500" }}
@@ -898,7 +894,7 @@ export default function InvoiceCreate({ edit }) {
                         </TableRow>
                         <TableRow>
                           <TableCell
-                            colSpan={5}
+                            colSpan={4}
                             align="right"
                             component="th"
                             sx={{ fontWeight: "500" }}
