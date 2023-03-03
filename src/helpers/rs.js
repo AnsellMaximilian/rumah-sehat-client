@@ -9,3 +9,6 @@ export const getSubtotal = (deliveryDetails) =>
 
 export const getPurchaseSubtotal = (purchaseDetails) =>
   purchaseDetails.reduce((sum, detail) => sum + detail.cost * detail.qty, 0);
+
+export const getBillSubtotal = (details) =>
+  details.reduce((sum, detail) => sum + detail.total, 0);

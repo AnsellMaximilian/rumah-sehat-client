@@ -12,6 +12,7 @@ import CategoryIcon from "@mui/icons-material/ManageSearch";
 import SupplierIcon from "@mui/icons-material/Inventory";
 import ShoppingCart from "@mui/icons-material/ShoppingCart";
 // import MyLocationIcon from "@mui/icons-material/MyLocation";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 
 import SanitizerIcon from "@mui/icons-material/Sanitizer";
 import React, { useState } from "react";
@@ -108,6 +109,11 @@ const Sidebar = () => {
       </Collapse>
 
       <SidebarLink to="/rs/invoices" text="Invoices" icon={<ReceiptIcon />} />
+      <SidebarLink
+        to="/rs/supplier-bills"
+        text="Supplier Bills"
+        icon={<ReceiptLongIcon />}
+      />
       <SidebarLink
         to="/rs/adjustments"
         text="Adjustments"

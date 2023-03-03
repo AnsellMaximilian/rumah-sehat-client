@@ -46,6 +46,7 @@ import PurchaseIndex from "./pages/rs/purchases/PurchaseIndex";
 import PurchaseCreate from "./pages/rs/purchases/PurchaseCreate";
 import Test from "./pages/rs/purchases/Test";
 import PurchaseShow from "./pages/rs/purchases/PurchaseShow";
+import SupplierBillIndex from "./pages/rs/supplierBills/SupplierBillIndex";
 
 function App() {
   return (
@@ -134,6 +135,17 @@ function App() {
                   <Route path="create" element={<InvoiceCreate />} />
                   <Route path="edit/:id" element={<InvoiceCreate edit />} />
                   <Route path=":id" element={<InvoiceShow />} />
+                </Route>
+                <Route
+                  path="supplier-bills"
+                  element={
+                    <DataLayout title="Supplier Bills" titleVariant="h5" />
+                  }
+                >
+                  <Route path="" element={<SupplierBillIndex />} />
+                  {/* <Route path="create" element={<InvoiceCreate />} />
+                  <Route path="edit/:id" element={<InvoiceCreate edit />} />
+                  <Route path=":id" element={<InvoiceShow />} /> */}
                 </Route>
               </Route>
 
