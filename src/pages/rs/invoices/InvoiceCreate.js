@@ -728,6 +728,7 @@ export default function InvoiceCreate({ edit }) {
                             <TableCell component="th" scope="row">
                               <Box display="flex" gap={2}>
                                 <IconButton
+                                  tabIndex={-1}
                                   onClick={() =>
                                     handleRemoveDeliveryDetail(
                                       delivery.key,
@@ -744,6 +745,7 @@ export default function InvoiceCreate({ edit }) {
                                       <FormControlLabel
                                         control={
                                           <Checkbox
+                                            tabIndex={-1}
                                             size="small"
                                             checked={detail.makePurchase}
                                             onChange={handleDeliveryDetailAttrChange(
@@ -829,6 +831,7 @@ export default function InvoiceCreate({ edit }) {
                                 size="small"
                                 margin="none"
                                 type="number"
+                                inputProps={{ tabIndex: -1 }}
                                 sx={{ width: 100 }}
                                 value={detail.price}
                                 onChange={handleDeliveryDetailAttrChange(
