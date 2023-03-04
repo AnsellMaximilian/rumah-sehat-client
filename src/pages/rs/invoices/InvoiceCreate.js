@@ -667,10 +667,10 @@ export default function InvoiceCreate({ edit }) {
                         </Typography>
                         <Typography variant="subtitle">
                           <NumericFormatRp
-                            value={
+                            value={(
                               getPurchaseSubtotal(delivery.deliveryDetails) +
                               parseInt(delivery.supplierDeliveryData.cost)
-                            }
+                            ).toFixed(0)}
                           />
                         </Typography>
                       </Box>
