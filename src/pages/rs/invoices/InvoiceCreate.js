@@ -161,7 +161,7 @@ export default function InvoiceCreate({ edit }) {
           cost: 0,
         },
         deliveryData: {
-          date: moment().format("yyyy-MM-DD"),
+          date: "",
           cost: 0,
           note: undefined,
           DeliveryTypeId: deliveryTypes[0].id,
@@ -287,6 +287,11 @@ export default function InvoiceCreate({ edit }) {
           if (delivery.deliveryData.customer === null)
             throw new Error(
               `Delivery recipient can't be empty (Delivery ${index + 1}).`
+            );
+
+          if (!delivery.deliveryData.date)
+            throw new Error(
+              `Delivery must have a date (Delivery ${index + 1}).`
             );
 
           return {
