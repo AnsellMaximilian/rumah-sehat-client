@@ -883,12 +883,12 @@ export default function InvoiceCreate({ edit }) {
                             </TableCell>
                             <TableCell align="right">
                               <NumericFormatRp
-                                value={parseInt(detail.cost * detail.qty)}
+                                value={(detail.cost * detail.qty).toFixed(0)}
                               />
                             </TableCell>
                             <TableCell align="right">
                               <NumericFormatRp
-                                value={parseInt(detail.price * detail.qty)}
+                                value={(detail.price * detail.qty).toFixed(0)}
                               />
                             </TableCell>
                           </TableRow>
