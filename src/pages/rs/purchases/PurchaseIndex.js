@@ -12,10 +12,12 @@ import NumericFormatRp from "../../../components/NumericFormatRp";
 import { toast } from "react-toastify";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
 import moment from "moment";
+import DeleteAlert from "../../../components/DeleteAlert";
 
 const PurchaseIndex = () => {
   const [purchases, setPurchases] = useState([]);
   const navigate = useNavigate();
+  const [toDeleteId, setToDeleteId] = useState(null);
 
   const handleDelete = (id) => {
     (async () => {
@@ -79,7 +81,7 @@ const PurchaseIndex = () => {
               color="error"
               onClick={(e) => {
                 e.stopPropagation();
-                handleDelete(params.row.id);
+                setToDeleteId(params.row.id);
               }}
             >
               <Delete />
@@ -124,6 +126,13 @@ const PurchaseIndex = () => {
           columns={columns}
         />
       </Card>
+      <DeleteAlert
+        message="Deleting this purchase will also delete any related details."
+        toDeleteId={toDeleteId}
+        handleDelete={handleDelete}
+        setToDeleteId={setToDeleteId}
+        objectName="Purchase"
+      />
     </Box>
   );
 };
