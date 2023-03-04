@@ -248,7 +248,10 @@ export default function PurchaseCreate({ edit }) {
                 >
                   <TableCell component="th" scope="row">
                     <Box display="flex" gap={2}>
-                      <IconButton onClick={handleRemoveDetail(detail.key)}>
+                      <IconButton
+                        onClick={handleRemoveDetail(detail.key)}
+                        tabIndex={-1}
+                      >
                         <Cancel color="error" />
                       </IconButton>
                     </Box>
@@ -294,38 +297,27 @@ export default function PurchaseCreate({ edit }) {
                       getOptionLabel={(option) => option.name}
                       options={getSupplierProducts()}
                       sx={{ width: 300 }}
-                      renderInput={(params) => (
-                        <TextField {...params} label="Product" />
-                      )}
+                      renderInput={(params) => <TextField {...params} />}
                     />
-                    {/* <FormControl margin="none" size="small">
-                      <Select
-                        value={detail.product.id}
-                        onChange={handleChangeProduct(detail.key)}
-                      >
-                        {getSupplierProducts().map((product) => (
-                          <MenuItem value={product.id} key={product.id}>
-                            {product.name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl> */}
                   </TableCell>
 
                   <TableCell align="right">
                     <TextField
                       size="small"
                       margin="none"
+                      variant="standard"
                       type="number"
+                      inputProps={{ tabIndex: -1 }}
                       value={detail.price}
-                      // onChange={}
+                      onChange={handleChangePurchaseDetail("price", detail.key)}
                     />
                   </TableCell>
                   <TableCell align="right">
                     <AutoSelectTextField
                       size="small"
                       margin="none"
-                      sx={{ width: 125 }}
+                      variant="standard"
+                      sx={{ width: 75 }}
                       type="number"
                       value={detail.qty}
                       onChange={handleChangePurchaseDetail("qty", detail.key)}
