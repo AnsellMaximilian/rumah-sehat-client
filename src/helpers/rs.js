@@ -11,4 +11,4 @@ export const getPurchaseSubtotal = (purchaseDetails) =>
   purchaseDetails.reduce((sum, detail) => sum + detail.cost * detail.qty, 0);
 
 export const getBillSubtotal = (details) =>
-  details.reduce((sum, detail) => sum + detail.total, 0);
+  details.reduce((sum, detail) => sum + parseFloat(detail.total), 0);

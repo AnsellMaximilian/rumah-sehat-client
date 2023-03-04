@@ -171,10 +171,10 @@ const SupplierBillIndex = () => {
                         <NumericFormatRp value={detail.productPrice} />
                       </TableCell>
                       <TableCell align="right">
-                        {parseFloat(detail.qty.toFixed(3))}
+                        {parseFloat(detail.qty)}
                       </TableCell>
                       <TableCell align="right">
-                        <NumericFormatRp value={detail.total} />
+                        <NumericFormatRp value={parseFloat(detail.total)} />
                       </TableCell>
                     </TableRow>
                   ))}
