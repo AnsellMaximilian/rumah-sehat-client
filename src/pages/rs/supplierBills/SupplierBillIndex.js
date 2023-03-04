@@ -130,9 +130,14 @@ const SupplierBillIndex = () => {
         </Grid>
       </Grid>
       <Box component={Paper} marginTop={2}>
-        <Box>
+        <Box padding={2} backgroundColor="primary.main" color="white">
           <Typography variant="h3" fontWeight="500">
             {suppliers.find((sup) => sup.id === selectedSupplierId).name}
+          </Typography>
+          <Typography variant="h6">Supplier Invoice</Typography>
+          <Typography variant="subtitle1">
+            {moment(startDate).format("DD MMMM YYYY")} -{" "}
+            {moment(endDate).format("DD MMMM YYYY")}
           </Typography>
         </Box>
         {billData ? (
@@ -165,7 +170,9 @@ const SupplierBillIndex = () => {
                       <TableCell align="right">
                         <NumericFormatRp value={detail.productPrice} />
                       </TableCell>
-                      <TableCell align="right">{detail.qty}</TableCell>
+                      <TableCell align="right">
+                        {parseFloat(detail.qty.toFixed(3))}
+                      </TableCell>
                       <TableCell align="right">
                         <NumericFormatRp value={detail.total} />
                       </TableCell>
