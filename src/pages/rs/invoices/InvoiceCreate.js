@@ -878,12 +878,12 @@ export default function InvoiceCreate({ edit }) {
                             </TableCell>
                             <TableCell align="right">
                               <NumericFormatRp
-                                value={detail.cost * detail.qty}
+                                value={parseInt(detail.cost * detail.qty)}
                               />
                             </TableCell>
                             <TableCell align="right">
                               <NumericFormatRp
-                                value={detail.price * detail.qty}
+                                value={parseInt(detail.price * detail.qty)}
                               />
                             </TableCell>
                           </TableRow>
@@ -899,7 +899,9 @@ export default function InvoiceCreate({ edit }) {
                           </TableCell>
                           <TableCell align="right">
                             <NumericFormatRp
-                              value={getSubtotal(delivery.deliveryDetails)}
+                              value={parseInt(
+                                getSubtotal(delivery.deliveryDetails)
+                              )}
                             />
                           </TableCell>
                         </TableRow>
@@ -929,10 +931,10 @@ export default function InvoiceCreate({ edit }) {
                           </TableCell>
                           <TableCell align="right">
                             <NumericFormatRp
-                              value={
+                              value={parseInt(
                                 getSubtotal(delivery.deliveryDetails) +
-                                parseInt(delivery.deliveryData.cost)
-                              }
+                                  parseInt(delivery.deliveryData.cost)
+                              )}
                             />
                           </TableCell>
                         </TableRow>
