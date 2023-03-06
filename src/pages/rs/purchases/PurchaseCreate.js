@@ -297,7 +297,9 @@ export default function PurchaseCreate({ edit }) {
                       getOptionLabel={(option) => option.name}
                       options={getSupplierProducts()}
                       sx={{ width: 300 }}
-                      renderInput={(params) => <TextField {...params} />}
+                      renderInput={(params) => (
+                        <TextField {...params} size="small" />
+                      )}
                     />
                   </TableCell>
 
