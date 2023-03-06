@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
 import moment from "moment";
 import DeleteAlert from "../../../components/DeleteAlert";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 
 const PurchaseIndex = () => {
   const [purchases, setPurchases] = useState([]);
@@ -101,6 +102,15 @@ const PurchaseIndex = () => {
             >
               <ShowIcon />
             </IconButton>
+            <IconButton
+              disabled={!!!params.row.DeliveryId}
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/rs/deliveries/${params.row.DeliveryId}`);
+              }}
+            >
+              <LocalShippingIcon />
+            </IconButton>
           </>
         );
       },
@@ -128,6 +138,7 @@ const PurchaseIndex = () => {
             subtotalPrice: purchase.subtotalPrice,
             cost: purchase.cost,
             totalDesignatedSales: purchase.totalDesignatedSales,
+            DeliveryId: purchase.DeliveryId,
           }))}
           columns={columns}
         />
