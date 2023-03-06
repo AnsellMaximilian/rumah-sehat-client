@@ -36,6 +36,7 @@ export default function PurchaseCreate({ edit }) {
 
   const { id } = useParams();
   const [purchaseDetails, setPurchaseDetails] = useState([]);
+  const [customers, setCustomers] = useState([]);
 
   // Select values
   const [suppliers, setSuppliers] = useState([]);
@@ -47,6 +48,7 @@ export default function PurchaseCreate({ edit }) {
     (async () => {
       setProducts((await http.get("/rs/products")).data.data);
       setSuppliers((await http.get("/rs/suppliers/active")).data.data);
+      setCustomers((await http.get("/customers")).data.data);
     })();
   }, []);
 
@@ -59,7 +61,7 @@ export default function PurchaseCreate({ edit }) {
         setSelectedSupplierId(edit ? purchase.SupplierId : suppliers[0].id);
 
       if (edit) {
-        if (products.length > 0) {
+        if (products.length > 0 && customers.length > 0) {
           setNote(purchase.note || "");
           setDate(moment(purchase.date).format("yyyy-MM-DD"));
           setSelectedSupplierId(purchase.SupplierId);
@@ -70,19 +72,26 @@ export default function PurchaseCreate({ edit }) {
               const product = products.find(
                 (product) => product.id === detail.ProductId
               );
+              const customer = detail.CustomerId
+                ? customers.find(
+                    (customer) => customer.id === detail.CustomerId
+                  )
+                : null;
               return {
                 key: uuidv4(),
                 price: detail.price,
                 qty: detail.qty,
                 product: product,
+                customer: customer,
                 search: "",
+                customerSearch: "",
               };
             })
           );
         }
       }
     })();
-  }, [edit, id, products, suppliers]);
+  }, [edit, id, products, suppliers, customers]);
 
   const getSupplierProducts = () =>
     products.filter((product) => product.SupplierId === selectedSupplierId);
@@ -97,7 +106,9 @@ export default function PurchaseCreate({ edit }) {
           price: product.cost,
           qty: 0,
           product: product,
+          customer: null,
           search: "",
+          customerSearch: "",
         },
       ];
     });
@@ -129,13 +140,14 @@ export default function PurchaseCreate({ edit }) {
         SupplierId: selectedSupplierId,
         note: note,
         purchaseDetails: purchaseDetails.map((detail) => {
-          const { qty, price, product } = detail;
+          const { qty, price, product, customer } = detail;
 
           if (product === null) throw new Error("Select a product");
           return {
             qty,
             price,
             ProductId: product.id,
+            CustomerId: customer ? customer.id : null,
           };
         }),
         date: moment(date).format("YYYY-MM-DD"),
@@ -156,7 +168,10 @@ export default function PurchaseCreate({ edit }) {
     }
   };
 
-  return selectedSupplierId && products.length > 0 && suppliers.length > 0 ? (
+  return selectedSupplierId &&
+    products.length > 0 &&
+    suppliers.length > 0 &&
+    customers.length > 0 ? (
     <Box paddingBottom={10}>
       <Box display="flex" gap={2} alignItems="stretch">
         <Box display="flex" flexDirection="column" gap={2}>
@@ -254,6 +269,49 @@ export default function PurchaseCreate({ edit }) {
                       >
                         <Cancel color="error" />
                       </IconButton>
+                      <Autocomplete
+                        value={detail.customer}
+                        onInputChange={(e, newValue) => {
+                          setPurchaseDetails((prev) => {
+                            return prev.map((currentDetail) => {
+                              if (currentDetail.key === detail.key) {
+                                return {
+                                  ...detail,
+                                  customerSearch: newValue,
+                                };
+                              }
+                              return currentDetail;
+                            });
+                          });
+                        }}
+                        onChange={(event, newValue) => {
+                          setPurchaseDetails((prev) => {
+                            return prev.map((currentDetail) => {
+                              if (currentDetail.key === detail.key) {
+                                return {
+                                  ...detail,
+                                  customer: newValue,
+                                };
+                              }
+                              return currentDetail;
+                            });
+                          });
+                        }}
+                        isOptionEqualToValue={(option, value) =>
+                          option.id === value.id
+                        }
+                        getOptionLabel={(option) => option.fullName}
+                        renderOption={(props, option) => (
+                          <li {...props} key={option.id}>
+                            {option.fullName}
+                          </li>
+                        )}
+                        options={customers}
+                        sx={{ width: 150 }}
+                        renderInput={(params) => (
+                          <TextField {...params} size="small" />
+                        )}
+                      />
                     </Box>
                   </TableCell>
                   <TableCell align="left">
@@ -295,6 +353,11 @@ export default function PurchaseCreate({ edit }) {
                         option.id === value.id
                       }
                       getOptionLabel={(option) => option.name}
+                      renderOption={(props, option) => (
+                        <li {...props} key={option.id}>
+                          {option.name}
+                        </li>
+                      )}
                       options={getSupplierProducts()}
                       sx={{ width: 300 }}
                       renderInput={(params) => (

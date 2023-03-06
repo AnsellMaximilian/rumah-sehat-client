@@ -65,6 +65,12 @@ const PurchaseIndex = () => {
     },
 
     {
+      field: "totalDesignatedSales",
+      headerName: "Des. Sales",
+      width: 100,
+    },
+
+    {
       field: "actions",
       headerName: "Actions",
       renderCell: (params) => {
@@ -121,7 +127,7 @@ const PurchaseIndex = () => {
             totalPrice: purchase.totalPrice,
             subtotalPrice: purchase.subtotalPrice,
             cost: purchase.cost,
-            // status: purchase.status,
+            totalDesignatedSales: purchase.totalDesignatedSales,
           }))}
           columns={columns}
         />
