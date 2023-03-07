@@ -15,6 +15,7 @@ import { useParams } from "react-router-dom";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import http from "../../../http-common";
 import PrintIcon from "@mui/icons-material/Print";
+import { Link } from "react-router-dom";
 
 const InvoiceShow = () => {
   const { id } = useParams();
@@ -27,14 +28,21 @@ const InvoiceShow = () => {
   }, [id]);
   return invoice ? (
     <Box>
-      <Box display="flex" justifyContent="flex-end" marginBottom={1}>
+      <Box display="flex" justifyContent="flex-end" marginBottom={1} gap={2}>
+        <Button
+          component={Link}
+          to={`/rs/invoices/edit/${id}`}
+          underline={"none"}
+          variant="outlined"
+        >
+          Edit
+        </Button>
         <Button
           href={` http://localhost:1107/rs/invoices/${id}/print`}
           target="__blank"
           component="a"
           variant="contained"
           color="error"
-          sx={{ marginLeft: "auto" }}
         >
           <PrintIcon color="white" />
         </Button>
