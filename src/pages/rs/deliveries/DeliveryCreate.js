@@ -31,7 +31,7 @@ import { v4 as uuidv4 } from "uuid";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import { getSubtotal } from "../../../helpers/rs";
 
-export default function DeliveryCrate({ edit }) {
+export default function DeliveryCreate({ edit }) {
   const [customers, setCustomers] = useState([]);
   const [deliveryTypes, setDeliveryTypes] = useState([]);
   const [products, setProducts] = useState([]);
