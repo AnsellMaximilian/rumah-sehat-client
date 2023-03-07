@@ -38,7 +38,6 @@ import { getPurchaseSubtotal, getSubtotal } from "../../../helpers/rs";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
-import BulkAdd from "../../../components/rs/BulkAdd";
 import AutoSelectTextField from "../../../components/AutoSelectTextField";
 
 export default function InvoiceCreate({ edit }) {
@@ -85,10 +84,6 @@ export default function InvoiceCreate({ edit }) {
   const [suppliers, setSuppliers] = useState([]);
   const [products, setProducts] = useState([]);
   const [deliveryTypes, setDeliveryTypes] = useState([]);
-
-  // Bulk Add
-  const [bulkAddProducts, setBulkAddProducts] = useState([]);
-  const [bulkAddDeliveryKey, setBulkAddDeliveryKey] = useState(null);
 
   const navigate = useNavigate();
 
@@ -686,23 +681,6 @@ export default function InvoiceCreate({ edit }) {
                     >
                       Products
                     </Box>
-                    {delivery.mode === "supplier" && (
-                      <Button
-                        variant="outlined"
-                        onClick={() => {
-                          setBulkAddDeliveryKey(delivery.key);
-                          setBulkAddProducts(
-                            products.filter(
-                              (product) =>
-                                product.SupplierId ===
-                                delivery.supplierDeliveryData.SupplierId
-                            )
-                          );
-                        }}
-                      >
-                        Bulk Add
-                      </Button>
-                    )}
                     <Button
                       variant="outlined"
                       onClick={() => handleAddDeliveryRow(delivery.key)}
@@ -962,27 +940,6 @@ export default function InvoiceCreate({ edit }) {
           {edit ? "Update" : "Create"}
         </Fab>
       </Box>
-      <BulkAdd
-        products={bulkAddProducts}
-        open={bulkAddDeliveryKey !== null}
-        handleClose={() => {
-          setBulkAddDeliveryKey(null);
-          setBulkAddProducts([]);
-        }}
-        onSubmit={(details) => {
-          for (const detail of details) {
-            handleAddDeliveryRow(bulkAddDeliveryKey, {
-              key: uuidv4(),
-              price: detail.price,
-              cost: detail.cost,
-              qty: detail.qty,
-              product: detail.product,
-              makePurchase: false,
-              search: "",
-            });
-          }
-        }}
-      />
     </Box>
   ) : (
     <h1>Loading...</h1>
