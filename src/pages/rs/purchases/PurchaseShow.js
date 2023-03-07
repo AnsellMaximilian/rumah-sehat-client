@@ -95,6 +95,7 @@ const PurchaseShow = () => {
             >
               <TableHead>
                 <TableRow>
+                  <TableCell>Designated Recipient</TableCell>
                   <TableCell>Product</TableCell>
                   <TableCell align="right">Price</TableCell>
                   <TableCell align="right">Qty</TableCell>
@@ -110,6 +111,9 @@ const PurchaseShow = () => {
                     }}
                   >
                     <TableCell component="th" scope="row">
+                      {detail.Customer ? detail.Customer.fullName : "None"}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
                       {detail.productName}
                     </TableCell>
                     <TableCell align="right">
@@ -122,7 +126,7 @@ const PurchaseShow = () => {
                   </TableRow>
                 ))}
                 <TableRow>
-                  <TableCell colSpan={3} align="right">
+                  <TableCell colSpan={4} align="right">
                     Subtotal
                   </TableCell>
                   <TableCell align="right">
@@ -131,7 +135,7 @@ const PurchaseShow = () => {
                 </TableRow>
 
                 <TableRow>
-                  <TableCell colSpan={3} align="right">
+                  <TableCell colSpan={4} align="right">
                     Delivery
                   </TableCell>
                   <TableCell align="right" colSpan={2}>
@@ -139,7 +143,7 @@ const PurchaseShow = () => {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell colSpan={3} align="right">
+                  <TableCell colSpan={4} align="right">
                     Total
                   </TableCell>
                   <TableCell align="right" colSpan={2}>
