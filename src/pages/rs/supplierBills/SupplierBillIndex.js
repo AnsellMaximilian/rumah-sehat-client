@@ -132,7 +132,7 @@ const SupplierBillIndex = () => {
           </Button>
         </Grid>
       </Grid>
-      {!firstLoad ? (
+      {!firstLoad && billData ? (
         <Box component={Paper} marginTop={2}>
           <Box padding={2} backgroundColor="primary.main" color="white">
             <Typography variant="h3" fontWeight="500">
