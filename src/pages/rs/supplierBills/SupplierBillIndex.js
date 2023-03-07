@@ -33,6 +33,8 @@ const SupplierBillIndex = () => {
 
   const [billData, setBillData] = useState(null);
 
+  const [firstLoad, setFirstLoad] = useState(true);
+
   useEffect(() => {
     (async () => {
       setSuppliers((await http.get("/rs/suppliers")).data.data);
@@ -64,6 +66,7 @@ const SupplierBillIndex = () => {
 
   const handleSubmit = async () => {
     try {
+      setFirstLoad(false);
       const purchases = (
         await http.get(
           `/rs/purchases/bill?startDate=${startDate}&endDate=${endDate}&supplierId=${selectedSupplierId}`
@@ -129,18 +132,19 @@ const SupplierBillIndex = () => {
           </Button>
         </Grid>
       </Grid>
-      <Box component={Paper} marginTop={2}>
-        <Box padding={2} backgroundColor="primary.main" color="white">
-          <Typography variant="h3" fontWeight="500">
-            {suppliers.find((sup) => sup.id === selectedSupplierId).name}
-          </Typography>
-          <Typography variant="h6">Supplier Invoice</Typography>
-          <Typography variant="subtitle1">
-            {moment(startDate).format("DD MMMM YYYY")} -{" "}
-            {moment(endDate).format("DD MMMM YYYY")}
-          </Typography>
-        </Box>
-        {billData ? (
+      {!firstLoad ? (
+        <Box component={Paper} marginTop={2}>
+          <Box padding={2} backgroundColor="primary.main" color="white">
+            <Typography variant="h3" fontWeight="500">
+              {suppliers.find((sup) => sup.id === selectedSupplierId).name}
+            </Typography>
+            <Typography variant="h6">Supplier Invoice</Typography>
+            <Typography variant="subtitle1">
+              {moment(startDate).format("DD MMMM YYYY")} -{" "}
+              {moment(endDate).format("DD MMMM YYYY")}
+            </Typography>
+          </Box>
+
           <Box>
             <TableContainer sx={{ marginTop: 2 }}>
               <Table
@@ -214,10 +218,10 @@ const SupplierBillIndex = () => {
               </Table>
             </TableContainer>
           </Box>
-        ) : (
-          <h1>Loading bill data...</h1>
-        )}
-      </Box>
+        </Box>
+      ) : (
+        <h1>Select Filter</h1>
+      )}
     </Box>
   ) : (
     <h1>Loading...</h1>
