@@ -67,42 +67,42 @@ const DeliveryIndex = () => {
         ),
     },
 
-    {
-      field: "actions",
-      headerName: "Actions",
-      renderCell: (params) => {
-        return (
-          <>
-            <IconButton
-              color="warning"
-              component={Link}
-              to={`/rs/deliveries/edit/${params.row.id}`}
-            >
-              <Edit />
-            </IconButton>
-            <IconButton
-              color="error"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDelete(params.row.id);
-              }}
-            >
-              <Delete />
-            </IconButton>
-            <IconButton
-              color="primary"
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/rs/deliveries/${params.row.id}`);
-              }}
-            >
-              <ShowIcon />
-            </IconButton>
-          </>
-        );
-      },
-      width: 200,
-    },
+    // {
+    //   field: "actions",
+    //   headerName: "Actions",
+    //   renderCell: (params) => {
+    //     return (
+    //       <>
+    //         <IconButton
+    //           color="warning"
+    //           component={Link}
+    //           to={`/rs/deliveries/edit/${params.row.id}`}
+    //         >
+    //           <Edit />
+    //         </IconButton>
+    //         <IconButton
+    //           color="error"
+    //           onClick={(e) => {
+    //             e.stopPropagation();
+    //             handleDelete(params.row.id);
+    //           }}
+    //         >
+    //           <Delete />
+    //         </IconButton>
+    //         <IconButton
+    //           color="primary"
+    //           onClick={(e) => {
+    //             e.stopPropagation();
+    //             navigate(`/rs/deliveries/${params.row.id}`);
+    //           }}
+    //         >
+    //           <ShowIcon />
+    //         </IconButton>
+    //       </>
+    //     );
+    //   },
+    //   width: 200,
+    // },
   ];
   return (
     <Box>
