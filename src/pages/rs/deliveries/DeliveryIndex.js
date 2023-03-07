@@ -11,6 +11,7 @@ import SmartTable from "../../../components/SmartTable";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import { toast } from "react-toastify";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
+import ReceiptIcon from "@mui/icons-material/Receipt";
 
 const DeliveryIndex = () => {
   const [deliveries, setDeliveries] = useState([]);
@@ -47,6 +48,23 @@ const DeliveryIndex = () => {
       headerName: "Total (Rp)",
       width: 100,
       renderCell: (params) => <NumericFormatRp value={params.row.totalPrice} />,
+    },
+    {
+      field: "invoice",
+      headerName: "Invoice",
+      width: 100,
+      renderCell: (params) =>
+        params.row.invoice ? (
+          <IconButton
+            color="primary"
+            component={Link}
+            to={`/rs/invoices/${params.row.invoice.id}`}
+          >
+            <ReceiptIcon />
+          </IconButton>
+        ) : (
+          <span>None</span>
+        ),
     },
 
     {
@@ -106,6 +124,7 @@ const DeliveryIndex = () => {
             date: delivery.date,
             customer: delivery.Customer.fullName,
             totalPrice: delivery.totalPrice,
+            invoice: delivery.Invoice,
           }))}
           columns={columns}
         />
