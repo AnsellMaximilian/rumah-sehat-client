@@ -1,8 +1,8 @@
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import Grid from "@mui/material/Grid";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
@@ -21,6 +21,8 @@ import NumericFormatRp from "../../../components/NumericFormatRp";
 import { toast } from "react-toastify";
 import moment from "moment";
 import { getBillSubtotal } from "../../../helpers/rs";
+import IndividualSupplierInvoice from "../../../components/rs/IndividualSupplierInvoice";
+import SupplierInvoiceReport from "../../../components/rs/SupplierInvoiceReport";
 
 const SupplierBillIndex = () => {
   const navigate = useNavigate();
@@ -32,8 +34,9 @@ const SupplierBillIndex = () => {
   const [endDate, setEndDate] = useState(moment().format("yyyy-MM-DD"));
 
   const [billData, setBillData] = useState(null);
+  const [reportData, setReportData] = useState(null);
 
-  const [firstLoad, setFirstLoad] = useState(true);
+  const [mode, setMode] = useState("individual"); // individual or report
 
   useEffect(() => {
     (async () => {
@@ -46,6 +49,11 @@ const SupplierBillIndex = () => {
       if (suppliers.length > 0) setSelectedSupplierId(suppliers[0].id);
     })();
   }, [suppliers]);
+
+  useEffect(() => {
+    setBillData(null);
+    setReportData(null);
+  }, [startDate, endDate, selectedSupplierId]);
 
   const handleSetWeek = () => {
     const currentDate = moment();
@@ -66,41 +74,75 @@ const SupplierBillIndex = () => {
 
   const handleSubmit = async () => {
     try {
-      setFirstLoad(false);
-      const purchases = (
-        await http.get(
-          `/rs/purchases/bill?startDate=${startDate}&endDate=${endDate}&supplierId=${selectedSupplierId}`
-        )
-      ).data.data;
+      if (mode === "individual") {
+        const purchases = (
+          await http.get(
+            `/rs/purchases/individual-invoice?startDate=${startDate}&endDate=${endDate}&supplierId=${selectedSupplierId}`
+          )
+        ).data.data;
 
-      setBillData(purchases);
-      console.log(purchases);
+        setBillData(purchases);
+        console.log(purchases);
+      } else {
+        const report = (
+          await http.get(
+            `/rs/purchases/report-invoice?startDate=${startDate}&endDate=${endDate}`
+          )
+        ).data.data;
+        console.log(report);
+        setReportData(report);
+      }
     } catch (error) {
       console.log(error);
     }
   };
   return suppliers.length > 0 && selectedSupplierId ? (
-    <Box>
+    <Box paddingBottom={2}>
+      <Box marginBottom={2}>
+        <ToggleButtonGroup
+          value={mode}
+          exclusive
+          onChange={(e, newMode) => {
+            const mode = newMode || "individual";
+            setMode(mode);
+          }}
+          aria-label="text alignment"
+        >
+          <ToggleButton value="individual" aria-label="left aligned">
+            Individual
+          </ToggleButton>
+          <ToggleButton value="report" aria-label="centered">
+            Report
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </Box>
       <Grid spacing={2} container>
         <Grid item xs={12}>
-          <FormControl margin="none" fullWidth>
-            <InputLabel id="demo-simple-select-label">Supplier</InputLabel>
-            <Select
-              label="Supplier"
-              value={selectedSupplierId}
-              fullWidth
-              onChange={(e) => {
-                setSelectedSupplierId(e.target.value);
-              }}
-            >
-              {suppliers.map((supplier) => (
-                <MenuItem value={supplier.id} key={supplier.id}>
-                  {supplier.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <Typography variant="subtitle2" textTransform={"uppercase"}>
+            Filter {mode === "individual" && "Individual"} Supplier Invoice
+          </Typography>
         </Grid>
+        {mode === "individual" && (
+          <Grid item xs={12}>
+            <FormControl margin="none" fullWidth>
+              <InputLabel id="demo-simple-select-label">Supplier</InputLabel>
+              <Select
+                label="Supplier"
+                value={selectedSupplierId}
+                fullWidth
+                onChange={(e) => {
+                  setSelectedSupplierId(e.target.value);
+                }}
+              >
+                {suppliers.map((supplier) => (
+                  <MenuItem value={supplier.id} key={supplier.id}>
+                    {supplier.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+        )}
         <Grid item xs={5}>
           <TextField
             fullWidth
@@ -132,93 +174,23 @@ const SupplierBillIndex = () => {
           </Button>
         </Grid>
       </Grid>
-      {!firstLoad && billData ? (
-        <Box component={Paper} marginTop={2}>
-          <Box padding={2} backgroundColor="primary.main" color="white">
-            <Typography variant="h3" fontWeight="500">
-              {suppliers.find((sup) => sup.id === selectedSupplierId).name}
-            </Typography>
-            <Typography variant="h6">Supplier Invoice</Typography>
-            <Typography variant="subtitle1">
-              {moment(startDate).format("DD MMMM YYYY")} -{" "}
-              {moment(endDate).format("DD MMMM YYYY")}
-            </Typography>
-          </Box>
-
-          <Box>
-            <TableContainer sx={{ marginTop: 2 }}>
-              <Table
-                sx={{ minWidth: 650 }}
-                aria-label="simple table"
-                size="small"
-              >
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Product</TableCell>
-                    <TableCell align="right">Price</TableCell>
-                    <TableCell align="right">Qty</TableCell>
-                    <TableCell align="right">Total Price</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {billData.details.map((detail) => (
-                    <TableRow
-                      key={detail.name}
-                      sx={{
-                        "&:last-child td, &:last-child th": { border: 0 },
-                      }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {detail.name}
-                      </TableCell>
-                      <TableCell align="right">
-                        <NumericFormatRp value={detail.productPrice} />
-                      </TableCell>
-                      <TableCell align="right">
-                        {parseFloat(detail.qty)}
-                      </TableCell>
-                      <TableCell align="right">
-                        <NumericFormatRp value={parseFloat(detail.total)} />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                  <TableRow>
-                    <TableCell colSpan={3} align="right">
-                      Subtotal
-                    </TableCell>
-                    <TableCell align="right">
-                      <NumericFormatRp
-                        value={getBillSubtotal(billData.details)}
-                      />
-                    </TableCell>
-                  </TableRow>
-
-                  <TableRow>
-                    <TableCell colSpan={3} align="right">
-                      Delivery
-                    </TableCell>
-                    <TableCell align="right" colSpan={2}>
-                      <NumericFormatRp value={billData.cost[0].costTotal} />
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell colSpan={3} align="right">
-                      Total
-                    </TableCell>
-                    <TableCell align="right" colSpan={2}>
-                      <NumericFormatRp
-                        value={
-                          getBillSubtotal(billData.details) +
-                          parseInt(billData.cost[0].costTotal)
-                        }
-                      />
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Box>
-        </Box>
+      {(billData && mode === "individual") ||
+      (reportData && mode === "report") ? (
+        mode === "individual" ? (
+          <IndividualSupplierInvoice
+            supplier={suppliers.find((sup) => sup.id === selectedSupplierId)}
+            startDate={startDate}
+            endDate={endDate}
+            invoiceDetails={billData.details}
+            deliveryCost={billData.cost[0].costTotal}
+          />
+        ) : (
+          <SupplierInvoiceReport
+            startDate={startDate}
+            endDate={endDate}
+            reportData={reportData}
+          />
+        )
       ) : (
         <h1>Select Filter</h1>
       )}
