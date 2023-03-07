@@ -42,7 +42,12 @@ const DeliveryIndex = () => {
     { field: "date", headerName: "Date", width: 100 },
     { field: "customer", headerName: "Customer", width: 100 },
     { field: "deliveryType", headerName: "Type", width: 100 },
-    { field: "cost", headerName: "Delivery Cost", width: 100 },
+    {
+      field: "cost",
+      headerName: "Delivery Cost",
+      width: 100,
+      renderCell: (params) => <NumericFormatRp value={params.row.cost} />,
+    },
     {
       field: "totalPrice",
       headerName: "Total (Rp)",
