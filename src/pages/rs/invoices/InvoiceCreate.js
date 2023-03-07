@@ -303,8 +303,15 @@ export default function InvoiceCreate({ edit }) {
                 }
               : {},
             deliveryDetails: deliveryDetails.map((detail) => {
-              const { qty, price, cost, makePurchase, product, editId } =
-                detail;
+              const {
+                qty,
+                price,
+                cost,
+                makePurchase,
+                product,
+                editId,
+                designatedSaleId,
+              } = detail;
               if (product === null) throw new Error("Please select a product.");
               return {
                 qty,
@@ -314,6 +321,7 @@ export default function InvoiceCreate({ edit }) {
                 price,
                 cost,
                 ProductId: product.id,
+                designatedSaleId,
               };
             }),
           };
@@ -681,6 +689,63 @@ export default function InvoiceCreate({ edit }) {
                     >
                       Products
                     </Box>
+                    {delivery.mode === "own" && (
+                      <Button
+                        variant="outlined"
+                        onClick={async () => {
+                          try {
+                            const customerId =
+                              delivery.deliveryData.customer?.id;
+                            if (!customerId)
+                              throw new Error("Please select recipient.");
+                            const exclude = deliveries.reduce(
+                              (arr, delivery) => {
+                                const ids = delivery.deliveryDetails
+                                  .map((detail) => detail.designatedSaleId)
+                                  .filter((id) => id);
+                                return [...arr, ...ids];
+                              },
+                              []
+                            );
+                            const sales = (
+                              await http.get(
+                                `/customers/${
+                                  delivery.deliveryData.customer.id
+                                }/designated-sales?exclude=${exclude.join(",")}`
+                              )
+                            ).data.data;
+                            if (sales.length === 0)
+                              throw new Error(
+                                "No designated sales for this recipient."
+                              );
+                            for (const sale of sales) {
+                              const product = (
+                                await http.get(`/rs/products/${sale.ProductId}`)
+                              ).data.data;
+                              handleAddDeliveryRow(delivery.key, {
+                                key: uuidv4(),
+                                price: product.price,
+                                cost: sale.price,
+                                qty: parseFloat(sale.qty),
+                                product: product,
+                                makePurchase: false,
+                                search: "",
+                                designatedSaleId: sale.id,
+                              });
+                            }
+                            console.log(sales);
+                          } catch (error) {
+                            const errorValue = error?.response?.data;
+                            const errorMsg = errorValue
+                              ? errorValue
+                              : error.message;
+                            toast.error(errorMsg);
+                          }
+                        }}
+                      >
+                        Add Purchase
+                      </Button>
+                    )}
                     <Button
                       variant="outlined"
                       onClick={() => handleAddDeliveryRow(delivery.key)}
