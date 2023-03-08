@@ -48,6 +48,7 @@ import Test from "./pages/rs/purchases/Test";
 import PurchaseShow from "./pages/rs/purchases/PurchaseShow";
 import SupplierBillIndex from "./pages/rs/supplierBills/SupplierBillIndex";
 import Dashboard from "./pages/dashboard/Dashboard";
+import ProfitsIndex from "./pages/rs/profits/ProfitsIndex";
 
 function App() {
   return (
@@ -138,15 +139,14 @@ function App() {
                   <Route path=":id" element={<InvoiceShow />} />
                 </Route>
                 <Route
-                  path="supplier-bills"
-                  element={
-                    <DataLayout title="Supplier Bills" titleVariant="h5" />
-                  }
+                  path="reports"
+                  element={<DataLayout title="Reports" titleVariant="h5" />}
                 >
-                  <Route path="" element={<SupplierBillIndex />} />
-                  {/* <Route path="create" element={<InvoiceCreate />} />
-                  <Route path="edit/:id" element={<InvoiceCreate edit />} />
-                  <Route path=":id" element={<InvoiceShow />} /> */}
+                  <Route path="profits" element={<ProfitsIndex />} />
+                  <Route
+                    path="supplier-invoice"
+                    element={<SupplierBillIndex />}
+                  />
                 </Route>
               </Route>
 

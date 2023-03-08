@@ -13,6 +13,8 @@ import SupplierIcon from "@mui/icons-material/Inventory";
 import ShoppingCart from "@mui/icons-material/ShoppingCart";
 // import MyLocationIcon from "@mui/icons-material/MyLocation";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
+import ReportIcon from "@mui/icons-material/Assessment";
+import MoneyIcon from "@mui/icons-material/Paid";
 
 import SanitizerIcon from "@mui/icons-material/Sanitizer";
 import React, { useState } from "react";
@@ -36,6 +38,7 @@ const Sidebar = () => {
   // Rumah Sehat
   const [rsProductOpen, setRsProductOpen] = useState(false);
   const [rsDeliveryOpen, setRsDeliveryOpen] = useState(false);
+  const [rsReportsOpen, setRsReportsOpen] = useState(false);
 
   // Dr's secret
   const [drIdOpen, setDrIdOpen] = useState(false);
@@ -109,11 +112,31 @@ const Sidebar = () => {
       </Collapse>
 
       <SidebarLink to="/rs/invoices" text="Invoices" icon={<ReceiptIcon />} />
-      <SidebarLink
-        to="/rs/supplier-bills"
-        text="Supplier Bills"
-        icon={<ReceiptLongIcon />}
-      />
+
+      <ListItemButton onClick={() => setRsReportsOpen(!rsReportsOpen)}>
+        <ListItemIcon>
+          <ReportIcon />
+        </ListItemIcon>
+        <ListItemText primary="Reports" />
+        {rsReportsOpen ? <ExpandLess /> : <ExpandMore />}
+      </ListItemButton>
+      <Collapse in={rsReportsOpen} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <SidebarLink
+            to="/rs/reports/supplier-invoice"
+            text="Supplier Invoice"
+            sx={{ pl: 4 }}
+            icon={<ReceiptLongIcon />}
+          />
+          <SidebarLink
+            to="/rs/reports/profits"
+            text="Profits"
+            icon={<MoneyIcon />}
+            sx={{ pl: 4 }}
+          />
+        </List>
+      </Collapse>
+
       <SidebarLink
         to="/rs/adjustments"
         text="Adjustments"
