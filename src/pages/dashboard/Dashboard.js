@@ -3,6 +3,7 @@ import Grid from "@mui/material/Grid";
 import { useEffect, useState } from "react";
 import http from "../../http-common";
 import DashboardModule from "../../components/DashboardModule";
+import { getTableColumn } from "../../helpers/rs";
 
 export default function Dashboard() {
   const [designatedSales, setDesignatedSales] = useState([]);
@@ -28,22 +29,10 @@ export default function Dashboard() {
               recipient: sale.Customer.fullName,
             }))}
             columns={[
-              {
-                headerName: "ID",
-                field: "id",
-              },
-              {
-                headerName: "Product",
-                field: "product",
-              },
-              {
-                headerName: "Qty",
-                field: "qty",
-              },
-              {
-                headerName: "Recipient",
-                field: "recipient",
-              },
+              getTableColumn("ID", "id"),
+              getTableColumn("Product", "product"),
+              getTableColumn("Qty", "qty"),
+              getTableColumn("Recipient", "recipient"),
             ]}
           />
         </Grid>

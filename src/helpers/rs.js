@@ -4,6 +4,12 @@
  * @returns number
  */
 
+export const getTableColumn = (headerName, field, renderCell) => ({
+  headerName,
+  field,
+  renderCell,
+});
+
 export const getSubtotal = (deliveryDetails) =>
   deliveryDetails.reduce((sum, detail) => sum + detail.price * detail.qty, 0);
 
