@@ -37,7 +37,7 @@ import {
 import { getPurchaseSubtotal, getSubtotal } from "../../../helpers/rs";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import { toast } from "react-toastify";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import AutoSelectTextField from "../../../components/AutoSelectTextField";
 
 export default function InvoiceCreate({ edit }) {
@@ -372,9 +372,18 @@ export default function InvoiceCreate({ edit }) {
                   <Box display="flex" alignItems="center" gap={2}>
                     <Typography>{option.fullName}</Typography>
                     {option.activeInvoices.length > 0 && (
-                      <Typography fontSize={10} color="warning.main">
-                        - {option.activeInvoices.length} active invoice(s)
-                      </Typography>
+                      <Button
+                        sx={{ marginLeft: "auto" }}
+                        variant="contained"
+                        color="warning"
+                        size="small"
+                        component={Link}
+                        to={`/rs/invoices/edit/${option.firstActiveInvoice.id}`}
+                      >
+                        <Typography fontSize={10}>
+                          {option.activeInvoices.length} active invoice(s)
+                        </Typography>
+                      </Button>
                     )}
                   </Box>
                 </li>
