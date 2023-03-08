@@ -23,6 +23,7 @@ import moment from "moment";
 import { getBillSubtotal } from "../../../helpers/rs";
 import IndividualSupplierInvoice from "../../../components/rs/IndividualSupplierInvoice";
 import SupplierInvoiceReport from "../../../components/rs/SupplierInvoiceReport";
+import { getWeek } from "../../../helpers/common";
 
 const SupplierBillIndex = () => {
   const navigate = useNavigate();
@@ -56,17 +57,7 @@ const SupplierBillIndex = () => {
   }, [startDate, endDate, selectedSupplierId]);
 
   const handleSetWeek = () => {
-    const currentDate = moment();
-    const weekStart = currentDate
-      .clone()
-      .startOf("week")
-      .add(1, "day")
-      .format("yyyy-MM-DD");
-    const weekEnd = currentDate
-      .clone()
-      .endOf("week")
-      .add(1, "day")
-      .format("yyyy-MM-DD");
+    const { weekStart, weekEnd } = getWeek();
 
     setStartDate(weekStart);
     setEndDate(weekEnd);
