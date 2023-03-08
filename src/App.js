@@ -47,6 +47,7 @@ import PurchaseCreate from "./pages/rs/purchases/PurchaseCreate";
 import Test from "./pages/rs/purchases/Test";
 import PurchaseShow from "./pages/rs/purchases/PurchaseShow";
 import SupplierBillIndex from "./pages/rs/supplierBills/SupplierBillIndex";
+import Dashboard from "./pages/dashboard/Dashboard";
 
 function App() {
   return (
@@ -55,7 +56,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Layout />}>
-              <Route index element={<h1>Dashboard</h1>} />
+              <Route index element={<Dashboard />} />
               <Route
                 path="customers"
                 element={
