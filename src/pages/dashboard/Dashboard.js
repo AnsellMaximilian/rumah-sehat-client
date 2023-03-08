@@ -7,15 +7,17 @@ import { getTableColumn } from "../../helpers/rs";
 
 export default function Dashboard() {
   const [designatedSales, setDesignatedSales] = useState([]);
+  const [activeInvoices, setActiveInvoices] = useState([]);
 
   useEffect(() => {
     (async () => {
       setDesignatedSales(
         (await http.get("/rs/purchases/designated-sales")).data.data
       );
+      setActiveInvoices((await http.get("/rs/invoices?active=yes")).data.data);
     })();
   }, []);
-
+  console.log(activeInvoices);
   return (
     <Box paddingY={2}>
       <Grid container spacing={2}>
@@ -33,6 +35,21 @@ export default function Dashboard() {
               getTableColumn("Product", "product"),
               getTableColumn("Qty", "qty"),
               getTableColumn("Recipient", "recipient"),
+            ]}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <DashboardModule
+            title="Active Invoices"
+            rows={activeInvoices.map((invoice) => ({
+              id: invoice.id,
+              total: invoice.totalPrice,
+              customer: invoice.Customer.fullName,
+            }))}
+            columns={[
+              getTableColumn("ID", "id"),
+              getTableColumn("Customer", "customer"),
+              getTableColumn("Total", "total"),
             ]}
           />
         </Grid>
