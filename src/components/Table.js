@@ -19,17 +19,25 @@ export default function Table({ columns, rows, ...rest }) {
         </TableRow>
       </TableHead>
       <TableBody>
-        {rows.map((row, index) => (
-          <TableRow key={index}>
-            {columns.map((col) => {
-              return (
-                <TableCell {...row.cellProps}>
-                  {col.renderCell ? row.renderCell(row) : row[col.field]}
-                </TableCell>
-              );
-            })}
+        {rows.length > 0 ? (
+          rows.map((row, index) => (
+            <TableRow key={index}>
+              {columns.map((col) => {
+                return (
+                  <TableCell {...row.cellProps}>
+                    {col.renderCell ? row.renderCell(row) : row[col.field]}
+                  </TableCell>
+                );
+              })}
+            </TableRow>
+          ))
+        ) : (
+          <TableRow>
+            <TableCell align="center" colSpan={columns.length}>
+              Empty
+            </TableCell>
           </TableRow>
-        ))}
+        )}
       </TableBody>
     </MuiTable>
   );
