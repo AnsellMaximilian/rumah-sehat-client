@@ -5,14 +5,7 @@ import Box from "@mui/material/Box";
 import { Link, useNavigate } from "react-router-dom";
 import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/ModeEdit";
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  IconButton,
-} from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 import http from "../../../http-common";
 import SmartTable from "../../../components/SmartTable";
 import NumericFormatRp from "../../../components/NumericFormatRp";
