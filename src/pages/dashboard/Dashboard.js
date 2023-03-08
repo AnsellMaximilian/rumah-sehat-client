@@ -16,7 +16,7 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <Box>
+    <Box paddingY={2}>
       <Grid container spacing={2}>
         <Grid item xs={6}>
           <DashboardModule
