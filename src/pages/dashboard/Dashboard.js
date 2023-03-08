@@ -21,9 +21,11 @@ export default function Dashboard() {
   return (
     <Box paddingY={2}>
       <Grid container spacing={2}>
-        <Grid item xs={6}>
+        <Grid item xs={6} container alignItems="stretch">
           <DashboardModule
             title={`Dangling Designated Sales (${designatedSales.length})`}
+            linkText={`See more (${designatedSales.slice(5).length})`}
+            linkTo="/rs/purchases"
             rows={designatedSales
               .map((sale) => ({
                 id: sale.id,
@@ -40,9 +42,11 @@ export default function Dashboard() {
             ]}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={6} container alignItems="stretch">
           <DashboardModule
             title={`Active Invoices (${activeInvoices.length})`}
+            linkText={`See more (${activeInvoices.slice(5).length})`}
+            linkTo="/rs/invoices"
             rows={activeInvoices
               .map((invoice) => ({
                 id: invoice.id,

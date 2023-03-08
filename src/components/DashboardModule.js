@@ -12,7 +12,9 @@ export default function DashboardModule({
   linkTo = "/",
 }) {
   return (
-    <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
+    <Paper
+      sx={{ p: 2, display: "flex", flexDirection: "column", width: "100%" }}
+    >
       <Typography component="h2" variant="h6" color="primary" gutterBottom>
         {title}
       </Typography>
