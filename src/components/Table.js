@@ -24,7 +24,7 @@ export default function Table({ columns, rows, ...rest }) {
             <TableRow key={index}>
               {columns.map((col) => {
                 return (
-                  <TableCell {...row.cellProps}>
+                  <TableCell {...row.cellProps} key={col.headerName}>
                     {col.renderCell ? row.renderCell(row) : row[col.field]}
                   </TableCell>
                 );
