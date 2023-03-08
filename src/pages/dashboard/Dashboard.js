@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import http from "../../http-common";
 import DashboardModule from "../../components/DashboardModule";
 import { getTableColumn } from "../../helpers/rs";
+import NumericFormatRp from "../../components/NumericFormatRp";
 
 export default function Dashboard() {
   const [designatedSales, setDesignatedSales] = useState([]);
@@ -17,19 +18,20 @@ export default function Dashboard() {
       setActiveInvoices((await http.get("/rs/invoices?active=yes")).data.data);
     })();
   }, []);
-  console.log(activeInvoices);
   return (
     <Box paddingY={2}>
       <Grid container spacing={2}>
         <Grid item xs={6}>
           <DashboardModule
-            title="Dangling Designated Sales"
-            rows={designatedSales.map((sale) => ({
-              id: sale.id,
-              product: sale.Product.name,
-              qty: sale.qty,
-              recipient: sale.Customer.fullName,
-            }))}
+            title={`Dangling Designated Sales (${designatedSales.length})`}
+            rows={designatedSales
+              .map((sale) => ({
+                id: sale.id,
+                product: sale.Product.name,
+                qty: sale.qty,
+                recipient: sale.Customer.fullName,
+              }))
+              .slice(0, 5)}
             columns={[
               getTableColumn("ID", "id"),
               getTableColumn("Product", "product"),
@@ -40,16 +42,20 @@ export default function Dashboard() {
         </Grid>
         <Grid item xs={6}>
           <DashboardModule
-            title="Active Invoices"
-            rows={activeInvoices.map((invoice) => ({
-              id: invoice.id,
-              total: invoice.totalPrice,
-              customer: invoice.Customer.fullName,
-            }))}
+            title={`Active Invoices (${activeInvoices.length})`}
+            rows={activeInvoices
+              .map((invoice) => ({
+                id: invoice.id,
+                total: invoice.totalPrice,
+                customer: invoice.Customer.fullName,
+              }))
+              .slice(0, 5)}
             columns={[
               getTableColumn("ID", "id"),
               getTableColumn("Customer", "customer"),
-              getTableColumn("Total", "total"),
+              getTableColumn("Total", "total", (row) => (
+                <NumericFormatRp value={row.total} />
+              )),
             ]}
           />
         </Grid>
