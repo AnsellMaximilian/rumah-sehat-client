@@ -26,9 +26,22 @@ const InvoiceShow = () => {
       setInvoice((await http.get(`/rs/invoices/${id}`)).data.data);
     })();
   }, [id]);
+
+  const pay = async () => {
+    const invoice = (await http.patch(`/rs/invoices/${id}/pay`)).data.data;
+    setInvoice(invoice);
+  };
+
   return invoice ? (
     <Box>
       <Box display="flex" justifyContent="flex-end" marginBottom={1} gap={2}>
+        <Button
+          variant={invoice.paid ? "contained" : "outlined"}
+          color="success"
+          onClick={pay}
+        >
+          {invoice.paid ? "Paid" : invoice.status}
+        </Button>
         <Button
           component={Link}
           to={`/rs/invoices/edit/${id}`}

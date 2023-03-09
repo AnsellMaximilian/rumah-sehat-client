@@ -12,6 +12,7 @@ import NumericFormatRp from "../../../components/NumericFormatRp";
 import { toast } from "react-toastify";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteAlert from "../../../components/DeleteAlert";
+import PayIcon from "@mui/icons-material/Paid";
 
 const InvoiceIndex = () => {
   const [invoices, setInvoices] = useState([]);
@@ -38,6 +39,22 @@ const InvoiceIndex = () => {
     })();
   }, []);
 
+  const pay = async (id) => {
+    try {
+      const invoice = (await http.patch(`/rs/invoices/${id}/pay`)).data.data;
+      toast.success(`Updated invoice #${invoice.id}`);
+      setInvoices((prev) =>
+        prev.map((inv) => {
+          if (inv.id === id)
+            return { ...inv, status: invoice.status, paid: invoice.paid };
+          return inv;
+        })
+      );
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
   const columns = [
     { field: "id", headerName: "ID", width: 50 },
     { field: "date", headerName: "Date", width: 100 },
@@ -56,6 +73,15 @@ const InvoiceIndex = () => {
       renderCell: (params) => {
         return (
           <>
+            <IconButton
+              color={params.row.paid ? "success" : "default"}
+              onClick={(e) => {
+                e.stopPropagation();
+                pay(params.row.id);
+              }}
+            >
+              <PayIcon />
+            </IconButton>
             <IconButton
               color="warning"
               component={Link}
@@ -102,6 +128,7 @@ const InvoiceIndex = () => {
             customer: invoice.Customer.fullName,
             totalPrice: invoice.totalPrice,
             status: invoice.status,
+            paid: invoice.paid,
           }))}
           columns={columns}
         />
