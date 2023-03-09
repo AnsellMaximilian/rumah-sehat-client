@@ -4,10 +4,11 @@
  * @returns number
  */
 
-export const getTableColumn = (headerName, field, renderCell) => ({
+export const getTableColumn = (headerName, field, renderCell, rest = {}) => ({
   headerName,
   field,
   renderCell,
+  ...rest,
 });
 
 export const getSubtotal = (deliveryDetails) =>

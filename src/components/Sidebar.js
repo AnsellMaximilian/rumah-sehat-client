@@ -134,6 +134,12 @@ const Sidebar = () => {
             icon={<MoneyIcon />}
             sx={{ pl: 4 }}
           />
+          <SidebarLink
+            to="/rs/reports/products"
+            text="Products"
+            icon={<ProductIcon />}
+            sx={{ pl: 4 }}
+          />
         </List>
       </Collapse>
 

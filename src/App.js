@@ -49,6 +49,7 @@ import PurchaseShow from "./pages/rs/purchases/PurchaseShow";
 import SupplierBillIndex from "./pages/rs/supplierBills/SupplierBillIndex";
 import Dashboard from "./pages/dashboard/Dashboard";
 import ProfitsIndex from "./pages/rs/profits/ProfitsIndex";
+import ProductsReport from "./pages/rs/reports/ProductsReport";
 
 function App() {
   return (
@@ -147,6 +148,7 @@ function App() {
                     path="supplier-invoice"
                     element={<SupplierBillIndex />}
                   />
+                  <Route path="products" element={<ProductsReport />} />
                 </Route>
               </Route>
 
