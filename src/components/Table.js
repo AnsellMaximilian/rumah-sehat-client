@@ -4,7 +4,7 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
-export default function Table({ columns, rows, ...rest }) {
+export default function Table({ columns, rows, tableBottom, ...rest }) {
   return (
     <MuiTable {...rest}>
       <TableHead>
@@ -24,7 +24,7 @@ export default function Table({ columns, rows, ...rest }) {
             <TableRow key={index}>
               {columns.map((col) => {
                 return (
-                  <TableCell {...row.cellProps} key={col.headerName}>
+                  <TableCell {...col.cellProps} key={col.headerName}>
                     {col.renderCell ? col.renderCell(row) : row[col.field]}
                   </TableCell>
                 );
@@ -38,6 +38,7 @@ export default function Table({ columns, rows, ...rest }) {
             </TableCell>
           </TableRow>
         )}
+        {tableBottom}
       </TableBody>
     </MuiTable>
   );
