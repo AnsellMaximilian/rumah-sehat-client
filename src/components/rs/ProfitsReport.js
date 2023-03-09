@@ -4,6 +4,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
@@ -16,15 +17,63 @@ export default function ProfitsReport({
   profits,
   startDate,
   endDate,
+  totals,
 }) {
   return (
     <Box component={Paper} marginTop={2}>
       <Box padding={2} backgroundColor="primary.main" color="white">
-        <Typography variant="h6">Profits</Typography>
-        <Typography variant="subtitle1">
-          {moment(startDate).format("DD MMMM YYYY")} -{" "}
-          {moment(endDate).format("DD MMMM YYYY")}
-        </Typography>
+        <Box>
+          <Typography variant="h6">Profits</Typography>
+        </Box>
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <Typography variant="subtitle1">
+              {moment(startDate).format("DD MMMM YYYY")} -{" "}
+              {moment(endDate).format("DD MMMM YYYY")}
+            </Typography>
+          </Grid>
+          <Grid item xs={6} container>
+            <Grid item xs={12}>
+              <Typography variant="h6" textAlign="right">
+                Summary
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="subtitle2" textAlign="right">
+                Total Cost
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="subtitle2" textAlign="right">
+                <NumericFormatRp
+                  value={parseFloat(totals[0]?.totalCost || 0)}
+                />
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="subtitle2" textAlign="right">
+                Total Sales
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="subtitle2" textAlign="right">
+                <NumericFormatRp
+                  value={parseFloat(totals[0]?.totalPrice || 0)}
+                />
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="subtitle2" textAlign="right">
+                Total Profits
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="subtitle2" textAlign="right">
+                <NumericFormatRp value={parseFloat(totals[0]?.profit || 0)} />
+              </Typography>
+            </Grid>
+          </Grid>
+        </Grid>
       </Box>
 
       <Box>
@@ -48,9 +97,9 @@ export default function ProfitsReport({
                     <TableRow
                       key={`supplier-${supplier.supplierId}`}
                       sx={{
-                        backgroundColor: "primary.light",
+                        backgroundColor: "primary.main",
                         ">td": {
-                          //   color: "white",
+                          color: "white",
 
                           fontWeight: "bold",
                         },

@@ -2,12 +2,6 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
 import Box from "@mui/material/Box";
 import { useState } from "react";
 import { getWeek } from "../../../helpers/common";
@@ -92,6 +86,7 @@ export default function ProfitsIndex() {
           endDate={endDate}
           profits={reportData.profits}
           suppliers={reportData.suppliers}
+          totals={reportData.totals}
         />
       ) : (
         <h1>Filter</h1>
