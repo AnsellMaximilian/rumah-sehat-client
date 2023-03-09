@@ -1,13 +1,9 @@
 import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
-import InputLabel from "@mui/material/InputLabel";
 import Autocomplete from "@mui/material/Autocomplete";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import { Link, useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import http from "../../../http-common";
@@ -19,12 +15,9 @@ import { getTableColumn } from "../../../helpers/rs";
 import moment from "moment";
 
 const ProductsReport = () => {
-  const navigate = useNavigate();
-
   const [products, setProducts] = useState([]);
 
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [productSearch, setProductSearch] = useState("");
 
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -67,7 +60,7 @@ const ProductsReport = () => {
       setReportData(products);
       console.log(products);
     } catch (error) {
-      console.log(error);
+      toast.error(error);
     }
   };
   return products.length > 0 ? (
@@ -81,9 +74,6 @@ const ProductsReport = () => {
         <Grid item xs={12}>
           <Autocomplete
             value={selectedProduct}
-            onInputChange={(e, newValue) => {
-              setProductSearch(newValue);
-            }}
             onChange={(e, newValue) => {
               setSelectedProduct(newValue);
             }}
@@ -136,7 +126,7 @@ const ProductsReport = () => {
           </Button>
         </Grid>
       </Grid>
-      {reportData && (
+      {reportData && selectedProduct && (
         <Box component={Paper} marginTop={2}>
           <Box padding={2} backgroundColor="primary.main" color="white">
             <Box marginBottom={1}>
