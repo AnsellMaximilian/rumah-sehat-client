@@ -926,6 +926,7 @@ export default function InvoiceCreate({ edit }) {
                                 type="number"
                                 value={detail.qty}
                                 variant="standard"
+                                inputProps={{ min: 0 }}
                                 onChange={handleDeliveryDetailAttrChange(
                                   "qty",
                                   delivery.key,
