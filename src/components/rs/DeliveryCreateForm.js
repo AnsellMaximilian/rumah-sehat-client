@@ -33,7 +33,12 @@ import AutoSelectTextField from "../AutoSelectTextField";
 import { getPurchaseSubtotal, getSubtotal } from "../../helpers/rs";
 import NumericFormatRp from "../NumericFormatRp";
 
-export default function DeliveryCreateForm({ invoice, editId, onSubmit }) {
+export default function DeliveryCreateForm({
+  invoice,
+  editId,
+  onSubmit,
+  onCancel,
+}) {
   const [customers, setCustomers] = useState([]);
   const [deliveryTypes, setDeliveryTypes] = useState([]);
   const [products, setProducts] = useState([]);
@@ -623,9 +628,18 @@ export default function DeliveryCreateForm({ invoice, editId, onSubmit }) {
               </TableBody>
             </Table>
           </TableContainer>
-          <Box marginTop={2} display="flex" justifyContent="flex-en">
+          <Box
+            marginTop={2}
+            display="flex"
+            justifyContent="flex-en"
+            padding={2}
+            gap={2}
+          >
+            <Button variant="outlined" onClick={onCancel}>
+              Cancel
+            </Button>
             <Button variant="contained" fullWidth onClick={handleSubmit}>
-              Create
+              {editId ? "Update" : "Create"}
             </Button>
           </Box>
         </Box>
