@@ -1,7 +1,5 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import FormControl from "@mui/material/FormControl";
-// import Checkbox from "@mui/material/Checkbox";
 
 import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
@@ -10,12 +8,8 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { toast } from "react-toastify";
 
-import moment from "moment";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import http from "../../../http-common";
-import { v4 as uuidv4 } from "uuid";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import DeliveryDisplay from "../../../components/rs/DeliveryDisplay";
 import DeliveryCreateForm from "../../../components/rs/DeliveryCreateForm";
@@ -34,10 +28,6 @@ export default function DeliveryCreate({ edit }) {
 
   const [deliveryEditId, setDeliveryEditId] = useState(null);
   const [invoiceEditId, setInvoiceEditId] = useState(null);
-
-  const navigate = useNavigate();
-
-  // for edit mode
 
   useEffect(() => {
     (async () => {
