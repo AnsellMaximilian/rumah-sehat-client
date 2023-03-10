@@ -4,10 +4,17 @@
  * @returns number
  */
 
-export const getTableColumn = (headerName, field, renderCell, rest = {}) => ({
+export const getTableColumn = (
   headerName,
   field,
   renderCell,
+  cellProps,
+  rest = {}
+) => ({
+  headerName,
+  field,
+  renderCell,
+  cellProps,
   ...rest,
 });
 

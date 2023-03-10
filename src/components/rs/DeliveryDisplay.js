@@ -7,6 +7,7 @@ import Collapse from "@mui/material/Collapse";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
+import EditIcon from "@mui/icons-material/Edit";
 
 // import moment from "moment";
 import Table from "../Table";
@@ -14,7 +15,7 @@ import { getSubtotal, getTableColumn } from "../../helpers/rs";
 import NumericFormatRp from "../NumericFormatRp";
 import { useState } from "react";
 
-export default function DeliveryDisplay({ delivery }) {
+export default function DeliveryDisplay({ delivery, onDelete, onEdit }) {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <Paper sx={{ paddingBottom: 2 }}>
@@ -24,14 +25,32 @@ export default function DeliveryDisplay({ delivery }) {
             #{delivery.id}
           </Typography>
         </Box>
-        <Button
-          variant="contained"
-          color="error"
-          sx={{ marginLeft: "auto" }}
-          // onClick={() => handleRemoveDelivery(delivery.key)}
-        >
-          <CloseIcon />
-        </Button>
+        <Box sx={{ marginLeft: "auto" }}>
+          <Button
+            variant="contained"
+            color="warning"
+            onClick={onEdit}
+            sx={{
+              borderTopRightRadius: 0,
+              borderBottomRightRadius: 0,
+              boxShadow: "none",
+            }}
+          >
+            <EditIcon />
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={onDelete}
+            sx={{
+              borderTopLeftRadius: 0,
+              borderBottomLeftRadius: 0,
+              boxShadow: "none",
+            }}
+          >
+            <CloseIcon />
+          </Button>
+        </Box>
       </Box>
       <Grid container spacing={1} sx={{ padding: 2 }}>
         <Grid item xs={6}>
@@ -53,7 +72,7 @@ export default function DeliveryDisplay({ delivery }) {
       </Grid>
       <Box display="flex" gap={2} marginRight={1}>
         <Box
-          sx={{ backgroundColor: "primary.main", color: "white", flex: 1 }}
+          sx={{ backgroundColor: "primary.light", color: "white", flex: 1 }}
           display="flex"
           alignItems="center"
           paddingLeft={2}
