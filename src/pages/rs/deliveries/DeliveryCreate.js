@@ -48,9 +48,9 @@ export default function DeliveryCreate({ edit }) {
     setIsInvoiceFormOpen(false);
   };
 
-  const refreshInvoice = async () => {
+  const refreshInvoice = async (newInvoice) => {
     setInvoices((await http.get("/rs/invoices?active=yes")).data.data);
-    if (invoice) {
+    if (invoice && !newInvoice) {
       setInvoice((await http.get(`/rs/invoices/${invoice.id}`)).data.data);
     }
   };
@@ -62,7 +62,7 @@ export default function DeliveryCreate({ edit }) {
   };
 
   const handleInvoiceSubmit = async (invoiceId) => {
-    refreshInvoice();
+    refreshInvoice(true);
     setInvoice((await http.get(`/rs/invoices/${invoiceId}`)).data.data);
     handleInvoiceFormClose();
     setInvoiceEditId(null);
