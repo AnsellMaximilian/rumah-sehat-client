@@ -17,6 +17,7 @@ import DeliveryCreateForm from "../../../components/rs/DeliveryCreateForm";
 import InvoiceCreateForm from "../../../components/rs/InvoiceCreateForm";
 import Typography from "@mui/material/Typography";
 import ValueDisplay from "../../../components/ValueDisplay";
+import DeleteAlert from "../../../components/DeleteAlert";
 
 export default function DeliveryCreate({ edit }) {
   const [invoices, setInvoices] = useState([]);
@@ -28,6 +29,8 @@ export default function DeliveryCreate({ edit }) {
 
   const [deliveryEditId, setDeliveryEditId] = useState(null);
   const [invoiceEditId, setInvoiceEditId] = useState(null);
+
+  const [toDeleteId, setToDeleteId] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -219,12 +222,19 @@ export default function DeliveryCreate({ edit }) {
               <DeliveryDisplay
                 delivery={delivery}
                 key={delivery.id}
-                onDelete={() => handleDelete(delivery.id)}
+                onDelete={() => setToDeleteId(delivery.id)}
                 onEdit={() => handleDeliveryEdit(delivery.id)}
               />
             );
           })}
       </Box>
+      <DeleteAlert
+        message={`Are you sure you want to delete delivery #${toDeleteId} and its details.`}
+        toDeleteId={toDeleteId}
+        handleDelete={handleDelete}
+        setToDeleteId={setToDeleteId}
+        objectName="Delivery"
+      />
     </Box>
   ) : (
     <h1>Loading...</h1>
