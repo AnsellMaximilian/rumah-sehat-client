@@ -133,7 +133,7 @@ export default function DeliveryCreate({ edit }) {
           <Box>
             <Box display="flex" gap={1}>
               <Typography variant="h5" fontWeight="bold">
-                Invoice Data
+                Invoice #{invoice.id}
               </Typography>
               <Chip
                 label={invoice.status}
