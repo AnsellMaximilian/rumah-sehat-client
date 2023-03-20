@@ -50,6 +50,7 @@ import SupplierBillIndex from "./pages/rs/supplierBills/SupplierBillIndex";
 import Dashboard from "./pages/dashboard/Dashboard";
 import ProfitsIndex from "./pages/rs/profits/ProfitsIndex";
 import ProductsReport from "./pages/rs/reports/ProductsReport";
+import CustomerShow from "./pages/customers/CustomerShow";
 
 function App() {
   return (
@@ -67,6 +68,7 @@ function App() {
               >
                 <Route path="" element={<CustomerIndex />} />
                 <Route path="create" element={<CustomerCreate />} />
+                <Route path=":id" element={<CustomerShow />} />
                 <Route path="edit/:id" element={<CustomerCreate edit />} />
               </Route>
               <Route
