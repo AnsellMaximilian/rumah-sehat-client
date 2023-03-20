@@ -12,6 +12,7 @@ import NumericFormatRp from "../../../components/NumericFormatRp";
 import { toast } from "react-toastify";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
 import ReceiptIcon from "@mui/icons-material/Receipt";
+import ShoppingCart from "@mui/icons-material/ShoppingCart";
 
 const DeliveryIndex = () => {
   const [deliveries, setDeliveries] = useState([]);
@@ -70,6 +71,21 @@ const DeliveryIndex = () => {
         ) : (
           <span>None</span>
         ),
+    },
+    {
+      field: "purchase",
+      headerName: "Purchase",
+      width: 100,
+      renderCell: (params) => (
+        <IconButton
+          disabled={!!!params.row.purchase}
+          color="warning"
+          component={Link}
+          to={`/rs/purchases/${params.row.purchase?.id}`}
+        >
+          <ShoppingCart />
+        </IconButton>
+      ),
     },
 
     // {
@@ -130,6 +146,7 @@ const DeliveryIndex = () => {
             customer: delivery.Customer.fullName,
             totalPrice: delivery.totalPrice,
             invoice: delivery.Invoice,
+            purchase: delivery.Purchase,
           }))}
           columns={columns}
         />

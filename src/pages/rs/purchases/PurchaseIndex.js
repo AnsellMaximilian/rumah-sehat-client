@@ -103,10 +103,10 @@ const PurchaseIndex = () => {
               <ShowIcon />
             </IconButton>
             <IconButton
-              disabled={!!!params.row.DeliveryId}
+              disabled={!!!params.row.delivery}
               onClick={(e) => {
                 e.stopPropagation();
-                navigate(`/rs/deliveries/${params.row.DeliveryId}`);
+                navigate(`/rs/deliveries/${params.row.delivery.id}`);
               }}
             >
               <LocalShippingIcon />
@@ -138,7 +138,7 @@ const PurchaseIndex = () => {
             subtotalPrice: purchase.subtotalPrice,
             cost: purchase.cost,
             totalDesignatedSales: purchase.totalDesignatedSales,
-            DeliveryId: purchase.DeliveryId,
+            delivery: purchase.Delivery,
           }))}
           columns={columns}
         />
