@@ -34,7 +34,7 @@ export default function DeliveryCreate({ edit }) {
 
   useEffect(() => {
     (async () => {
-      setInvoices((await http.get("/rs/invoices?active=yes")).data.data);
+      setInvoices((await http.get("/rs/invoices?status=draft")).data.data);
     })();
   }, []);
 
@@ -49,7 +49,7 @@ export default function DeliveryCreate({ edit }) {
   };
 
   const refreshInvoice = async (newInvoice) => {
-    setInvoices((await http.get("/rs/invoices?active=yes")).data.data);
+    setInvoices((await http.get("/rs/invoices?status=draft")).data.data);
     if (invoice && !newInvoice) {
       setInvoice((await http.get(`/rs/invoices/${invoice.id}`)).data.data);
     }
@@ -90,7 +90,7 @@ export default function DeliveryCreate({ edit }) {
     })();
   };
 
-  return invoices.length > 0 ? (
+  return (
     <Box>
       <Box display="flex" gap={2}>
         <Box flex={1} display="flex" gap={2} justifyContent="flex-start">
@@ -236,7 +236,5 @@ export default function DeliveryCreate({ edit }) {
         objectName="Delivery"
       />
     </Box>
-  ) : (
-    <h1>Loading...</h1>
   );
 }
