@@ -103,7 +103,7 @@ export default function InvoiceCreateForm({ editId, onSubmit, onCancel }) {
               type="date"
               value={invoiceDate}
               onChange={(e) => setInvoiceDate(e.target.value)}
-              sx={{ width: 220 }}
+              sx={{ width: 300 }}
               InputLabelProps={{
                 shrink: true,
               }}
@@ -116,7 +116,26 @@ export default function InvoiceCreateForm({ editId, onSubmit, onCancel }) {
               isOptionEqualToValue={(option, value) => option.id === value.id}
               renderOption={(props, option) => (
                 <li {...props} key={option.id}>
-                  {option.fullName}
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    gap={2}
+                    justifyContent="space-between"
+                    width="100%"
+                  >
+                    <Typography>{option.fullName}</Typography>
+                    {option.Invoices.filter((i) => i.status === "draft")
+                      .length > 0 && (
+                      <Typography fontSize={10} color="warning.main">
+                        -{" "}
+                        {
+                          option.Invoices.filter((i) => i.status === "draft")
+                            .length
+                        }{" "}
+                        draft
+                      </Typography>
+                    )}
+                  </Box>
                 </li>
               )}
               getOptionLabel={(option) => `(#${option.id}) ${option.fullName}`}
