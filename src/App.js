@@ -38,7 +38,7 @@ import DeliveryTypeIndex from "./pages/rs/deliveryTypes/DeliveryTypeIndex";
 import DeliveryTypeCreate from "./pages/rs/deliveryTypes/DeliveryTypeCreate";
 import DeliveryTypeEdit from "./pages/rs/deliveryTypes/DeliveryTypeEdit";
 import DeliveryIndex from "./pages/rs/deliveries/DeliveryIndex";
-import DeliveryCreate from "./pages/rs/deliveries/DeliveryCreate";
+// import DeliveryCreate from "./pages/rs/deliveries/DeliveryCreate";
 import InvoiceIndex from "./pages/rs/invoices/InvoiceIndex";
 import InvoiceCreate from "./pages/rs/invoices/InvoiceCreate";
 import InvoiceShow from "./pages/rs/invoices/InvoiceShow";
@@ -51,6 +51,7 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import ProfitsIndex from "./pages/rs/profits/ProfitsIndex";
 import ProductsReport from "./pages/rs/reports/ProductsReport";
 import CustomerShow from "./pages/customers/CustomerShow";
+import InvoiceManage from "./pages/rs/invoices/InvoiceManage";
 
 function App() {
   return (
@@ -129,7 +130,7 @@ function App() {
                   element={<DataLayout title="Deliveries" titleVariant="h5" />}
                 >
                   <Route path="" element={<DeliveryIndex />} />
-                  <Route path="create" element={<DeliveryCreate />} />
+                  <Route path="create" element={<InvoiceManage />} />
                   <Route path="edit/:id" element={<DeliveryTypeEdit />} />
                 </Route>
                 <Route
@@ -137,6 +138,7 @@ function App() {
                   element={<DataLayout title="Invoices" titleVariant="h5" />}
                 >
                   <Route path="" element={<InvoiceIndex />} />
+                  <Route path="manage" element={<InvoiceManage />} />
                   <Route path="create" element={<InvoiceCreate />} />
                   <Route path="edit/:id" element={<InvoiceCreate edit />} />
                   <Route path=":id" element={<InvoiceShow />} />

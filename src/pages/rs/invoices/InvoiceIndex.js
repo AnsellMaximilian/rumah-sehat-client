@@ -116,8 +116,8 @@ const InvoiceIndex = () => {
   return (
     <Box>
       <Box paddingBottom={2}>
-        <Button variant="contained" component={Link} to={"/rs/invoices/create"}>
-          New Invoice
+        <Button variant="contained" component={Link} to={"/rs/invoices/manage"}>
+          Manage Invoices
         </Button>
       </Box>
       <Card>
