@@ -9,6 +9,7 @@ import NumericFormatRp from "../../components/NumericFormatRp";
 export default function Dashboard() {
   const [designatedSales, setDesignatedSales] = useState([]);
   const [activeInvoices, setActiveInvoices] = useState([]);
+  const [danglingAdjustments, setDanglingAdjustments] = useState([]);
 
   useEffect(() => {
     (async () => {
@@ -16,6 +17,9 @@ export default function Dashboard() {
         (await http.get("/rs/purchases/designated-sales")).data.data
       );
       setActiveInvoices((await http.get("/rs/invoices?active=yes")).data.data);
+      setDanglingAdjustments(
+        (await http.get("/rs/adjustments?pending=yes")).data.data
+      );
     })();
   }, []);
   return (
@@ -60,6 +64,29 @@ export default function Dashboard() {
               getTableColumn("Total", "total", (row) => (
                 <NumericFormatRp value={row.total} />
               )),
+            ]}
+          />
+        </Grid>
+        <Grid item xs={6} container alignItems="stretch">
+          <DashboardModule
+            title={`Dangling Adjustments (${danglingAdjustments.length})`}
+            linkText={`See more (${danglingAdjustments.slice(5).length})`}
+            linkTo="/rs/invoices"
+            rows={danglingAdjustments
+              .map((adj) => ({
+                id: adj.id,
+                source: adj.SourceInvoiceId,
+                customer: adj.Customer.fullName,
+                amount: adj.amount,
+              }))
+              .slice(0, 5)}
+            columns={[
+              getTableColumn("ID", "id"),
+              getTableColumn("Customer", "customer"),
+              getTableColumn("Amount", "amount", (row) => (
+                <NumericFormatRp value={row.amount} />
+              )),
+              getTableColumn("Source", "source"),
             ]}
           />
         </Grid>
