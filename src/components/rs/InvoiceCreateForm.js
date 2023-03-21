@@ -13,10 +13,12 @@ import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import http from "../../http-common";
 
+import moment from "moment";
+
 export default function InvoiceCreateForm({ editId, onSubmit, onCancel }) {
   const [customers, setCustomers] = useState([]);
 
-  const [invoiceDate, setInvoiceDate] = useState("");
+  const [invoiceDate, setInvoiceDate] = useState(moment().format("YYYY-MM-DD"));
   const [invoiceNote, setInvoiceNote] = useState("");
   const [invoiceCustomer, setInvoiceCustomer] = useState(null);
   const [status, setStatus] = useState("draft");
