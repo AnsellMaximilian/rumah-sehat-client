@@ -13,7 +13,7 @@ import { useParams } from "react-router-dom";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import http from "../../../http-common";
 import PrintIcon from "@mui/icons-material/Print";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import ValueDisplay from "../../../components/ValueDisplay";
 import DeliveryDisplay from "../../../components/rs/DeliveryDisplay";
 import { getTableColumn } from "../../../helpers/rs";
@@ -81,14 +81,14 @@ const InvoiceShow = () => {
         >
           {invoice.paid ? "Paid" : invoice.status}
         </Button>
-        <Button
+        {/* <Button
           component={Link}
           to={`/rs/invoices/edit/${id}`}
           underline={"none"}
           variant="outlined"
         >
           Edit
-        </Button>
+        </Button> */}
         <Button
           href={` http://localhost:1107/rs/invoices/${id}/print`}
           target="__blank"
