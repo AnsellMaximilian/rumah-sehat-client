@@ -32,6 +32,8 @@ export default function AdjustmentForm({
   onCancel,
   CustomerId,
   editId,
+  SourceInvoiceId,
+  AdjustedInvoiceId,
 }) {
   const [amount, setAmount] = useState(0);
   const [selectedSourceInvoice, setSelectedSourceInvoice] = useState(null);
@@ -44,6 +46,16 @@ export default function AdjustmentForm({
       if (CustomerId) {
         setInvoices(
           (await http.get(`/rs/invoices?CustomerId=${CustomerId}`)).data.data
+        );
+      }
+      if (SourceInvoiceId) {
+        setSelectedSourceInvoice(
+          (await http.get(`/rs/invoices/${SourceInvoiceId}`)).data.data
+        );
+      }
+      if (AdjustedInvoiceId) {
+        setSelectedAdjustedInvoice(
+          (await http.get(`/rs/invoices/${AdjustedInvoiceId}`)).data.data
         );
       }
     })();
@@ -106,6 +118,7 @@ export default function AdjustmentForm({
         <Grid item xs={4}>
           <Autocomplete
             value={selectedSourceInvoice}
+            disabled={!!SourceInvoiceId}
             onChange={(e, newValue) => {
               setSelectedSourceInvoice(newValue);
             }}
@@ -137,6 +150,7 @@ export default function AdjustmentForm({
         <Grid item xs={4}>
           <Autocomplete
             value={selectedAdjustedInvoice}
+            disabled={!!AdjustedInvoiceId}
             onChange={(e, newValue) => {
               setSelectedAdjustedInvoice(newValue);
             }}

@@ -1,14 +1,17 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
+// import Table from "@mui/material/Table";
+import Chip from "@mui/material/Chip";
+import IconButton from "@mui/material/IconButton";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import Delete from "@mui/icons-material/Delete";
+import Edit from "@mui/icons-material/ModeEdit";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -16,10 +19,51 @@ import NumericFormatRp from "../../../components/NumericFormatRp";
 import http from "../../../http-common";
 import PrintIcon from "@mui/icons-material/Print";
 import { Link } from "react-router-dom";
+import ValueDisplay from "../../../components/ValueDisplay";
+import DeliveryDisplay from "../../../components/rs/DeliveryDisplay";
+import { getTableColumn } from "../../../helpers/rs";
+import Table from "../../../components/Table";
+import { toast } from "react-toastify";
+import DeleteAlert from "../../../components/DeleteAlert";
+import { Dialog } from "@mui/material";
+import AdjustmentForm from "../../../components/rs/AdjustmentForm";
 
 const InvoiceShow = () => {
   const { id } = useParams();
   const [invoice, setInvoice] = useState(null);
+
+  const [adjustmentFormOpen, setAdjustmentFormOpen] = useState(false);
+
+  const [adjustmentEditId, setAdjustmentEditId] = useState(null);
+
+  const [adjustmentDeleteId, setAdjustmentDeleteId] = useState(null);
+
+  const handleAdjustmentFormClose = () => setAdjustmentFormOpen(false);
+  const handleAdjustmentSubmit = async () => {
+    handleAdjustmentFormClose();
+    setInvoice((await http.get(`/rs/invoices/${invoice.id}`)).data.data);
+
+    setAdjustmentEditId(null);
+  };
+
+  const handleAdjsutmentEdit = (id) => {
+    setAdjustmentEditId(id);
+    setAdjustmentFormOpen(true);
+  };
+
+  const handleAdjustmentDelete = (id) => {
+    (async () => {
+      try {
+        const adjustment = (await http.delete(`/rs/adjustments/${id}`)).data
+          .data;
+        setInvoice((await http.get(`/rs/invoices/${invoice.id}`)).data.data);
+
+        toast.success(`Adjustment #${adjustment.id} deleted.`);
+      } catch ({ response: { data: error } }) {
+        toast.error(error);
+      }
+    })();
+  };
 
   useEffect(() => {
     (async () => {
@@ -60,156 +104,128 @@ const InvoiceShow = () => {
           <PrintIcon color="white" />
         </Button>
       </Box>
-      <Box component={Paper}>
-        <Box
-          display="flex"
-          paddingY={2}
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <Box
-            sx={{
-              backgroundColor: "primary.main",
-              color: "white",
-              padding: 2,
-              width: "60%",
-            }}
-          >
-            <Typography variant="title" component="h1">
-              Invoice
-            </Typography>
-            <Typography variant="subtitle1">Rumah Sehat</Typography>
-          </Box>
-          <Box padding={2}>
-            <Typography variant="title" component="h1">
-              Invoice #{invoice.id}
-            </Typography>
-          </Box>
-        </Box>
-
-        <Divider />
-
-        <Box display="flex" justifyContent="space-between" marginY={2}>
-          <Box paddingX={2}>
-            <Box marginBottom={2}>
-              <Typography variant="subtitle2">DATE</Typography>
-              <Typography>
-                {moment(invoice.date).format("DD/MM/YYYY")}
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <Paper sx={{ padding: 2, height: "100%" }}>
+            <Box display="flex" flexDirection="column">
+              <Typography variant="h6" fontWeight="bold">
+                INVOICE #{invoice.id}
               </Typography>
             </Box>
-            <Box>
-              <Typography variant="subtitle2">INVOICED TO</Typography>
-              <Typography>{invoice.customerFullName}</Typography>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              flexWrap="wrap"
+              gap={2}
+              marginTop={2}
+            >
+              <ValueDisplay
+                value={invoice.customerFullName}
+                label="Invoiced To"
+              />
+              <ValueDisplay value={invoice.date} label="Date" />
+              <ValueDisplay
+                renderValue={() => (
+                  <NumericFormatRp value={invoice.totalPrice} />
+                )}
+                label="Total"
+              />
             </Box>
-          </Box>
-          <Box paddingX={2}>
-            <Typography variant="subtitle2" textAlign="right">
-              PEMBAYARAN
-            </Typography>
-            <Typography>BCA: 035 0889191 (F.M. Fenty Effendy)</Typography>
-          </Box>
-        </Box>
-
-        <Divider />
-
-        <Box marginTop={2}>
-          {invoice.Deliveries.map((delivery, index) => (
-            <Box key={delivery.id} marginBottom={2}>
-              <Box paddingX={2} display="flex" justifyContent="space-between">
-                <Box>
-                  <Typography variant="caption">DELIVERY #</Typography>
-                  <Typography variant="subtitle2">{delivery.id}</Typography>
-                </Box>
-                <Box>
-                  <Typography variant="caption">DELIVERY DATE</Typography>
-                  <Typography variant="subtitle2">{delivery.date}</Typography>
-                </Box>
-                <Box>
-                  <Typography variant="caption">RECIPIENT</Typography>
-                  <Typography variant="subtitle2">
-                    {delivery.customerFullName}
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper sx={{ padding: 2, height: "100%" }}>
+            <Box display="flex" justifyContent="space-between" gap={2}>
+              <Typography variant="h6" fontWeight="bold">
+                Adjustments
+              </Typography>
+              <Button
+                variant="contained"
+                onClick={() => setAdjustmentFormOpen(true)}
+              >
+                Create
+              </Button>
+            </Box>
+            <Table
+              size="small"
+              rows={invoice.InvoiceAdjustments.map((adjustment) => ({
+                id: adjustment.id,
+                amount: adjustment.amount,
+                description: adjustment.description,
+                AdjustedInvoiceId: adjustment.AdjustedInvoiceId,
+              }))}
+              columns={[
+                getTableColumn("ID", "id"),
+                getTableColumn("Source", "SourceInvoiceId"),
+                getTableColumn("Amount", "amount", (row) => (
+                  <Typography color={row.amount > 0 ? "default" : "error"}>
+                    <NumericFormatRp value={row.amount} />
                   </Typography>
-                </Box>
-              </Box>
-              <TableContainer sx={{ marginTop: 2 }}>
-                <Table
-                  sx={{ minWidth: 650 }}
-                  aria-label="simple table"
-                  size="small"
-                >
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Product</TableCell>
-                      <TableCell align="right">Price</TableCell>
-                      <TableCell align="right">Qty</TableCell>
-                      <TableCell align="right">Total Price</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {delivery.DeliveryDetails.map((detail) => (
-                      <TableRow
-                        key={detail.id}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          {detail.productName}
-                        </TableCell>
-                        <TableCell align="right">
-                          <NumericFormatRp value={detail.price} />
-                        </TableCell>
-                        <TableCell align="right">{detail.qty}</TableCell>
-                        <TableCell align="right">
-                          <NumericFormatRp value={detail.totalPrice} />
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                    <TableRow>
-                      <TableCell colSpan={3} align="right">
-                        Subtotal
-                      </TableCell>
-                      <TableCell align="right">
-                        <NumericFormatRp value={delivery.subtotalPrice} />
-                      </TableCell>
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell colSpan={3} align="right">
-                        Delivery
-                      </TableCell>
-                      <TableCell align="right" colSpan={2}>
-                        <NumericFormatRp value={delivery.cost} />
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell colSpan={3} align="right">
-                        Total
-                      </TableCell>
-                      <TableCell align="right" colSpan={2}>
-                        <NumericFormatRp value={delivery.totalPrice} />
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Box>
-          ))}
-        </Box>
-
-        <Box
-          textAlign="right"
-          padding={2}
-          sx={{ backgroundColor: "primary.main", color: "white" }}
-        >
-          <Typography variant="h5" fontWeight="bold">
-            AMOUNT DUE
-          </Typography>
-          <Typography variant="h4" fontWeight="bold">
-            <NumericFormatRp value={invoice.totalPrice} />
-          </Typography>
-        </Box>
+                )),
+                getTableColumn("Description", "description"),
+                getTableColumn("Actions", "actions", (row) => (
+                  <>
+                    <IconButton
+                      color="warning"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAdjsutmentEdit(row.id);
+                      }}
+                    >
+                      <Edit />
+                    </IconButton>
+                    <IconButton
+                      color="error"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setAdjustmentDeleteId(row.id);
+                      }}
+                    >
+                      <Delete />
+                    </IconButton>
+                  </>
+                )),
+              ]}
+            />
+            <Dialog
+              open={adjustmentFormOpen}
+              onClose={handleAdjustmentFormClose}
+              maxWidth="xl"
+            >
+              <AdjustmentForm
+                CustomerId={invoice.CustomerId}
+                onSubmit={handleAdjustmentSubmit}
+                onCancel={handleAdjustmentFormClose}
+                editId={adjustmentEditId}
+                AdjustedInvoiceId={invoice.id}
+              />
+            </Dialog>
+          </Paper>
+        </Grid>
+      </Grid>
+      <Divider sx={{ marginTop: 2 }}>
+        <Chip label="Deliveries" />
+      </Divider>
+      <Box marginTop={2} display="flex" flexDirection="column" gap={2}>
+        {invoice.Deliveries.map((delivery) => {
+          return (
+            <DeliveryDisplay
+              // actions
+              delivery={delivery}
+              key={delivery.id}
+              // onDelete={() => setAdjustmentDeleteId(delivery.id)}
+              // onEdit={() => handleDeliveryEdit(delivery.id)}
+            />
+          );
+        })}
       </Box>
+      <DeleteAlert
+        message={`Are you sure you want to delete adjustment #${adjustmentDeleteId}.`}
+        toDeleteId={adjustmentDeleteId}
+        handleDelete={handleAdjustmentDelete}
+        setToDeleteId={setAdjustmentDeleteId}
+        objectName="Adjustment"
+      />
     </Box>
   ) : (
     <h1>Loading...</h1>
