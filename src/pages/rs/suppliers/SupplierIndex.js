@@ -2,16 +2,19 @@ import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/ModeEdit";
 import { IconButton } from "@mui/material";
 import http from "../../../http-common";
 import SmartTable from "../../../components/SmartTable";
 import { toast } from "react-toastify";
+import ShowIcon from "@mui/icons-material/RemoveRedEye";
 
 const SupplierIndex = () => {
   const [suppliers, setSuppliers] = useState([]);
+
+  const navigate = useNavigate();
 
   const handleDelete = (id) => {
     (async () => {
@@ -55,6 +58,15 @@ const SupplierIndex = () => {
               }}
             >
               <Delete />
+            </IconButton>
+            <IconButton
+              color="primary"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/rs/suppliers/${params.row.id}`);
+              }}
+            >
+              <ShowIcon />
             </IconButton>
           </>
         );

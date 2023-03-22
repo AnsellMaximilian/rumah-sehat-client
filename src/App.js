@@ -52,6 +52,7 @@ import ProfitsIndex from "./pages/rs/profits/ProfitsIndex";
 import ProductsReport from "./pages/rs/reports/ProductsReport";
 import CustomerShow from "./pages/customers/CustomerShow";
 import InvoiceManage from "./pages/rs/invoices/InvoiceManage";
+import SupplierShow from "./pages/rs/suppliers/SupplierShow";
 
 function App() {
   return (
@@ -84,6 +85,7 @@ function App() {
                 >
                   <Route path="" element={<SupplierIndex />} />
                   <Route path="create" element={<SupplierCreate />} />
+                  <Route path=":id" element={<SupplierShow />} />
                   <Route path="edit/:id" element={<SupplierEdit />} />
                 </Route>
                 <Route
