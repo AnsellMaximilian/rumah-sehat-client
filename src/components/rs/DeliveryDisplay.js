@@ -15,7 +15,12 @@ import { getSubtotal, getTableColumn } from "../../helpers/rs";
 import NumericFormatRp from "../NumericFormatRp";
 import { useState } from "react";
 
-export default function DeliveryDisplay({ delivery, onDelete, onEdit }) {
+export default function DeliveryDisplay({
+  delivery,
+  onDelete,
+  onEdit,
+  actions,
+}) {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <Paper sx={{ paddingBottom: 2 }}>
@@ -25,32 +30,34 @@ export default function DeliveryDisplay({ delivery, onDelete, onEdit }) {
             #{delivery.id}
           </Typography>
         </Box>
-        <Box sx={{ marginLeft: "auto" }}>
-          <Button
-            variant="contained"
-            color="warning"
-            onClick={onEdit}
-            sx={{
-              borderTopRightRadius: 0,
-              borderBottomRightRadius: 0,
-              boxShadow: "none",
-            }}
-          >
-            <EditIcon />
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={onDelete}
-            sx={{
-              borderTopLeftRadius: 0,
-              borderBottomLeftRadius: 0,
-              boxShadow: "none",
-            }}
-          >
-            <CloseIcon />
-          </Button>
-        </Box>
+        {actions && (
+          <Box sx={{ marginLeft: "auto" }}>
+            <Button
+              variant="contained"
+              color="warning"
+              onClick={onEdit}
+              sx={{
+                borderTopRightRadius: 0,
+                borderBottomRightRadius: 0,
+                boxShadow: "none",
+              }}
+            >
+              <EditIcon />
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={onDelete}
+              sx={{
+                borderTopLeftRadius: 0,
+                borderBottomLeftRadius: 0,
+                boxShadow: "none",
+              }}
+            >
+              <CloseIcon />
+            </Button>
+          </Box>
+        )}
       </Box>
       <Grid container spacing={1} sx={{ padding: 2 }}>
         <Grid item xs={6}>

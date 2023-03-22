@@ -220,6 +220,7 @@ export default function InvoiceManage({ edit }) {
           invoice.Deliveries.map((delivery) => {
             return (
               <DeliveryDisplay
+                actions
                 delivery={delivery}
                 key={delivery.id}
                 onDelete={() => setToDeleteId(delivery.id)}
