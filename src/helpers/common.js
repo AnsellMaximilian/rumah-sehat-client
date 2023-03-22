@@ -15,3 +15,12 @@ export const getWeek = () => {
 
   return { weekStart, weekEnd };
 };
+
+export const formQueryParams = (obj) => {
+  return Object.keys(obj)
+    .filter((key) => obj[key])
+    .map((key) => {
+      return `${key}=${obj[key]}`;
+    })
+    .join("&");
+};
