@@ -8,15 +8,20 @@ import NumericFormatRp from "../../components/NumericFormatRp";
 
 export default function Dashboard() {
   const [designatedSales, setDesignatedSales] = useState([]);
-  const [activeInvoices, setActiveInvoices] = useState([]);
   const [danglingAdjustments, setDanglingAdjustments] = useState([]);
+  const [draftInvoices, setDraftInvoices] = useState([]);
+
+  const [pendingInvoices, setPendingInvoices] = useState([]);
 
   useEffect(() => {
     (async () => {
       setDesignatedSales(
         (await http.get("/rs/purchases/designated-sales")).data.data
       );
-      setActiveInvoices((await http.get("/rs/invoices?active=yes")).data.data);
+      setDraftInvoices((await http.get("/rs/invoices?status=draft")).data.data);
+      setPendingInvoices(
+        (await http.get("/rs/invoices?status=pending")).data.data
+      );
       setDanglingAdjustments(
         (await http.get("/rs/adjustments?pending=yes")).data.data
       );
@@ -48,10 +53,31 @@ export default function Dashboard() {
         </Grid>
         <Grid item xs={6} container alignItems="stretch">
           <DashboardModule
-            title={`Active Invoices (${activeInvoices.length})`}
-            linkText={`See more (${activeInvoices.slice(5).length})`}
+            title={`Draft Invoices (${draftInvoices.length})`}
+            linkText={`See more (${draftInvoices.slice(5).length})`}
             linkTo="/rs/invoices"
-            rows={activeInvoices
+            rows={draftInvoices
+              .map((invoice) => ({
+                id: invoice.id,
+                total: invoice.totalPrice,
+                customer: invoice.Customer.fullName,
+              }))
+              .slice(0, 5)}
+            columns={[
+              getTableColumn("ID", "id"),
+              getTableColumn("Customer", "customer"),
+              getTableColumn("Total", "total", (row) => (
+                <NumericFormatRp value={row.total} />
+              )),
+            ]}
+          />
+        </Grid>
+        <Grid item xs={6} container alignItems="stretch">
+          <DashboardModule
+            title={`Pending Invoices (${pendingInvoices.length})`}
+            linkText={`See more (${pendingInvoices.slice(5).length})`}
+            linkTo="/rs/invoices"
+            rows={pendingInvoices
               .map((invoice) => ({
                 id: invoice.id,
                 total: invoice.totalPrice,
