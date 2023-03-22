@@ -1,6 +1,5 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Divider from "@mui/material/Divider";
 import Dialog from "@mui/material/Dialog";
 import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Grid";
@@ -8,11 +7,8 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import NumericFormatRp from "../../components/NumericFormatRp";
 import http from "../../http-common";
-import PrintIcon from "@mui/icons-material/Print";
 
-import { Link } from "react-router-dom";
 import ValueDisplay from "../../components/ValueDisplay";
 import AdjustmentForm from "../../components/rs/AdjustmentForm";
 import Table from "../../components/Table";
