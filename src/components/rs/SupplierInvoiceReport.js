@@ -44,6 +44,7 @@ export default function SupplierInvoiceReport({
                 <TableCell>Supplier</TableCell>
                 <TableCell align="right">Subtotal</TableCell>
                 <TableCell align="right">Delivery Cost</TableCell>
+                <TableCell align="right">Adjustments</TableCell>
                 <TableCell align="right">Total</TableCell>
               </TableRow>
             </TableHead>
@@ -66,6 +67,11 @@ export default function SupplierInvoiceReport({
                   <TableCell align="right">
                     <NumericFormatRp
                       value={parseFloat(supplierTotal.delivery)}
+                    />
+                  </TableCell>
+                  <TableCell align="right">
+                    <NumericFormatRp
+                      value={parseFloat(supplierTotal.adjustmentTotal)}
                     />
                   </TableCell>
                   <TableCell align="right">

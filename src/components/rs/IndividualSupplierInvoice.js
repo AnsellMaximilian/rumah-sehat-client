@@ -27,6 +27,7 @@ export default function IndividualSupplierInvoice({
   endDate,
   invoiceDetails,
   deliveryCost,
+  adjustmentTotal,
 }) {
   return (
     <Box component={Paper} marginTop={2}>
@@ -91,12 +92,22 @@ export default function IndividualSupplierInvoice({
               </TableRow>
               <TableRow>
                 <TableCell colSpan={3} align="right">
+                  Adjustments
+                </TableCell>
+                <TableCell align="right" colSpan={2}>
+                  <NumericFormatRp value={adjustmentTotal} />
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell colSpan={3} align="right">
                   Total
                 </TableCell>
                 <TableCell align="right" colSpan={2}>
                   <NumericFormatRp
                     value={
-                      getBillSubtotal(invoiceDetails) + parseInt(deliveryCost)
+                      getBillSubtotal(invoiceDetails) +
+                      parseInt(deliveryCost) +
+                      parseInt(adjustmentTotal)
                     }
                   />
                 </TableCell>

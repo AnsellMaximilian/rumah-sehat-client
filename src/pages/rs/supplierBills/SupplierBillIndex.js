@@ -174,6 +174,7 @@ const SupplierBillIndex = () => {
             endDate={endDate}
             invoiceDetails={billData.details}
             deliveryCost={billData.cost[0].costTotal}
+            adjustmentTotal={billData.adjustment[0].adjustmentTotal}
           />
         ) : (
           <SupplierInvoiceReport
