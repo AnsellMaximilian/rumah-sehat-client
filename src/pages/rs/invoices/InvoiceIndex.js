@@ -90,6 +90,17 @@ const InvoiceIndex = () => {
     setInvoiceEndDate(weekEnd);
   };
 
+  const handleClearFilter = async () => {
+    setDeliveriesEndDate("");
+    setDeliveriesStartDate("");
+    setInvoiceEndDate("");
+    setInvoiceStartDate("");
+    setSelectedCustomer(null);
+    setStatus("all");
+
+    setInvoices((await http.get(`/rs/invoices`)).data.data);
+  };
+
   const handleFilter = async () => {
     const queryParams = formQueryParams({
       deliveriesEndDate,
@@ -293,9 +304,14 @@ const InvoiceIndex = () => {
           </Grid>
           <Grid item xs={12}></Grid>
         </Grid>
-        <Button variant="contained" fullWidth onClick={handleFilter}>
-          Filter
-        </Button>
+        <Box display="flex" gap={2}>
+          <Button variant="outlined" fullWidth onClick={handleClearFilter}>
+            Clear Filter
+          </Button>
+          <Button variant="contained" fullWidth onClick={handleFilter}>
+            Filter
+          </Button>
+        </Box>
       </Box>
       <Card sx={{ marginTop: 2 }}>
         <SmartTable
