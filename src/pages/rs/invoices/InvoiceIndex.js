@@ -139,7 +139,14 @@ const InvoiceIndex = () => {
 
       const res = (await http.post("/rs/invoices/bulk-print", body)).data.data;
       setIsPrinting(false);
-      toast.success(`Successfully printed ${res.length} invoices.`);
+      if (res.successes.length > 0)
+        toast.success(`Successfully printed ${res.successes.length} invoices.`);
+      if (res.fails.length > 0)
+        toast.success(
+          `Failed to print ${res.fails.length} invoices. IDs ${res.fails
+            .map((fail) => fail.id)
+            .join(", ")}`
+        );
     } catch (error) {
       setIsPrinting(false);
       toast.error(error);
