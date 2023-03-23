@@ -7,6 +7,9 @@ import Chip from "@mui/material/Chip";
 import Autocomplete from "@mui/material/Autocomplete";
 import InputLabel from "@mui/material/InputLabel";
 import CircularProgress from "@mui/material/CircularProgress";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -46,6 +49,7 @@ const InvoiceIndex = () => {
 
   //PRINT
   const [isPrinting, setIsPrinting] = useState(false);
+  const [setDraftsPending, setSetDraftsPending] = useState(false);
 
   const handleDelete = (id) => {
     (async () => {
@@ -127,6 +131,7 @@ const InvoiceIndex = () => {
       setIsPrinting(true);
       const body = {
         invoiceIds: invoices.map((inv) => inv.id),
+        setDraftsPending,
         fileNamePrefix: formFileName({
           deliveriesEndDate,
           deliveriesStartDate,
@@ -147,6 +152,7 @@ const InvoiceIndex = () => {
             .map((fail) => fail.id)
             .join(", ")}`
         );
+      console.log(res);
     } catch (error) {
       setIsPrinting(false);
       toast.error(error);
@@ -365,6 +371,17 @@ const InvoiceIndex = () => {
             <CircularProgress />
           </Box>
         )}
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Checkbox
+                onChange={(e) => setSetDraftsPending(e.target.checked)}
+                checked={setDraftsPending}
+              />
+            }
+            label="Set Drafts to 'Pending'?"
+          />
+        </FormGroup>
         <Button
           variant="contained"
           color="error"
