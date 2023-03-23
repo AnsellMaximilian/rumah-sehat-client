@@ -348,12 +348,17 @@ const InvoiceIndex = () => {
 
       <Box marginTop={4} display="flex" justifyContent="flex-end" gap={2}>
         {isPrinting && (
-          <Box>
+          <Box display="flex" gap={2} alignItems="flex-end">
             <Typography>Printing...</Typography>
             <CircularProgress />
           </Box>
         )}
-        <Button variant="contained" color="error" onClick={handleBulkPrint}>
+        <Button
+          variant="contained"
+          color="error"
+          onClick={handleBulkPrint}
+          disabled={isPrinting}
+        >
           Print
         </Button>
       </Box>
