@@ -95,7 +95,7 @@ export default function IndividualSupplierInvoice({
                   Adjustments
                 </TableCell>
                 <TableCell align="right" colSpan={2}>
-                  <NumericFormatRp value={adjustmentTotal} />
+                  <NumericFormatRp value={adjustmentTotal || 0} />
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -107,7 +107,7 @@ export default function IndividualSupplierInvoice({
                     value={
                       getBillSubtotal(invoiceDetails) +
                       parseInt(deliveryCost) +
-                      parseInt(adjustmentTotal)
+                      (parseInt(adjustmentTotal) || 0)
                     }
                   />
                 </TableCell>
