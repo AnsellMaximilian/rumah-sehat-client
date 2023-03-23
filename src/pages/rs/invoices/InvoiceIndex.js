@@ -6,6 +6,7 @@ import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
 import Autocomplete from "@mui/material/Autocomplete";
 import InputLabel from "@mui/material/InputLabel";
+import CircularProgress from "@mui/material/CircularProgress";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -23,7 +24,11 @@ import { toast } from "react-toastify";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteAlert from "../../../components/DeleteAlert";
 import PayIcon from "@mui/icons-material/Paid";
-import { formQueryParams, getWeek } from "../../../helpers/common";
+import {
+  formFileName,
+  formQueryParams,
+  getWeek,
+} from "../../../helpers/common";
 
 const InvoiceIndex = () => {
   const [invoices, setInvoices] = useState([]);
@@ -38,6 +43,9 @@ const InvoiceIndex = () => {
   const [customers, setCustomers] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [status, setStatus] = useState("all");
+
+  //PRINT
+  const [isPrinting, setIsPrinting] = useState(false);
 
   const handleDelete = (id) => {
     (async () => {
@@ -110,8 +118,32 @@ const InvoiceIndex = () => {
       status: status === "all" ? null : status,
       CustomerId: selectedCustomer ? selectedCustomer.id : undefined,
     });
-    console.log(queryParams);
+    // console.log(queryParams);
     setInvoices((await http.get(`/rs/invoices?${queryParams}`)).data.data);
+  };
+
+  const handleBulkPrint = async () => {
+    try {
+      setIsPrinting(true);
+      const body = {
+        invoiceIds: invoices.map((inv) => inv.id),
+        fileNamePrefix: formFileName({
+          deliveriesEndDate,
+          deliveriesStartDate,
+          invoiceEndDate,
+          invoiceStartDate,
+          status: status === "all" ? null : status,
+          CustomerId: selectedCustomer ? selectedCustomer.id : undefined,
+        }),
+      };
+
+      const res = (await http.post("/rs/invoices/bulk-print", body)).data.data;
+      setIsPrinting(false);
+      toast.success(`Successfully printed ${res.length} invoices.`);
+    } catch (error) {
+      setIsPrinting(false);
+      toast.error(error);
+    }
   };
 
   const columns = [
@@ -312,6 +344,18 @@ const InvoiceIndex = () => {
             Filter
           </Button>
         </Box>
+      </Box>
+
+      <Box marginTop={4} display="flex" justifyContent="flex-end" gap={2}>
+        {isPrinting && (
+          <Box>
+            <Typography>Printing...</Typography>
+            <CircularProgress />
+          </Box>
+        )}
+        <Button variant="contained" color="error" onClick={handleBulkPrint}>
+          Print
+        </Button>
       </Box>
       <Card sx={{ marginTop: 2 }}>
         <SmartTable

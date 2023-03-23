@@ -24,3 +24,12 @@ export const formQueryParams = (obj) => {
     })
     .join("&");
 };
+
+export const formFileName = (obj) => {
+  return Object.keys(obj)
+    .filter((key) => obj[key])
+    .map((key) => {
+      return `${key}-${obj[key]}`;
+    })
+    .join("_");
+};
