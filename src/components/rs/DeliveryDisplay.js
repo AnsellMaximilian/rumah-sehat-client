@@ -76,6 +76,12 @@ export default function DeliveryDisplay({
           <Typography variant="subtitle2">Delivery Type</Typography>
           <Typography>{delivery.DeliveryType.name}</Typography>
         </Grid>
+        <Grid item xs={12}>
+          <Typography variant="subtitle2">TOTAL</Typography>
+          <Typography>
+            <NumericFormatRp value={delivery.totalPrice} />
+          </Typography>
+        </Grid>
       </Grid>
       <Box display="flex" gap={2} marginRight={1}>
         <Box
