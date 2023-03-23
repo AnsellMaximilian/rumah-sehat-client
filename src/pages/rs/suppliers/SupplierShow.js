@@ -107,6 +107,7 @@ export default function SupplierShow() {
               size="small"
               rows={supplier.PurchaseAdjustments.map((adjustment) => ({
                 id: adjustment.id,
+                date: adjustment.date,
                 SourcePurchaseId: adjustment.SourcePurchaseId,
                 amount: adjustment.amount,
                 description: adjustment.description,
@@ -114,6 +115,7 @@ export default function SupplierShow() {
               }))}
               columns={[
                 getTableColumn("ID", "id"),
+                getTableColumn("Date", "date"),
                 getTableColumn("Purchase Source", "SourcePurchaseId"),
                 getTableColumn("Amount", "amount"),
                 getTableColumn("Description", "description"),
