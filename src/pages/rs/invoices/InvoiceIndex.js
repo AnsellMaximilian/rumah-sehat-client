@@ -235,7 +235,7 @@ const InvoiceIndex = () => {
               options={customers}
               sx={{ width: "100%" }}
               renderInput={(params) => (
-                <TextField {...params} label="Customer" />
+                <TextField {...params} label="Customer" size="small" />
               )}
             />
           </Grid>
@@ -243,6 +243,7 @@ const InvoiceIndex = () => {
             <FormControl margin="none" fullWidth>
               <InputLabel id="demo-simple-select-label">Status</InputLabel>
               <Select
+                size="small"
                 label="Supplier"
                 value={status}
                 fullWidth
@@ -260,6 +261,7 @@ const InvoiceIndex = () => {
           <Grid item xs={5}>
             <TextField
               fullWidth
+              size="small"
               label="Start Date"
               type="date"
               value={invoiceStartDate}
@@ -272,6 +274,7 @@ const InvoiceIndex = () => {
           <Grid item xs={5}>
             <TextField
               fullWidth
+              size="small"
               label="End Date"
               type="date"
               value={invoiceEndDate}
@@ -302,6 +305,7 @@ const InvoiceIndex = () => {
           <Grid item xs={5}>
             <TextField
               fullWidth
+              size="small"
               label="Start Date"
               type="date"
               value={deliveriesStartDate}
@@ -314,6 +318,7 @@ const InvoiceIndex = () => {
           <Grid item xs={5}>
             <TextField
               fullWidth
+              size="small"
               label="End Date"
               type="date"
               value={deliveriesEndDate}
