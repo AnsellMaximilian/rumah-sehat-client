@@ -40,7 +40,8 @@ const DrInvoiceIndex = () => {
   }, []);
 
   const columns = [
-    { field: "id", headerName: "ID", width: 50 },
+    { field: "id", headerName: "ID", width: 75 },
+    { field: "customerName", headerName: "Customer", width: 200 },
     { field: "date", headerName: "Date", width: 100 },
     { field: "note", headerName: "Note", width: 100 },
 
@@ -102,6 +103,7 @@ const DrInvoiceIndex = () => {
           rows={invoices.map((delivery) => ({
             id: delivery.id,
             note: delivery.note,
+            customerName: delivery.Customer.fullName,
             date: delivery.date,
             totalPriceRP: delivery.totalPriceRP,
           }))}
