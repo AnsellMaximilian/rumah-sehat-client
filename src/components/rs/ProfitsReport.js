@@ -18,6 +18,7 @@ export default function ProfitsReport({
   startDate,
   endDate,
   totals,
+  compact,
 }) {
   return (
     <Box component={Paper} marginTop={2}>
@@ -125,48 +126,51 @@ export default function ProfitsReport({
                         <NumericFormatRp value={parseFloat(supplier.profit)} />
                       </TableCell>
                     </TableRow>
-                    {profits
-                      .filter(
-                        (profit) => profit.supplierId === supplier.supplierId
-                      )
-                      .map((profit) => {
-                        return (
-                          <TableRow
-                            key={`${profit.productId}-${profit.price}`}
-                            sx={{
-                              "&:last-child td, &:last-child th": { border: 0 },
-                            }}
-                          >
-                            <TableCell component="th" scope="row">
-                              {profit.product}
-                            </TableCell>
-                            <TableCell align="right">
-                              <NumericFormatRp value={profit.cost} />
-                            </TableCell>
-                            <TableCell align="right">
-                              <NumericFormatRp value={profit.price} />
-                            </TableCell>
-                            <TableCell align="center">
-                              {parseFloat(profit.totalQty)}
-                            </TableCell>
-                            <TableCell align="right">
-                              <NumericFormatRp
-                                value={parseFloat(profit.totalCost)}
-                              />
-                            </TableCell>
-                            <TableCell align="right">
-                              <NumericFormatRp
-                                value={parseFloat(profit.totalPrice)}
-                              />
-                            </TableCell>
-                            <TableCell align="right">
-                              <NumericFormatRp
-                                value={parseFloat(profit.profit)}
-                              />
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
+                    {!compact &&
+                      profits
+                        .filter(
+                          (profit) => profit.supplierId === supplier.supplierId
+                        )
+                        .map((profit) => {
+                          return (
+                            <TableRow
+                              key={`${profit.productId}-${profit.price}`}
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  border: 0,
+                                },
+                              }}
+                            >
+                              <TableCell component="th" scope="row">
+                                {profit.product}
+                              </TableCell>
+                              <TableCell align="right">
+                                <NumericFormatRp value={profit.cost} />
+                              </TableCell>
+                              <TableCell align="right">
+                                <NumericFormatRp value={profit.price} />
+                              </TableCell>
+                              <TableCell align="center">
+                                {parseFloat(profit.totalQty)}
+                              </TableCell>
+                              <TableCell align="right">
+                                <NumericFormatRp
+                                  value={parseFloat(profit.totalCost)}
+                                />
+                              </TableCell>
+                              <TableCell align="right">
+                                <NumericFormatRp
+                                  value={parseFloat(profit.totalPrice)}
+                                />
+                              </TableCell>
+                              <TableCell align="right">
+                                <NumericFormatRp
+                                  value={parseFloat(profit.profit)}
+                                />
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
                   </Fragment>
                 );
               })}

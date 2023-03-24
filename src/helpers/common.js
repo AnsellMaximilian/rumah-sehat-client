@@ -1,3 +1,4 @@
+import html2canvas from "html2canvas";
 import moment from "moment";
 
 export const getWeek = () => {
@@ -32,4 +33,20 @@ export const formFileName = (obj) => {
       return `${key}-${obj[key]}`;
     })
     .join("_");
+};
+
+export const copyElementToClipboard = async (el) => {
+  try {
+    const canvas = await html2canvas(el);
+    canvas.toBlob((blob) => {
+      navigator.clipboard.write([
+        new ClipboardItem({
+          "image/png": blob,
+        }),
+      ]);
+    });
+    return true;
+  } catch (error) {
+    return false;
+  }
 };
