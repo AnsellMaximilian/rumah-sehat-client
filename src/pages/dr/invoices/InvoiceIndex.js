@@ -11,22 +11,26 @@ import SmartTable from "../../../components/SmartTable";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import { toast } from "react-toastify";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
+import DeleteAlert from "../../../components/DeleteAlert";
 
 const DrInvoiceIndex = () => {
   const [invoices, setInvoices] = useState([]);
   const navigate = useNavigate();
 
+  const [toDeleteId, setToDeleteId] = useState(null);
+
   const handleDelete = (id) => {
-    // (async () => {
-    //   const { error } = (await http.delete(`/dr/id/deliveries/${id}`)).data;
-    //   if (!error) {
-    //     setDeliveries((deliveries) =>
-    //       deliveries.filter((delivery) => delivery.id !== id)
-    //     );
-    //   } else {
-    //     toast.error("Failed to delete");
-    //   }
-    // })();
+    (async () => {
+      try {
+        await http.delete(`/dr/invoices/${id}`);
+        setInvoices((invoices) =>
+          invoices.filter((invoice) => invoice.id !== id)
+        );
+        toast.success("Invoice deleted.");
+      } catch ({ response: { data: error } }) {
+        toast.error(error);
+      }
+    })();
   };
 
   useEffect(() => {
@@ -66,7 +70,7 @@ const DrInvoiceIndex = () => {
               color="error"
               onClick={(e) => {
                 e.stopPropagation();
-                handleDelete(params.row.id);
+                setToDeleteId(params.row.id);
               }}
             >
               <Delete />
@@ -104,6 +108,14 @@ const DrInvoiceIndex = () => {
           columns={columns}
         />
       </Card>
+      <DeleteAlert
+        message="Deleting this invoice will also delete any related deliveries and its
+          details."
+        toDeleteId={toDeleteId}
+        handleDelete={handleDelete}
+        setToDeleteId={setToDeleteId}
+        objectName="Invoice"
+      />
     </Box>
   );
 };
