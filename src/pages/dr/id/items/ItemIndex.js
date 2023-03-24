@@ -9,6 +9,7 @@ import { IconButton } from "@mui/material";
 import http from "../../../../http-common";
 import SmartTable from "../../../../components/SmartTable";
 import { toast } from "react-toastify";
+import NumericFormatRp from "../../../../components/NumericFormatRp";
 
 const DrIdItemIndex = () => {
   const [items, setItems] = useState([]);
@@ -34,7 +35,13 @@ const DrIdItemIndex = () => {
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
     { field: "name", headerName: "Name", width: 130 },
-    { field: "priceRP", headerName: "Price (Rp)", width: 130 },
+    {
+      field: "priceRP",
+      headerName: "Price (Rp)",
+      width: 130,
+
+      renderCell: (params) => <NumericFormatRp value={params.row.priceRP} />,
+    },
     {
       field: "points",
       headerName: "Points",

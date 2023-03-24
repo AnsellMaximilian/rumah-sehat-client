@@ -9,6 +9,8 @@ import { IconButton } from "@mui/material";
 import http from "../../../../http-common";
 import SmartTable from "../../../../components/SmartTable";
 import { toast } from "react-toastify";
+import NumericFormatSGD from "../../../../components/NumericFormatSGD";
+import NumericFormatRp from "../../../../components/NumericFormatRp";
 
 const DrSgItemIndex = () => {
   const [items, setItems] = useState([]);
@@ -34,8 +36,22 @@ const DrSgItemIndex = () => {
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
     { field: "name", headerName: "Name", width: 130 },
-    { field: "priceSGD", headerName: "Price (SGD)", width: 130 },
-    { field: "deliveryCost", headerName: "Delivery Cost (Rp)", width: 130 },
+    {
+      field: "priceSGD",
+      headerName: "Price (SGD)",
+      width: 130,
+
+      renderCell: (params) => <NumericFormatSGD value={params.row.priceSGD} />,
+    },
+    {
+      field: "deliveryCost",
+      headerName: "Delivery Cost (Rp)",
+      width: 130,
+
+      renderCell: (params) => (
+        <NumericFormatRp value={params.row.deliveryCost} />
+      ),
+    },
     {
       field: "points",
       headerName: "Points",
