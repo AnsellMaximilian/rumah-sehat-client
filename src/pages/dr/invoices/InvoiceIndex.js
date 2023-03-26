@@ -94,8 +94,8 @@ const DrInvoiceIndex = () => {
   return (
     <Box>
       <Box paddingBottom={2}>
-        <Button variant="contained" component={Link} to={"/dr/invoices/create"}>
-          New Invoice
+        <Button variant="contained" component={Link} to={"/dr/invoices/manage"}>
+          Manage Invoices
         </Button>
       </Box>
       <Card>

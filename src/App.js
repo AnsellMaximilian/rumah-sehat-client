@@ -24,6 +24,7 @@ import DrSgDeliveryIndex from "./pages/dr/sg/deliveries/DeliveryIndex";
 import DrSgDeliveryCreate from "./pages/dr/sg/deliveries/DeliveryCreate";
 import DrSgDeliveryShow from "./pages/dr/sg/deliveries/DeliveryShow";
 import DrInvoiceIndex from "./pages/dr/invoices/InvoiceIndex";
+import DrInvoiceManage from "./pages/dr/invoices/InvoiceManage";
 import DrInvoiceCreate from "./pages/dr/invoices/InvoiceCreate";
 import DrInvoiceShow from "./pages/dr/invoices/InvoiceShow";
 import SupplierIndex from "./pages/rs/suppliers/SupplierIndex";
@@ -166,6 +167,7 @@ function App() {
                   }
                 >
                   <Route path="" element={<DrInvoiceIndex />} />
+                  <Route path="manage" element={<DrInvoiceManage />} />
                   <Route path="create" element={<DrInvoiceCreate />} />
                   <Route path=":id" element={<DrInvoiceShow />} />
                 </Route>
