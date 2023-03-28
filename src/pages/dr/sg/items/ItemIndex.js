@@ -43,6 +43,12 @@ const DrSgItemIndex = () => {
 
       renderCell: (params) => <NumericFormatSGD value={params.row.priceSGD} />,
     },
+
+    {
+      field: "points",
+      headerName: "Points",
+      width: 100,
+    },
     {
       field: "deliveryCost",
       headerName: "Delivery Cost (Rp)",
@@ -51,11 +57,6 @@ const DrSgItemIndex = () => {
       renderCell: (params) => (
         <NumericFormatRp value={params.row.deliveryCost} />
       ),
-    },
-    {
-      field: "points",
-      headerName: "Points",
-      width: 200,
     },
     {
       field: "actions",

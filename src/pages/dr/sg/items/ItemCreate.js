@@ -51,17 +51,18 @@ export default function DrSgItemCreate() {
         <TextField
           margin="normal"
           fullWidth
-          type="number"
-          label="Deivery Cost (Rp)"
-          {...register("deliveryCost")}
-        />
-        <TextField
-          margin="normal"
-          fullWidth
           label="Points"
           type="number"
           {...register("points")}
         />
+        <TextField
+          margin="normal"
+          fullWidth
+          type="number"
+          label="Deivery Cost (Rp)"
+          {...register("deliveryCost")}
+        />
+
         <Button
           type="submit"
           fullWidth
