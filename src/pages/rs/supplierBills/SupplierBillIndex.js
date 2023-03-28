@@ -68,6 +68,23 @@ const SupplierBillIndex = () => {
     }
   };
 
+  const handlePayPurchases = async () => {
+    try {
+      if (!startDate || !endDate) throw new Error("Please select dates.");
+      const res = (
+        await http.post("/rs/purchases/pay", {
+          startDate,
+          endDate,
+        })
+      ).data.data;
+      toast.success(`Updated ${res[0]} purchases.`);
+    } catch (error) {
+      const errorValue = error?.response?.data?.error;
+      const errorMsg = errorValue ? errorValue : error.message;
+      toast.error(errorMsg);
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       if (mode === "individual") {
@@ -183,6 +200,13 @@ const SupplierBillIndex = () => {
               variant="contained"
             >
               PRINT REPORT
+            </Button>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={handlePayPurchases}
+            >
+              Pay
             </Button>
             <Button
               endIcon={<ContentCopyIcon />}
