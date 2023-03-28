@@ -456,9 +456,7 @@ export default function DeliveryCreateForm({
                       />
                     </TableCell>
                     <TableCell align="right">
-                      <NumericFormatRp
-                        value={(detail.points * detail.qty).toFixed(0)}
-                      />
+                      {(detail.points * detail.qty).toFixed(0)}
                     </TableCell>
                     <TableCell align="right">
                       <NumericFormatRp
