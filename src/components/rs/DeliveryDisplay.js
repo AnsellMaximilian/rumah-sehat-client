@@ -8,6 +8,7 @@ import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import EditIcon from "@mui/icons-material/Edit";
+import { Link } from "react-router-dom";
 
 // import moment from "moment";
 import Table from "../Table";
@@ -75,6 +76,18 @@ export default function DeliveryDisplay({
         <Grid item xs={6}>
           <Typography variant="subtitle2">Delivery Type</Typography>
           <Typography>{delivery.DeliveryType.name}</Typography>
+        </Grid>
+        <Grid item xs={6}>
+          <Typography variant="subtitle2">Related Purchase</Typography>
+          <Typography>
+            {delivery.PurchaseId ? (
+              <Link to={`/rs/purchases/${delivery.PurchaseId}`}>
+                #{delivery.PurchaseId}
+              </Link>
+            ) : (
+              "None"
+            )}
+          </Typography>
         </Grid>
         <Grid item xs={12}>
           <Typography variant="subtitle2">TOTAL</Typography>
