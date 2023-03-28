@@ -6,7 +6,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
 import DiscountIcon from "@mui/icons-material/Discount";
 import ReceiptIcon from "@mui/icons-material/Receipt";
-import AdjustIcon from "@mui/icons-material/AutoFixNormal";
+// import AdjustIcon from "@mui/icons-material/AutoFixNormal";
 import ProductIcon from "@mui/icons-material/Widgets";
 import CategoryIcon from "@mui/icons-material/ManageSearch";
 import SupplierIcon from "@mui/icons-material/Inventory";
@@ -143,11 +143,11 @@ const Sidebar = () => {
         </List>
       </Collapse>
 
-      <SidebarLink
+      {/* <SidebarLink
         to="/rs/adjustments"
         text="Adjustments"
         icon={<AdjustIcon />}
-      />
+      /> */}
 
       <Divider sx={{ my: 1 }} />
       <ListSubheader component="div" inset>
