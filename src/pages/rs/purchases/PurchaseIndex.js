@@ -1,5 +1,6 @@
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
+import Chip from "@mui/material/Chip";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { Link, useNavigate } from "react-router-dom";
@@ -72,6 +73,18 @@ const PurchaseIndex = () => {
     },
 
     {
+      field: "paid",
+      headerName: "Paid",
+      width: 100,
+      renderCell: (params) =>
+        params.row.paid ? (
+          <Chip label="Paid" size="small" color="success" variant="contained" />
+        ) : (
+          <Chip label="Unpaid" size="small" color="error" variant="contained" />
+        ),
+    },
+
+    {
       field: "actions",
       headerName: "Actions",
       renderCell: (params) => {
@@ -139,6 +152,7 @@ const PurchaseIndex = () => {
             cost: purchase.cost,
             totalDesignatedSales: purchase.totalDesignatedSales,
             delivery: purchase.Delivery,
+            paid: purchase.paid,
           }))}
           columns={columns}
         />
