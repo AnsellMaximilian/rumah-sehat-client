@@ -50,6 +50,7 @@ const InvoiceIndex = () => {
   //PRINT
   const [isPrinting, setIsPrinting] = useState(false);
   const [setDraftsPending, setSetDraftsPending] = useState(false);
+  const [setInvoicesDateToToday, setSetInvoicesDateToToday] = useState(false);
 
   const handleDelete = (id) => {
     (async () => {
@@ -132,6 +133,7 @@ const InvoiceIndex = () => {
       const body = {
         invoiceIds: invoices.map((inv) => inv.id),
         setDraftsPending,
+        setInvoicesDateToToday,
         fileNamePrefix: formFileName({
           deliveriesEndDate,
           deliveriesStartDate,
@@ -371,6 +373,17 @@ const InvoiceIndex = () => {
             <CircularProgress />
           </Box>
         )}
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Checkbox
+                onChange={(e) => setSetInvoicesDateToToday(e.target.checked)}
+                checked={setInvoicesDateToToday}
+              />
+            }
+            label="Set Invoice Date to Today?"
+          />
+        </FormGroup>
         <FormGroup>
           <FormControlLabel
             control={
