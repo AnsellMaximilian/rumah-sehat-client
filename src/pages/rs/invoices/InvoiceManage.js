@@ -45,6 +45,7 @@ export default function InvoiceManage({ edit }) {
 
   const handleInvoiceFormClose = () => {
     setDeliveryEditId(null);
+    setInvoiceEditId(null);
     setIsInvoiceFormOpen(false);
   };
 
