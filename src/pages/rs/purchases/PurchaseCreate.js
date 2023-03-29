@@ -1,5 +1,8 @@
 import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 import InputLabel from "@mui/material/InputLabel";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
@@ -41,6 +44,9 @@ export default function PurchaseCreate({ edit }) {
   // Select values
   const [suppliers, setSuppliers] = useState([]);
   const [products, setProducts] = useState([]);
+
+  const [displayDesignatedCustomerColumn, setDisplayDesignatedCustomerColumn] =
+    useState(false);
 
   const navigate = useNavigate();
 
@@ -204,7 +210,7 @@ export default function PurchaseCreate({ edit }) {
             </Select>
           </FormControl>
 
-          <TextField
+          <AutoSelectTextField
             margin="none"
             label="Delivery Cost"
             type="number"
@@ -221,6 +227,21 @@ export default function PurchaseCreate({ edit }) {
             onChange={(e) => setNote(e.target.value)}
             rows={7.25}
           />
+        </Box>
+        <Box marginLeft="auto">
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  onChange={(e) =>
+                    setDisplayDesignatedCustomerColumn(e.target.checked)
+                  }
+                  checked={displayDesignatedCustomerColumn}
+                />
+              }
+              label="Display Customer Column"
+            />
+          </FormGroup>
         </Box>
       </Box>
       <Box marginTop={2}>
@@ -269,49 +290,51 @@ export default function PurchaseCreate({ edit }) {
                       >
                         <Cancel color="error" />
                       </IconButton>
-                      <Autocomplete
-                        value={detail.customer}
-                        onInputChange={(e, newValue) => {
-                          setPurchaseDetails((prev) => {
-                            return prev.map((currentDetail) => {
-                              if (currentDetail.key === detail.key) {
-                                return {
-                                  ...detail,
-                                  customerSearch: newValue,
-                                };
-                              }
-                              return currentDetail;
+                      {displayDesignatedCustomerColumn && (
+                        <Autocomplete
+                          value={detail.customer}
+                          onInputChange={(e, newValue) => {
+                            setPurchaseDetails((prev) => {
+                              return prev.map((currentDetail) => {
+                                if (currentDetail.key === detail.key) {
+                                  return {
+                                    ...detail,
+                                    customerSearch: newValue,
+                                  };
+                                }
+                                return currentDetail;
+                              });
                             });
-                          });
-                        }}
-                        onChange={(event, newValue) => {
-                          setPurchaseDetails((prev) => {
-                            return prev.map((currentDetail) => {
-                              if (currentDetail.key === detail.key) {
-                                return {
-                                  ...detail,
-                                  customer: newValue,
-                                };
-                              }
-                              return currentDetail;
+                          }}
+                          onChange={(event, newValue) => {
+                            setPurchaseDetails((prev) => {
+                              return prev.map((currentDetail) => {
+                                if (currentDetail.key === detail.key) {
+                                  return {
+                                    ...detail,
+                                    customer: newValue,
+                                  };
+                                }
+                                return currentDetail;
+                              });
                             });
-                          });
-                        }}
-                        isOptionEqualToValue={(option, value) =>
-                          option.id === value.id
-                        }
-                        getOptionLabel={(option) => option.fullName}
-                        renderOption={(props, option) => (
-                          <li {...props} key={option.id}>
-                            {option.fullName}
-                          </li>
-                        )}
-                        options={customers}
-                        sx={{ width: 150 }}
-                        renderInput={(params) => (
-                          <TextField {...params} size="small" />
-                        )}
-                      />
+                          }}
+                          isOptionEqualToValue={(option, value) =>
+                            option.id === value.id
+                          }
+                          getOptionLabel={(option) => option.fullName}
+                          renderOption={(props, option) => (
+                            <li {...props} key={option.id}>
+                              {option.fullName}
+                            </li>
+                          )}
+                          options={customers}
+                          sx={{ width: 150 }}
+                          renderInput={(params) => (
+                            <TextField {...params} size="small" />
+                          )}
+                        />
+                      )}
                     </Box>
                   </TableCell>
                   <TableCell align="left">
