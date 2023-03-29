@@ -47,7 +47,7 @@ export default function DeliveryCreateForm({
   // Delivery
   const [mode, setMode] = useState("own");
   const [deliveryDetails, setDeliveryDetails] = useState([]);
-  const [deliveryTypeId, setDeliveryTypeId] = useState(undefined);
+  const [deliveryTypeId, setDeliveryTypeId] = useState("none");
   const [cost, setCost] = useState(0);
   const [deliveryDate, setDeliveryDate] = useState("");
   const [deliveryNote, setDeliveryNote] = useState("");
@@ -68,7 +68,6 @@ export default function DeliveryCreateForm({
 
   useEffect(() => {
     (async () => {
-      if (deliveryTypes.length > 0) setDeliveryTypeId(deliveryTypes[0].id);
       if (suppliers.length > 0) setSupplierId(suppliers[0].id);
       if (editId && products.length > 0) {
         const delivery = (await http.get(`/rs/deliveries/${editId}`)).data.data;
@@ -101,6 +100,16 @@ export default function DeliveryCreateForm({
       setDeliveryCustomer(invoice.Customer);
     }
   }, [invoice]);
+
+  // Change default delivery cost
+  useEffect(() => {
+    if (deliveryTypeId !== "none" && deliveryTypes.length > 0) {
+      const deliveryType = deliveryTypes.find(
+        (type) => type.id === deliveryTypeId
+      );
+      setCost(deliveryType.defaultCost);
+    }
+  }, [deliveryTypeId, deliveryTypes]);
 
   const handleAddDeliveryDetail = (newRow) => {
     const product = products.filter(
@@ -160,6 +169,8 @@ export default function DeliveryCreateForm({
     e.preventDefault();
     try {
       if (deliveryDetails.length === 0) throw new Error("Delivery is empty.");
+      if (deliveryTypeId === "none")
+        throw new Error("Please choose a delivery type.");
       if (deliveryCustomer === null)
         throw new Error("Please select a recipient.");
 
@@ -276,6 +287,8 @@ export default function DeliveryCreateForm({
                   value={deliveryTypeId}
                   onChange={(e) => setDeliveryTypeId(e.target.value)}
                 >
+                  <MenuItem value="none">None</MenuItem>
+
                   {deliveryTypes.map((deliveryType) => (
                     <MenuItem value={deliveryType.id} key={deliveryType.id}>
                       {deliveryType.name}
