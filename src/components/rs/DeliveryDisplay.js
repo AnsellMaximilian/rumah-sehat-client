@@ -27,9 +27,11 @@ export default function DeliveryDisplay({
     <Paper sx={{ paddingBottom: 2 }}>
       <Box xs={12} display="flex" alignItems="flex-start" paddingLeft={2}>
         <Box paddingY={2}>
-          <Typography variant="subtitle1" fontWeight="bold">
-            #{delivery.id}
-          </Typography>
+          <Link to={`/rs/deliveries/${delivery.id}`}>
+            <Typography variant="subtitle1" fontWeight="bold">
+              #{delivery.id}
+            </Typography>
+          </Link>
         </Box>
         {actions && (
           <Box sx={{ marginLeft: "auto" }}>

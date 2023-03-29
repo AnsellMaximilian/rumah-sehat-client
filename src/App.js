@@ -54,6 +54,7 @@ import ProductsReport from "./pages/rs/reports/ProductsReport";
 import CustomerShow from "./pages/customers/CustomerShow";
 import InvoiceManage from "./pages/rs/invoices/InvoiceManage";
 import SupplierShow from "./pages/rs/suppliers/SupplierShow";
+import DeliveryShow from "./pages/rs/deliveries/DeliveryShow";
 
 function App() {
   return (
@@ -133,6 +134,7 @@ function App() {
                   element={<DataLayout title="Deliveries" titleVariant="h5" />}
                 >
                   <Route path="" element={<DeliveryIndex />} />
+                  <Route path=":id" element={<DeliveryShow />} />
                   <Route path="create" element={<InvoiceManage />} />
                   <Route path="edit/:id" element={<DeliveryTypeEdit />} />
                 </Route>

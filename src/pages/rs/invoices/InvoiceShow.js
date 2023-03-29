@@ -13,8 +13,6 @@ import { useParams } from "react-router-dom";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import http from "../../../http-common";
 import PrintIcon from "@mui/icons-material/Print";
-// import { Link } from "react-router-dom";
-import ValueDisplay from "../../../components/ValueDisplay";
 import DeliveryDisplay from "../../../components/rs/DeliveryDisplay";
 import { getTableColumn } from "../../../helpers/rs";
 import Table from "../../../components/Table";
@@ -22,6 +20,7 @@ import { toast } from "react-toastify";
 import DeleteAlert from "../../../components/DeleteAlert";
 import { Dialog } from "@mui/material";
 import AdjustmentForm from "../../../components/rs/AdjustmentForm";
+import InvoiceDisplay from "./InvoiceDisplay";
 
 const InvoiceShow = () => {
   const { id } = useParams();
@@ -102,30 +101,7 @@ const InvoiceShow = () => {
       <Grid container spacing={2}>
         <Grid item xs={6}>
           <Paper sx={{ padding: 2, height: "100%" }}>
-            <Box display="flex" flexDirection="column">
-              <Typography variant="h6" fontWeight="bold">
-                INVOICE #{invoice.id}
-              </Typography>
-            </Box>
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              flexWrap="wrap"
-              gap={2}
-              marginTop={2}
-            >
-              <ValueDisplay
-                value={invoice.customerFullName}
-                label="Invoiced To"
-              />
-              <ValueDisplay value={invoice.date} label="Date" />
-              <ValueDisplay
-                renderValue={() => (
-                  <NumericFormatRp value={invoice.totalPrice} />
-                )}
-                label="Total"
-              />
-            </Box>
+            <InvoiceDisplay invoice={invoice} />
           </Paper>
         </Grid>
         <Grid item xs={12}>
