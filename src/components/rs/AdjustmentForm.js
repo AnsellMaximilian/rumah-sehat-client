@@ -108,7 +108,7 @@ export default function AdjustmentForm({
             isOptionEqualToValue={(option, value) => option.id === value.id}
             renderOption={(props, option) => (
               <li {...props} key={option.id}>
-                {option.id}
+                {option.id} - {option.status}
               </li>
             )}
             getOptionLabel={(option) =>
@@ -140,7 +140,7 @@ export default function AdjustmentForm({
             isOptionEqualToValue={(option, value) => option.id === value.id}
             renderOption={(props, option) => (
               <li {...props} key={option.id}>
-                {option.id}
+                {option.id} - {option.status}
               </li>
             )}
             getOptionLabel={(option) =>
