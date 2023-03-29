@@ -199,6 +199,7 @@ const ProductsReport = () => {
             rows={reportData.products}
             columns={[
               getTableColumn("ID", "id"),
+              getTableColumn("Date", "saleDate"),
               getTableColumn("Product", "product"),
               getTableColumn("Supplier", "supplierName"),
               getTableColumn("Customer", "customerName"),

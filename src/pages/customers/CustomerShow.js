@@ -8,6 +8,7 @@ import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import http from "../../http-common";
+import { Link } from "react-router-dom";
 
 import ValueDisplay from "../../components/ValueDisplay";
 import AdjustmentForm from "../../components/rs/AdjustmentForm";
@@ -112,7 +113,11 @@ export default function CustomerShow() {
                 getTableColumn("Source", "SourceInvoiceId"),
                 getTableColumn("Amount", "amount"),
                 getTableColumn("Description", "description"),
-                getTableColumn("Adjusted", "AdjustedInvoiceId"),
+                getTableColumn("Adjusted", "AdjustedInvoiceId", (row) => (
+                  <Link to={`/rs/invoices/${row.AdjustedInvoiceId}`}>
+                    #{row.AdjustedInvoiceId}
+                  </Link>
+                )),
                 getTableColumn("Actions", "actions", (row) => (
                   <>
                     <IconButton
