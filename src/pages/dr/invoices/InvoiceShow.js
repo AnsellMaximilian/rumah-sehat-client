@@ -17,16 +17,27 @@ const DrInvoiceShow = () => {
       setInvoice((await http.get(`/dr/invoices/${id}`)).data.data);
     })();
   }, [id]);
+
+  const pay = async () => {
+    const invoice = (await http.patch(`/dr/invoices/${id}/pay`)).data.data;
+    setInvoice(invoice);
+  };
   return invoice ? (
     <Box>
-      <Box display="flex" justifyContent="flex-end" marginBottom={1}>
+      <Box display="flex" justifyContent="flex-end" marginBottom={1} gap={2}>
+        <Button
+          variant={invoice.paid ? "contained" : "outlined"}
+          color="success"
+          onClick={pay}
+        >
+          {invoice.paid ? "Paid" : "Unpaid"}
+        </Button>
         <Button
           href={` http://localhost:1107/dr/invoices/${id}/print`}
           target="__blank"
           component="a"
           variant="contained"
           color="error"
-          sx={{ marginLeft: "auto" }}
         >
           <PrintIcon color="white" />
         </Button>

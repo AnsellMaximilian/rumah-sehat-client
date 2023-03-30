@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { Link, useNavigate } from "react-router-dom";
 import Delete from "@mui/icons-material/Delete";
-import Edit from "@mui/icons-material/ModeEdit";
 import { IconButton } from "@mui/material";
 import http from "../../../http-common";
 import SmartTable from "../../../components/SmartTable";
@@ -12,6 +11,7 @@ import NumericFormatRp from "../../../components/NumericFormatRp";
 import { toast } from "react-toastify";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteAlert from "../../../components/DeleteAlert";
+import PayIcon from "@mui/icons-material/Paid";
 
 const DrInvoiceIndex = () => {
   const [invoices, setInvoices] = useState([]);
@@ -39,6 +39,21 @@ const DrInvoiceIndex = () => {
     })();
   }, []);
 
+  const pay = async (id) => {
+    try {
+      const invoice = (await http.patch(`/dr/invoices/${id}/pay`)).data.data;
+      toast.success(`Updated invoice #${invoice.id}`);
+      setInvoices((prev) =>
+        prev.map((inv) => {
+          if (inv.id === id) return { ...inv, paid: invoice.paid };
+          return inv;
+        })
+      );
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
   const columns = [
     { field: "id", headerName: "ID", width: 75 },
     { field: "customerName", headerName: "Customer", width: 200 },
@@ -61,11 +76,13 @@ const DrInvoiceIndex = () => {
         return (
           <>
             <IconButton
-              color="warning"
-              component={Link}
-              to={`/dr/id/deliveries/edit/${params.row.id}`}
+              color={params.row.paid ? "success" : "default"}
+              onClick={(e) => {
+                e.stopPropagation();
+                pay(params.row.id);
+              }}
             >
-              <Edit />
+              <PayIcon />
             </IconButton>
             <IconButton
               color="error"
@@ -100,12 +117,13 @@ const DrInvoiceIndex = () => {
       </Box>
       <Card>
         <SmartTable
-          rows={invoices.map((delivery) => ({
-            id: delivery.id,
-            note: delivery.note,
-            customerName: delivery.Customer.fullName,
-            date: delivery.date,
-            totalPriceRP: delivery.totalPriceRP,
+          rows={invoices.map((invoice) => ({
+            id: invoice.id,
+            note: invoice.note,
+            customerName: invoice.Customer.fullName,
+            date: invoice.date,
+            totalPriceRP: invoice.totalPriceRP,
+            paid: invoice.paid,
           }))}
           columns={columns}
         />
