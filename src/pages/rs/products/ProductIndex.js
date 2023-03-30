@@ -10,9 +10,13 @@ import http from "../../../http-common";
 import SmartTable from "../../../components/SmartTable";
 import { toast } from "react-toastify";
 import NumericFormatRp from "../../../components/NumericFormatRp";
+import DeleteAlert from "../../../components/DeleteAlert";
 
 const ProductIndex = () => {
   const [products, setProducts] = useState([]);
+  const [toDeleteId, setToDeleteId] = useState(null);
+
+  const [deleteMsg, setDeleteMsg] = useState("Loading...");
 
   const handleDelete = (id) => {
     (async () => {
@@ -27,6 +31,26 @@ const ProductIndex = () => {
       }
     })();
   };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (toDeleteId) {
+          const product = (await http.get(`/rs/products/${toDeleteId}`)).data
+            .data;
+          setDeleteMsg(
+            `Are you sure you want to delete delivery #${toDeleteId} and its details? This product has ${product.DeliveryDetails.length} sales and ${product.PurchaseDetails.length} purchases.`
+          );
+        } else {
+          setDeleteMsg("Loading...");
+        }
+      } catch (error) {
+        const errorValue = error?.response?.data?.error;
+        const errorMsg = errorValue ? errorValue : error.message;
+        toast.error(errorMsg);
+      }
+    })();
+  }, [toDeleteId]);
 
   useEffect(() => {
     (async () => {
@@ -82,7 +106,7 @@ const ProductIndex = () => {
               color="error"
               onClick={(e) => {
                 e.stopPropagation();
-                handleDelete(params.row.id);
+                setToDeleteId(params.row.id);
               }}
             >
               <Delete />
@@ -116,6 +140,13 @@ const ProductIndex = () => {
           columns={columns}
         />
       </Card>
+      <DeleteAlert
+        message={deleteMsg}
+        toDeleteId={toDeleteId}
+        handleDelete={handleDelete}
+        setToDeleteId={setToDeleteId}
+        objectName="Delivery"
+      />
     </Box>
   );
 };
