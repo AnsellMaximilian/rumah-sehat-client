@@ -8,6 +8,7 @@ import SmartTable from "../../../components/SmartTable";
 import { IconButton } from "@mui/material";
 import Delete from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
+import NumericFormatRp from "../../../components/NumericFormatRp";
 
 const DrDiscountModelIndex = () => {
   const [models, setModels] = useState([]);
@@ -33,7 +34,13 @@ const DrDiscountModelIndex = () => {
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
     { field: "description", headerName: "Description", width: 130 },
-    { field: "base", headerName: "Base", width: 130 },
+    {
+      field: "base",
+      headerName: "Base",
+      width: 130,
+
+      renderCell: (params) => <NumericFormatRp value={params.row.base} />,
+    },
     {
       field: "subtractor",
       headerName: "Subtractor",
@@ -43,6 +50,7 @@ const DrDiscountModelIndex = () => {
       field: "percentage",
       headerName: "Percentage",
       width: 200,
+      renderCell: (params) => `${params.row.percentage}%`,
     },
     {
       field: "actions",

@@ -9,6 +9,7 @@ import { IconButton } from "@mui/material";
 import http from "../../../http-common";
 import SmartTable from "../../../components/SmartTable";
 import { toast } from "react-toastify";
+import NumericFormatRp from "../../../components/NumericFormatRp";
 
 const ProductIndex = () => {
   const [products, setProducts] = useState([]);
@@ -39,9 +40,31 @@ const ProductIndex = () => {
     { field: "unit", headerName: "Unit", width: 130 },
     { field: "category", headerName: "Category", width: 130 },
     { field: "supplier", headerName: "Supplier", width: 130 },
-    { field: "price", headerName: "Price", width: 130 },
-    { field: "resellerPrice", headerName: "Reseller Price", width: 130 },
-    { field: "cost", headerName: "Cost", width: 130 },
+    {
+      field: "price",
+      headerName: "Price",
+      width: 130,
+
+      renderCell: (params) => <NumericFormatRp value={params.row.price} />,
+    },
+    {
+      field: "resellerPrice",
+      headerName: "Reseller Price",
+      width: 130,
+      renderCell: (params) =>
+        params.row.resellerPrice ? (
+          <NumericFormatRp value={params.row.resellerPrice} />
+        ) : (
+          "None"
+        ),
+    },
+    {
+      field: "cost",
+      headerName: "Cost",
+      width: 130,
+
+      renderCell: (params) => <NumericFormatRp value={params.row.cost} />,
+    },
     {
       field: "actions",
       headerName: "Actions",
