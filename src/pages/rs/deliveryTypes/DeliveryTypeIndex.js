@@ -9,6 +9,7 @@ import { IconButton } from "@mui/material";
 import http from "../../../http-common";
 import SmartTable from "../../../components/SmartTable";
 import { toast } from "react-toastify";
+import NumericFormatRp from "../../../components/NumericFormatRp";
 
 const DeliveryTypeIndex = () => {
   const [deliveryTypes, setDeliveryTypes] = useState([]);
@@ -36,7 +37,14 @@ const DeliveryTypeIndex = () => {
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
     { field: "name", headerName: "Name", width: 130 },
-    { field: "defaultCost", headerName: "Default Cost", width: 130 },
+    {
+      field: "defaultCost",
+      headerName: "Default Cost",
+      width: 130,
+      renderCell: (params) => (
+        <NumericFormatRp value={params.row.defaultCost} />
+      ),
+    },
     {
       field: "actions",
       headerName: "Actions",
