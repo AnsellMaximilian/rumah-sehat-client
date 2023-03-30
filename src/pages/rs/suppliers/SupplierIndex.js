@@ -10,16 +10,19 @@ import http from "../../../http-common";
 import SmartTable from "../../../components/SmartTable";
 import { toast } from "react-toastify";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
+import DeleteAlert from "../../../components/DeleteAlert";
 
 const SupplierIndex = () => {
   const [suppliers, setSuppliers] = useState([]);
+
+  const [toDeleteId, setToDeleteId] = useState(null);
 
   const handleDelete = (id) => {
     (async () => {
       try {
         await http.delete(`/rs/suppliers/${id}`);
         setSuppliers((suppliers) => suppliers.filter((item) => item.id !== id));
-        toast.success("Item deleted.");
+        toast.success("Supplier deleted.");
       } catch ({ response: { data: error } }) {
         toast.error(error);
       }
@@ -52,7 +55,7 @@ const SupplierIndex = () => {
               color="error"
               onClick={(e) => {
                 e.stopPropagation();
-                handleDelete(params.row.id);
+                setToDeleteId(params.row.id);
               }}
             >
               <Delete />
@@ -90,6 +93,13 @@ const SupplierIndex = () => {
           columns={columns}
         />
       </Card>
+      <DeleteAlert
+        message={`Are you sure you want to delete supplier #${toDeleteId}?`}
+        toDeleteId={toDeleteId}
+        handleDelete={handleDelete}
+        setToDeleteId={setToDeleteId}
+        objectName="Supplier"
+      />
     </Box>
   );
 };
