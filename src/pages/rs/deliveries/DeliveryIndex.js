@@ -3,8 +3,6 @@ import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { Link, useNavigate } from "react-router-dom";
-import Delete from "@mui/icons-material/Delete";
-import Edit from "@mui/icons-material/ModeEdit";
 import { IconButton } from "@mui/material";
 import http from "../../../http-common";
 import SmartTable from "../../../components/SmartTable";
@@ -16,7 +14,6 @@ import ShoppingCart from "@mui/icons-material/ShoppingCart";
 
 const DeliveryIndex = () => {
   const [deliveries, setDeliveries] = useState([]);
-  const navigate = useNavigate();
 
   const handleDelete = (id) => {
     (async () => {
@@ -73,57 +70,40 @@ const DeliveryIndex = () => {
         ),
     },
     {
-      field: "purchase",
-      headerName: "Purchase",
-      width: 100,
-      renderCell: (params) => (
-        <IconButton
-          disabled={!!!params.row.purchase}
-          color="warning"
-          component={Link}
-          to={`/rs/purchases/${params.row.purchase?.id}`}
-        >
-          <ShoppingCart />
-        </IconButton>
-      ),
+      field: "actions",
+      headerName: "Actions",
+      renderCell: (params) => {
+        return (
+          <>
+            {/* <IconButton
+              color="error"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete(params.row.id);
+              }}
+            >
+              <Delete />
+            </IconButton> */}
+            <IconButton
+              component={Link}
+              to={`/rs/deliveries/${params.row.id}`}
+              color="primary"
+            >
+              <ShowIcon />
+            </IconButton>
+            <IconButton
+              disabled={!!!params.row.purchase}
+              color="warning"
+              component={Link}
+              to={`/rs/purchases/${params.row.purchase?.id}`}
+            >
+              <ShoppingCart />
+            </IconButton>
+          </>
+        );
+      },
+      width: 200,
     },
-
-    // {
-    //   field: "actions",
-    //   headerName: "Actions",
-    //   renderCell: (params) => {
-    //     return (
-    //       <>
-    //         <IconButton
-    //           color="warning"
-    //           component={Link}
-    //           to={`/rs/deliveries/edit/${params.row.id}`}
-    //         >
-    //           <Edit />
-    //         </IconButton>
-    //         <IconButton
-    //           color="error"
-    //           onClick={(e) => {
-    //             e.stopPropagation();
-    //             handleDelete(params.row.id);
-    //           }}
-    //         >
-    //           <Delete />
-    //         </IconButton>
-    //         <IconButton
-    //           color="primary"
-    //           onClick={(e) => {
-    //             e.stopPropagation();
-    //             navigate(`/rs/deliveries/${params.row.id}`);
-    //           }}
-    //         >
-    //           <ShowIcon />
-    //         </IconButton>
-    //       </>
-    //     );
-    //   },
-    //   width: 200,
-    // },
   ];
   return (
     <Box>

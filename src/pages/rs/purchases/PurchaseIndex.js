@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/ModeEdit";
 import { IconButton } from "@mui/material";
@@ -18,7 +18,6 @@ import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 
 const PurchaseIndex = () => {
   const [purchases, setPurchases] = useState([]);
-  const navigate = useNavigate();
   const [toDeleteId, setToDeleteId] = useState(null);
 
   const handleDelete = (id) => {
@@ -108,19 +107,15 @@ const PurchaseIndex = () => {
             </IconButton>
             <IconButton
               color="primary"
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/rs/purchases/${params.row.id}`);
-              }}
+              component={Link}
+              to={`/rs/purchases/${params.row.id}`}
             >
               <ShowIcon />
             </IconButton>
             <IconButton
               disabled={!!!params.row.delivery}
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/rs/deliveries/${params.row.delivery.id}`);
-              }}
+              component={Link}
+              to={`/rs/deliveries/${params.row.delivery?.id}`}
             >
               <LocalShippingIcon />
             </IconButton>

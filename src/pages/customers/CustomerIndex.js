@@ -11,7 +11,7 @@ import {
   fetchCustomers,
 } from "../../slices/customerSlice";
 import Box from "@mui/material/Box";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/ModeEdit";
 import { IconButton } from "@mui/material";
@@ -21,7 +21,6 @@ import ShowIcon from "@mui/icons-material/RemoveRedEye";
 export default function CustomerIndex() {
   const dispatch = useDispatch();
   const { customers, error } = useSelector((state) => state.customers);
-  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(fetchCustomers());
@@ -103,10 +102,8 @@ export default function CustomerIndex() {
             </IconButton>
             <IconButton
               color="primary"
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/customers/${params.row.id}`);
-              }}
+              to={`/customers/${params.row.id}`}
+              component={Link}
             >
               <ShowIcon />
             </IconButton>

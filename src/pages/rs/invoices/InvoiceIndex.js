@@ -16,7 +16,7 @@ import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Delete from "@mui/icons-material/Delete";
 // import Edit from "@mui/icons-material/ModeEdit";
 import IconButton from "@mui/material/IconButton";
@@ -36,7 +36,6 @@ import {
 
 const InvoiceIndex = () => {
   const [invoices, setInvoices] = useState([]);
-  const navigate = useNavigate();
   const [toDeleteId, setToDeleteId] = useState(null);
 
   // FILTERS
@@ -213,11 +212,9 @@ const InvoiceIndex = () => {
               <Delete />
             </IconButton>
             <IconButton
+              component={Link}
+              to={`/rs/invoices/${params.row.id}`}
               color="primary"
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/rs/invoices/${params.row.id}`);
-              }}
             >
               <ShowIcon />
             </IconButton>

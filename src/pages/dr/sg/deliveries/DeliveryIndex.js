@@ -2,7 +2,7 @@ import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Delete from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
 import http from "../../../../http-common";
@@ -13,7 +13,6 @@ import { toast } from "react-toastify";
 
 const DrSgDeliveryIndex = () => {
   const [deliveries, setDeliveries] = useState([]);
-  const navigate = useNavigate();
 
   const handleDelete = (id) => {
     (async () => {
@@ -76,11 +75,9 @@ const DrSgDeliveryIndex = () => {
               <Delete />
             </IconButton>
             <IconButton
+              component={Link}
+              to={`/dr/sg/deliveries/${params.row.id}`}
               color="primary"
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/dr/sg/deliveries/${params.row.id}`);
-              }}
             >
               <ShowIcon />
             </IconButton>

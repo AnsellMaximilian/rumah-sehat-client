@@ -2,7 +2,7 @@ import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Delete from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
 import http from "../../../http-common";
@@ -15,7 +15,6 @@ import PayIcon from "@mui/icons-material/Paid";
 
 const DrInvoiceIndex = () => {
   const [invoices, setInvoices] = useState([]);
-  const navigate = useNavigate();
 
   const [toDeleteId, setToDeleteId] = useState(null);
 
@@ -95,10 +94,8 @@ const DrInvoiceIndex = () => {
             </IconButton>
             <IconButton
               color="primary"
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/dr/invoices/${params.row.id}`);
-              }}
+              component={Link}
+              to={`/dr/invoices/${params.row.id}`}
             >
               <ShowIcon />
             </IconButton>
