@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import http from "../../../http-common";
 import PrintIcon from "@mui/icons-material/Print";
@@ -29,14 +29,23 @@ const PurchaseShow = () => {
   }, [id]);
   return purchase ? (
     <Box>
-      <Box display="flex" justifyContent="flex-end" marginBottom={1}>
+      <Box display="flex" justifyContent="flex-end" marginBottom={1} gap={2}>
+        {purchase.Delivery && (
+          <Button
+            color="primary"
+            variant="outlined"
+            component={Link}
+            to={`/rs/deliveries/${purchase.Delivery.id}`}
+          >
+            Delivery #{purchase.Delivery.id}
+          </Button>
+        )}
         <Button
           href={` http://localhost:1107/rs/purchases/${id}/print`}
           target="__blank"
           component="a"
           variant="contained"
           color="error"
-          sx={{ marginLeft: "auto" }}
         >
           <PrintIcon color="white" />
         </Button>
