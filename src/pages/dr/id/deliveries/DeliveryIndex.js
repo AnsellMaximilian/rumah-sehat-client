@@ -10,9 +10,11 @@ import SmartTable from "../../../../components/SmartTable";
 import NumericFormatRp from "../../../../components/NumericFormatRp";
 import { toast } from "react-toastify";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
+import DeleteAlert from "../../../../components/DeleteAlert";
 
 const DrIdDeliveryIndex = () => {
   const [deliveries, setDeliveries] = useState([]);
+  const [toDeleteId, setToDeleteId] = useState(null);
 
   const handleDelete = (id) => {
     (async () => {
@@ -69,7 +71,7 @@ const DrIdDeliveryIndex = () => {
               color="error"
               onClick={(e) => {
                 e.stopPropagation();
-                handleDelete(params.row.id);
+                setToDeleteId(params.row.id);
               }}
             >
               <Delete />
@@ -111,6 +113,13 @@ const DrIdDeliveryIndex = () => {
           columns={columns}
         />
       </Card>
+      <DeleteAlert
+        message={`Are you sure you want to delete ID delivery #${toDeleteId}?`}
+        toDeleteId={toDeleteId}
+        handleDelete={handleDelete}
+        setToDeleteId={setToDeleteId}
+        objectName="Delivery"
+      />
     </Box>
   );
 };

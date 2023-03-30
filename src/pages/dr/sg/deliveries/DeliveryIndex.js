@@ -10,9 +10,11 @@ import SmartTable from "../../../../components/SmartTable";
 import NumericFormatRp from "../../../../components/NumericFormatRp";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
 import { toast } from "react-toastify";
+import DeleteAlert from "../../../../components/DeleteAlert";
 
 const DrSgDeliveryIndex = () => {
   const [deliveries, setDeliveries] = useState([]);
+  const [toDeleteId, setToDeleteId] = useState(null);
 
   const handleDelete = (id) => {
     (async () => {
@@ -69,7 +71,7 @@ const DrSgDeliveryIndex = () => {
               color="error"
               onClick={(e) => {
                 e.stopPropagation();
-                handleDelete(params.row.id);
+                setToDeleteId(params.row.id);
               }}
             >
               <Delete />
@@ -111,6 +113,13 @@ const DrSgDeliveryIndex = () => {
           columns={columns}
         />
       </Card>
+      <DeleteAlert
+        message={`Are you sure you want to delete SG delivery #${toDeleteId}?`}
+        toDeleteId={toDeleteId}
+        handleDelete={handleDelete}
+        setToDeleteId={setToDeleteId}
+        objectName="Delivery"
+      />
     </Box>
   );
 };

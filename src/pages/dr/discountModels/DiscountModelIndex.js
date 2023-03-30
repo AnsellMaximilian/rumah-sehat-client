@@ -9,9 +9,12 @@ import { IconButton } from "@mui/material";
 import Delete from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
 import NumericFormatRp from "../../../components/NumericFormatRp";
+import DeleteAlert from "../../../components/DeleteAlert";
 
 const DrDiscountModelIndex = () => {
   const [models, setModels] = useState([]);
+
+  const [toDeleteId, setToDeleteId] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -21,11 +24,11 @@ const DrDiscountModelIndex = () => {
 
   const handleDelete = (id) => {
     (async () => {
-      const { error } = (await http.delete(`/dr/discount-models/${id}`)).data;
-
-      if (!error) {
-        setModels((models) => models.filter((item) => item.id !== id));
-      } else {
+      try {
+        await http.delete(`/dr/discount-models/${id}`);
+        setModels((models) => models.filter((model) => model.id !== id));
+        toast.success("Model deleted.");
+      } catch ({ response: { data: error } }) {
         toast.error(error);
       }
     })();
@@ -61,7 +64,7 @@ const DrDiscountModelIndex = () => {
             color="error"
             onClick={(e) => {
               e.stopPropagation();
-              handleDelete(params.row.id);
+              setToDeleteId(params.row.id);
             }}
           >
             <Delete />
@@ -94,6 +97,13 @@ const DrDiscountModelIndex = () => {
           columns={columns}
         />
       </Card>
+      <DeleteAlert
+        message={`Are you sure you want to delete discount model #${toDeleteId}?`}
+        toDeleteId={toDeleteId}
+        handleDelete={handleDelete}
+        setToDeleteId={setToDeleteId}
+        objectName="Discount Model"
+      />
     </Box>
   );
 };
