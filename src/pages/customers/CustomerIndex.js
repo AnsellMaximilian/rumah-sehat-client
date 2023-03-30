@@ -3,13 +3,7 @@ import Button from "@mui/material/Button";
 import SmartTable from "../../components/SmartTable";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
-import {
-  clearError,
-  destroyCustomer,
-  fetchCustomers,
-} from "../../slices/customerSlice";
+import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
 import Delete from "@mui/icons-material/Delete";
@@ -17,24 +11,32 @@ import Edit from "@mui/icons-material/ModeEdit";
 import { IconButton } from "@mui/material";
 import { toast } from "react-toastify";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
+import http from "../../http-common";
+import DeleteAlert from "../../components/DeleteAlert";
 
 export default function CustomerIndex() {
-  const dispatch = useDispatch();
-  const { customers, error } = useSelector((state) => state.customers);
+  const [customers, setCustomers] = useState([]);
 
   useEffect(() => {
-    dispatch(fetchCustomers());
-  }, [dispatch]);
+    (async () => {
+      setCustomers((await http.get("/customers")).data.data);
+    })();
+  }, []);
 
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-      dispatch(clearError());
-    }
-  }, [error, dispatch]);
+  const [toDeleteId, setToDeleteId] = useState(null);
 
   const handleDelete = (id) => {
-    dispatch(destroyCustomer(id));
+    (async () => {
+      try {
+        await http.delete(`/customers/${id}`);
+        setCustomers((customers) =>
+          customers.filter((customer) => customer.id !== id)
+        );
+        toast.success("Customer deleted.");
+      } catch ({ response: { data: error } }) {
+        toast.error(error);
+      }
+    })();
   };
 
   const columns = [
@@ -95,7 +97,7 @@ export default function CustomerIndex() {
               color="error"
               onClick={(e) => {
                 e.stopPropagation();
-                handleDelete(params.row.id);
+                setToDeleteId(params.row.id);
               }}
             >
               <Delete />
@@ -135,6 +137,13 @@ export default function CustomerIndex() {
           columns={columns}
         />
       </Card>
+      <DeleteAlert
+        message={`Are you sure you want to delete customer #${toDeleteId}?`}
+        toDeleteId={toDeleteId}
+        handleDelete={handleDelete}
+        setToDeleteId={setToDeleteId}
+        objectName="Customer"
+      />
     </Box>
   );
 }
