@@ -4,6 +4,8 @@ import Grid from "@mui/material/Grid";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import InputLabel from "@mui/material/InputLabel";
+import Tooltip from "@mui/material/Tooltip";
+
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -85,12 +87,15 @@ const SupplierBillIndex = () => {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (unpaidFilter) => {
+    console.log(unpaidFilter);
     try {
       if (mode === "individual") {
         const purchases = (
           await http.get(
-            `/rs/purchases/individual-invoice?startDate=${startDate}&endDate=${endDate}&supplierId=${selectedSupplierId}`
+            `/rs/purchases/individual-invoice?startDate=${startDate}&endDate=${endDate}&supplierId=${selectedSupplierId}${
+              unpaidFilter ? "&unpaid=yes" : ""
+            }`
           )
         ).data.data;
 
@@ -99,7 +104,9 @@ const SupplierBillIndex = () => {
       } else {
         const report = (
           await http.get(
-            `/rs/purchases/report-invoice?startDate=${startDate}&endDate=${endDate}`
+            `/rs/purchases/report-invoice?startDate=${startDate}&endDate=${endDate}${
+              unpaidFilter ? "&unpaid=yes" : ""
+            }`
           )
         ).data.data;
         console.log(report);
@@ -181,8 +188,23 @@ const SupplierBillIndex = () => {
             </Button>
           </Box>
         </Grid>
-        <Grid item xs={12}>
-          <Button fullWidth variant="contained" onClick={handleSubmit}>
+        <Grid item xs={4}>
+          <Tooltip title="Generate ALL unpaid supplier invoice WITH adjustments from selected dates.">
+            <Button
+              fullWidth
+              variant="outlined"
+              onClick={() => handleSubmit(true)}
+            >
+              Unpaid
+            </Button>
+          </Tooltip>
+        </Grid>
+        <Grid item xs={8}>
+          <Button
+            fullWidth
+            variant="contained"
+            onClick={() => handleSubmit(false)}
+          >
             Filter
           </Button>
         </Grid>
