@@ -77,7 +77,7 @@ const InvoiceIndex = () => {
     try {
       const invoice = (await http.patch(`/rs/invoices/${id}/cycle-status`)).data
         .data;
-      toast.success(`Updated invoice #${invoice.id}`);
+      toast.success(`Updated invoice #${invoice.id}`, { autoClose: 500 });
       setInvoices((prev) =>
         prev.map((inv) => {
           if (inv.id === id)
