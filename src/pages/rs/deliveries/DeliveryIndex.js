@@ -2,7 +2,7 @@ import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { IconButton } from "@mui/material";
 import http from "../../../http-common";
 import SmartTable from "../../../components/SmartTable";
@@ -11,9 +11,13 @@ import { toast } from "react-toastify";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import ShoppingCart from "@mui/icons-material/ShoppingCart";
+import DeleteAlert from "../../../components/DeleteAlert";
+import Delete from "@mui/icons-material/Delete";
 
 const DeliveryIndex = () => {
   const [deliveries, setDeliveries] = useState([]);
+
+  const [toDeleteId, setToDeleteId] = useState(null);
 
   const handleDelete = (id) => {
     (async () => {
@@ -75,15 +79,15 @@ const DeliveryIndex = () => {
       renderCell: (params) => {
         return (
           <>
-            {/* <IconButton
+            <IconButton
               color="error"
               onClick={(e) => {
                 e.stopPropagation();
-                handleDelete(params.row.id);
+                setToDeleteId(params.row.id);
               }}
             >
               <Delete />
-            </IconButton> */}
+            </IconButton>
             <IconButton
               component={Link}
               to={`/rs/deliveries/${params.row.id}`}
@@ -131,6 +135,13 @@ const DeliveryIndex = () => {
           columns={columns}
         />
       </Card>
+      <DeleteAlert
+        message={`Are you sure you want to delete delivery #${toDeleteId} and its details.`}
+        toDeleteId={toDeleteId}
+        handleDelete={handleDelete}
+        setToDeleteId={setToDeleteId}
+        objectName="Delivery"
+      />
     </Box>
   );
 };
