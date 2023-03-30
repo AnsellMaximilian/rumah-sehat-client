@@ -13,7 +13,6 @@ import DrIdItemEdit from "./pages/dr/id/items/ItemEdit";
 import DrIdDeliveryIndex from "./pages/dr/id/deliveries/DeliveryIndex";
 import DrDiscountModelIndex from "./pages/dr/discountModels/DiscountModelIndex";
 import DrDiscountModelCreate from "./pages/dr/discountModels/DiscountModelCreate";
-import DrIdDeliveryCreate from "./pages/dr/id/deliveries/DeliveryCreate";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import DrIdDeliveryShow from "./pages/dr/id/deliveries/DeliveryShow";
@@ -21,7 +20,6 @@ import DrSgItemIndex from "./pages/dr/sg/items/ItemIndex";
 import DrSgItemCreate from "./pages/dr/sg/items/ItemCreate";
 import DrSgItemEdit from "./pages/dr/sg/items/ItemEdit";
 import DrSgDeliveryIndex from "./pages/dr/sg/deliveries/DeliveryIndex";
-import DrSgDeliveryCreate from "./pages/dr/sg/deliveries/DeliveryCreate";
 import DrSgDeliveryShow from "./pages/dr/sg/deliveries/DeliveryShow";
 import DrInvoiceIndex from "./pages/dr/invoices/InvoiceIndex";
 import DrInvoiceManage from "./pages/dr/invoices/InvoiceManage";
@@ -197,12 +195,7 @@ function App() {
                     }
                   >
                     <Route path="" element={<DrIdDeliveryIndex />} />
-                    <Route path="create" element={<DrIdDeliveryCreate />} />
                     <Route path=":id" element={<DrIdDeliveryShow />} />
-                    <Route
-                      path="edit/:id"
-                      element={<DrIdDeliveryCreate edit />}
-                    />
                   </Route>
                 </Route>
                 <Route
@@ -229,12 +222,7 @@ function App() {
                     }
                   >
                     <Route path="" element={<DrSgDeliveryIndex />} />
-                    <Route path="create" element={<DrSgDeliveryCreate />} />
                     <Route path=":id" element={<DrSgDeliveryShow />} />
-                    <Route
-                      path="edit/:id"
-                      element={<DrSgDeliveryCreate edit />}
-                    />
                   </Route>
                 </Route>
                 <Route

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { Link, useNavigate } from "react-router-dom";
 import Delete from "@mui/icons-material/Delete";
-import Edit from "@mui/icons-material/ModeEdit";
 import { IconButton } from "@mui/material";
 import http from "../../../../http-common";
 import SmartTable from "../../../../components/SmartTable";
@@ -67,13 +66,6 @@ const DrSgDeliveryIndex = () => {
       renderCell: (params) => {
         return (
           <>
-            <IconButton
-              color="warning"
-              component={Link}
-              to={`/dr/sg/deliveries/edit/${params.row.id}`}
-            >
-              <Edit />
-            </IconButton>
             <IconButton
               color="error"
               onClick={(e) => {
