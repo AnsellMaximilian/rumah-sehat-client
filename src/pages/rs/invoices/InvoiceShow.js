@@ -65,8 +65,9 @@ const InvoiceShow = () => {
     })();
   }, [id]);
 
-  const pay = async () => {
-    const invoice = (await http.patch(`/rs/invoices/${id}/pay`)).data.data;
+  const cycleStatus = async () => {
+    const invoice = (await http.patch(`/rs/invoices/${id}/cycle-status`)).data
+      .data;
     setInvoice(invoice);
   };
 
@@ -76,7 +77,7 @@ const InvoiceShow = () => {
         <Button
           variant={invoice.paid ? "contained" : "outlined"}
           color="success"
-          onClick={pay}
+          onClick={cycleStatus}
         >
           {invoice.paid ? "Paid" : invoice.status}
         </Button>

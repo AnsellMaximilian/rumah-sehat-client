@@ -26,6 +26,7 @@ import NumericFormatRp from "../../../components/NumericFormatRp";
 import { toast } from "react-toastify";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteAlert from "../../../components/DeleteAlert";
+import NoteAltIcon from "@mui/icons-material/NoteAlt";
 import PayIcon from "@mui/icons-material/Paid";
 import {
   formFileName,
@@ -73,9 +74,10 @@ const InvoiceIndex = () => {
     })();
   }, []);
 
-  const pay = async (id) => {
+  const cycleStatus = async (id) => {
     try {
-      const invoice = (await http.patch(`/rs/invoices/${id}/pay`)).data.data;
+      const invoice = (await http.patch(`/rs/invoices/${id}/cycle-status`)).data
+        .data;
       toast.success(`Updated invoice #${invoice.id}`);
       setInvoices((prev) =>
         prev.map((inv) => {
@@ -180,13 +182,19 @@ const InvoiceIndex = () => {
         return (
           <>
             <IconButton
-              color={params.row.paid ? "success" : "default"}
+              color={
+                params.row.paid
+                  ? "success"
+                  : params.row.status === "pending"
+                  ? "default"
+                  : "warning"
+              }
               onClick={(e) => {
                 e.stopPropagation();
-                pay(params.row.id);
+                cycleStatus(params.row.id);
               }}
             >
-              <PayIcon />
+              {params.row.status === "draft" ? <NoteAltIcon /> : <PayIcon />}
             </IconButton>
             {/* <IconButton
               color="warning"
