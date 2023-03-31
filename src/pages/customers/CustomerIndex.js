@@ -1,4 +1,7 @@
 import Card from "@mui/material/Card";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import SmartTable from "../../components/SmartTable";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -13,9 +16,11 @@ import { toast } from "react-toastify";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
 import http from "../../http-common";
 import DeleteAlert from "../../components/DeleteAlert";
+import { formQueryParams } from "../../helpers/common";
 
 export default function CustomerIndex() {
   const [customers, setCustomers] = useState([]);
+  const [fullName, setFullName] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -37,6 +42,19 @@ export default function CustomerIndex() {
         toast.error(error);
       }
     })();
+  };
+
+  const handleClearFilter = async () => {
+    setFullName("");
+    setCustomers((await http.get(`/customers`)).data.data);
+  };
+
+  const handleFilter = async () => {
+    const queryParams = formQueryParams({
+      fullName,
+    });
+    // console.log(queryParams);
+    setCustomers((await http.get(`/customers?${queryParams}`)).data.data);
   };
 
   const columns = [
@@ -123,7 +141,34 @@ export default function CustomerIndex() {
           New Customer
         </Button>
       </Box>
-      <Card>
+      <Box marginTop={2}>
+        <Typography variant="h6" fontWeight={500}>
+          FILTERS
+        </Typography>
+        <Grid spacing={2} container marginTop={1}>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Name"
+              value={fullName}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={(e) => setFullName(e.target.value)}
+            />
+          </Grid>
+        </Grid>
+
+        <Box display="flex" gap={2} marginTop={2}>
+          <Button variant="outlined" fullWidth onClick={handleClearFilter}>
+            Clear Filter
+          </Button>
+          <Button variant="contained" fullWidth onClick={handleFilter}>
+            Filter
+          </Button>
+        </Box>
+      </Box>
+      <Card sx={{ marginTop: 4 }}>
         <SmartTable
           rows={customers.map((customer) => ({
             id: customer.id,
