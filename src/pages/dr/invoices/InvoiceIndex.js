@@ -1,5 +1,15 @@
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import Chip from "@mui/material/Chip";
+import Divider from "@mui/material/Divider";
+import FormControl from "@mui/material/FormControl";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+import Typography from "@mui/material/Typography";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
@@ -12,11 +22,23 @@ import { toast } from "react-toastify";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteAlert from "../../../components/DeleteAlert";
 import PayIcon from "@mui/icons-material/Paid";
+import { formQueryParams, getWeek } from "../../../helpers/common";
 
 const DrInvoiceIndex = () => {
   const [invoices, setInvoices] = useState([]);
 
   const [toDeleteId, setToDeleteId] = useState(null);
+
+  // FILTERS
+  const [idDeliveriesStartDate, setIdDeliveriesStartDate] = useState("");
+  const [sgDeliveriesStartDate, setSgDeliveriesStartDate] = useState("");
+  const [idDeliveriesEndDate, setIdDeliveriesEndDate] = useState("");
+  const [sgDeliveriesEndDate, setSgDeliveriesEndDate] = useState("");
+  const [invoiceStartDate, setInvoiceStartDate] = useState("");
+  const [invoiceEndDate, setInvoiceEndDate] = useState("");
+  const [customers, setCustomers] = useState([]);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [paidStatus, setPaidStatus] = useState("all");
 
   const handleDelete = (id) => {
     (async () => {
@@ -35,6 +57,7 @@ const DrInvoiceIndex = () => {
   useEffect(() => {
     (async () => {
       setInvoices((await http.get("/dr/invoices")).data.data);
+      setCustomers((await http.get("/customers")).data.data);
     })();
   }, []);
 
@@ -51,6 +74,57 @@ const DrInvoiceIndex = () => {
     } catch (error) {
       toast.error(error);
     }
+  };
+
+  const handleSetIdDeliveriesWeek = () => {
+    const { weekStart, weekEnd } = getWeek();
+
+    setIdDeliveriesStartDate(weekStart);
+    setIdDeliveriesEndDate(weekEnd);
+  };
+
+  const handleSetSgDeliveriesWeek = () => {
+    const { weekStart, weekEnd } = getWeek();
+
+    setSgDeliveriesStartDate(weekStart);
+    setSgDeliveriesEndDate(weekEnd);
+  };
+
+  const handleSetInvoiceWeek = () => {
+    const { weekStart, weekEnd } = getWeek();
+
+    setInvoiceStartDate(weekStart);
+    setInvoiceEndDate(weekEnd);
+  };
+
+  const handleClearFilter = async () => {
+    setIdDeliveriesStartDate("");
+    setIdDeliveriesEndDate("");
+    setSgDeliveriesStartDate("");
+    setSgDeliveriesEndDate("");
+    setInvoiceEndDate("");
+    setInvoiceStartDate("");
+    setSelectedCustomer(null);
+
+    setInvoices((await http.get(`/dr/invoices`)).data.data);
+  };
+
+  const handleFilter = async () => {
+    const queryParams = formQueryParams({
+      idDeliveriesStartDate,
+      idDeliveriesEndDate,
+      sgDeliveriesStartDate,
+      sgDeliveriesEndDate,
+      invoiceEndDate,
+      invoiceStartDate,
+      CustomerId: selectedCustomer ? selectedCustomer.id : undefined,
+      ...(paidStatus === "all"
+        ? {}
+        : paidStatus === "paid"
+        ? { paid: "yes" }
+        : { unpaid: "yes" }),
+    });
+    setInvoices((await http.get(`/dr/invoices?${queryParams}`)).data.data);
   };
 
   const columns = [
@@ -112,7 +186,189 @@ const DrInvoiceIndex = () => {
           Manage Invoices
         </Button>
       </Box>
-      <Card>
+      <Box marginTop={2}>
+        <Typography variant="h6" fontWeight={500}>
+          FILTERS
+        </Typography>
+        <Divider>
+          <Chip label="Invoice" />
+        </Divider>
+        <Grid spacing={2} container marginTop={1}>
+          <Grid item xs={8}>
+            <Autocomplete
+              value={selectedCustomer}
+              onChange={(e, newValue) => {
+                setSelectedCustomer(newValue);
+              }}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              renderOption={(props, option) => (
+                <li {...props} key={option.id}>
+                  <Typography>{option.fullName}</Typography>
+                </li>
+              )}
+              getOptionLabel={(option) => `(#${option.id}) ${option.fullName}`}
+              options={customers}
+              sx={{ width: "100%" }}
+              renderInput={(params) => (
+                <TextField {...params} label="Customer" size="small" />
+              )}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <FormControl margin="none" fullWidth>
+              <InputLabel id="demo-simple-select-label">Paid</InputLabel>
+              <Select
+                size="small"
+                label="Paid"
+                value={paidStatus}
+                fullWidth
+                onChange={(e) => {
+                  setPaidStatus(e.target.value);
+                }}
+              >
+                <MenuItem value="all">All</MenuItem>
+                <MenuItem value="unpaid">Unpaid</MenuItem>
+                <MenuItem value="paid">Paid</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={5}>
+            <TextField
+              fullWidth
+              size="small"
+              label="Start Date"
+              type="date"
+              value={invoiceStartDate}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={(e) => setInvoiceStartDate(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={5}>
+            <TextField
+              fullWidth
+              size="small"
+              label="End Date"
+              type="date"
+              value={invoiceEndDate}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={(e) => setInvoiceEndDate(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <Box display="flex" height="100%">
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={handleSetInvoiceWeek}
+              >
+                This Week
+              </Button>
+            </Box>
+          </Grid>
+          <Grid item xs={12}></Grid>
+        </Grid>
+
+        <Divider>
+          <Chip label="ID Deliveries" />
+        </Divider>
+        <Grid spacing={2} container marginTop={1}>
+          <Grid item xs={5}>
+            <TextField
+              fullWidth
+              size="small"
+              label="Start Date"
+              type="date"
+              value={idDeliveriesStartDate}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={(e) => setIdDeliveriesStartDate(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={5}>
+            <TextField
+              fullWidth
+              size="small"
+              label="End Date"
+              type="date"
+              value={idDeliveriesEndDate}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={(e) => setIdDeliveriesEndDate(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <Box display="flex" height="100%">
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={handleSetIdDeliveriesWeek}
+              >
+                This Week
+              </Button>
+            </Box>
+          </Grid>
+          <Grid item xs={12}></Grid>
+        </Grid>
+
+        <Divider>
+          <Chip label="SG Deliveries" />
+        </Divider>
+        <Grid spacing={2} container marginTop={1}>
+          <Grid item xs={5}>
+            <TextField
+              fullWidth
+              size="small"
+              label="Start Date"
+              type="date"
+              value={sgDeliveriesStartDate}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={(e) => setSgDeliveriesStartDate(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={5}>
+            <TextField
+              fullWidth
+              size="small"
+              label="End Date"
+              type="date"
+              value={sgDeliveriesEndDate}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={(e) => setSgDeliveriesEndDate(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <Box display="flex" height="100%">
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={handleSetSgDeliveriesWeek}
+              >
+                This Week
+              </Button>
+            </Box>
+          </Grid>
+          <Grid item xs={12}></Grid>
+        </Grid>
+        <Box display="flex" gap={2}>
+          <Button variant="outlined" fullWidth onClick={handleClearFilter}>
+            Clear Filter
+          </Button>
+          <Button variant="contained" fullWidth onClick={handleFilter}>
+            Filter
+          </Button>
+        </Box>
+      </Box>
+      <Card sx={{ marginTop: 4 }}>
         <SmartTable
           rows={invoices.map((invoice) => ({
             id: invoice.id,
