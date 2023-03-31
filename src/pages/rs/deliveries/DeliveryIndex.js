@@ -1,4 +1,8 @@
 import Card from "@mui/material/Card";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import Autocomplete from "@mui/material/Autocomplete";
 import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
@@ -13,11 +17,18 @@ import ReceiptIcon from "@mui/icons-material/Receipt";
 import ShoppingCart from "@mui/icons-material/ShoppingCart";
 import DeleteAlert from "../../../components/DeleteAlert";
 import Delete from "@mui/icons-material/Delete";
+import { formQueryParams, getWeek } from "../../../helpers/common";
 
 const DeliveryIndex = () => {
   const [deliveries, setDeliveries] = useState([]);
 
   const [toDeleteId, setToDeleteId] = useState(null);
+
+  // FILTERS
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [customers, setCustomers] = useState([]);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
 
   const handleDelete = (id) => {
     (async () => {
@@ -35,9 +46,35 @@ const DeliveryIndex = () => {
 
   useEffect(() => {
     (async () => {
-      setDeliveries((await http.get("/rs/deliveries")).data.data);
+      setCustomers((await http.get("/customers")).data.data);
     })();
   }, []);
+
+  const handleSetWeek = () => {
+    const { weekStart, weekEnd } = getWeek();
+
+    setStartDate(weekStart);
+    setEndDate(weekEnd);
+  };
+
+  const handleClearFilter = async () => {
+    setStartDate("");
+    setEndDate("");
+    setSelectedCustomer(null);
+
+    // setDeliveries((await http.get("/rs/deliveries")).data.data);
+    setDeliveries([]);
+  };
+
+  const handleFilter = async () => {
+    const queryParams = formQueryParams({
+      startDate,
+      endDate,
+      CustomerId: selectedCustomer ? selectedCustomer.id : undefined,
+    });
+    // console.log(queryParams);
+    setDeliveries((await http.get(`/rs/deliveries?${queryParams}`)).data.data);
+  };
 
   const columns = [
     { field: "id", headerName: "ID", width: 50 },
@@ -120,7 +157,76 @@ const DeliveryIndex = () => {
           New Delivery
         </Button>
       </Box>
-      <Card>
+      <Box marginTop={2}>
+        <Typography variant="h6" fontWeight={500}>
+          FILTERS
+        </Typography>
+        <Grid spacing={2} container marginTop={1}>
+          <Grid item xs={12}>
+            <Autocomplete
+              value={selectedCustomer}
+              onChange={(e, newValue) => {
+                setSelectedCustomer(newValue);
+              }}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              renderOption={(props, option) => (
+                <li {...props} key={option.id}>
+                  <Typography>{option.fullName}</Typography>
+                </li>
+              )}
+              getOptionLabel={(option) => `(#${option.id}) ${option.fullName}`}
+              options={customers}
+              sx={{ width: "100%" }}
+              renderInput={(params) => (
+                <TextField {...params} label="Customer" size="small" />
+              )}
+            />
+          </Grid>
+          <Grid item xs={5}>
+            <TextField
+              fullWidth
+              size="small"
+              label="Start Date"
+              type="date"
+              value={startDate}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={5}>
+            <TextField
+              fullWidth
+              size="small"
+              label="End Date"
+              type="date"
+              value={endDate}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <Box display="flex" height="100%">
+              <Button variant="outlined" fullWidth onClick={handleSetWeek}>
+                This Week
+              </Button>
+            </Box>
+          </Grid>
+          <Grid item xs={12}></Grid>
+        </Grid>
+        <Box display="flex" gap={2}>
+          <Button variant="outlined" fullWidth onClick={handleClearFilter}>
+            Clear Filter
+          </Button>
+          <Button variant="contained" fullWidth onClick={handleFilter}>
+            Filter
+          </Button>
+        </Box>
+      </Box>
+      <Card sx={{ marginTop: 4 }}>
         <SmartTable
           rows={deliveries.map((delivery) => ({
             id: delivery.id,
