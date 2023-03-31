@@ -1,20 +1,33 @@
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
+import Autocomplete from "@mui/material/Autocomplete";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
 import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/ModeEdit";
-import { IconButton } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 import http from "../../../http-common";
 import SmartTable from "../../../components/SmartTable";
 import { toast } from "react-toastify";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import DeleteAlert from "../../../components/DeleteAlert";
+import { formQueryParams } from "../../../helpers/common";
 
 const ProductIndex = () => {
   const [products, setProducts] = useState([]);
   const [toDeleteId, setToDeleteId] = useState(null);
+
+  //filters
+  const [suppliers, setSuppliers] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  const [name, setName] = useState("");
+  const [selectedSupplier, setSelectedSupplier] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
   const [deleteMsg, setDeleteMsg] = useState("Loading...");
 
@@ -55,8 +68,28 @@ const ProductIndex = () => {
   useEffect(() => {
     (async () => {
       setProducts((await http.get("/rs/products")).data.data);
+      setSuppliers((await http.get("/rs/suppliers")).data.data);
+      setCategories((await http.get("/rs/product-categories")).data.data);
     })();
   }, []);
+
+  const handleClearFilter = async () => {
+    setSelectedSupplier(null);
+    setSelectedCategory(null);
+    setName("");
+
+    setProducts((await http.get("/rs/products")).data.data);
+  };
+
+  const handleFilter = async () => {
+    const queryParams = formQueryParams({
+      SupplierId: selectedSupplier ? selectedSupplier.id : undefined,
+      name,
+      ProductCategoryId: selectedCategory ? selectedCategory.id : undefined,
+    });
+    // console.log(queryParams);
+    setProducts((await http.get(`/rs/products?${queryParams}`)).data.data);
+  };
 
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
@@ -125,7 +158,71 @@ const ProductIndex = () => {
           New Product
         </Button>
       </Box>
-      <Card>
+      <Box marginTop={2}>
+        <Typography variant="h6" fontWeight={500}>
+          FILTERS
+        </Typography>
+        <Grid spacing={2} container marginTop={1}>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Name"
+              size="small"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={8}>
+            <Autocomplete
+              value={selectedSupplier}
+              onChange={(e, newValue) => {
+                setSelectedSupplier(newValue);
+              }}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              renderOption={(props, option) => (
+                <li {...props} key={option.id}>
+                  <Typography>{option.name}</Typography>
+                </li>
+              )}
+              getOptionLabel={(option) => `(#${option.id}) ${option.name}`}
+              options={suppliers}
+              sx={{ width: "100%" }}
+              renderInput={(params) => (
+                <TextField {...params} label="Supplier" size="small" />
+              )}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <Autocomplete
+              value={selectedCategory}
+              onChange={(e, newValue) => {
+                setSelectedCategory(newValue);
+              }}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              renderOption={(props, option) => (
+                <li {...props} key={option.id}>
+                  <Typography>{option.name}</Typography>
+                </li>
+              )}
+              getOptionLabel={(option) => `(#${option.id}) ${option.name}`}
+              options={categories}
+              sx={{ width: "100%" }}
+              renderInput={(params) => (
+                <TextField {...params} label="Category" size="small" />
+              )}
+            />
+          </Grid>
+        </Grid>
+        <Box display="flex" gap={2} marginTop={2}>
+          <Button variant="outlined" fullWidth onClick={handleClearFilter}>
+            Clear Filter
+          </Button>
+          <Button variant="contained" fullWidth onClick={handleFilter}>
+            Filter
+          </Button>
+        </Box>
+      </Box>
+      <Card sx={{ marginTop: 4 }}>
         <SmartTable
           rows={products.map((product) => ({
             id: product.id,
