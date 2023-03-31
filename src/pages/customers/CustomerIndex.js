@@ -2,6 +2,7 @@ import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import Autocomplete from "@mui/material/Autocomplete";
 import Button from "@mui/material/Button";
 import SmartTable from "../../components/SmartTable";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -20,6 +21,9 @@ import { formQueryParams } from "../../helpers/common";
 
 export default function CustomerIndex() {
   const [customers, setCustomers] = useState([]);
+
+  const [regions, setRegions] = useState([]);
+  const [selectedRegion, setSelectedRegion] = useState(null);
   const [fullName, setFullName] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
@@ -28,6 +32,7 @@ export default function CustomerIndex() {
   useEffect(() => {
     (async () => {
       setCustomers((await http.get("/customers")).data.data);
+      setRegions((await http.get("/regions")).data.data);
     })();
   }, []);
 
@@ -52,6 +57,7 @@ export default function CustomerIndex() {
     setAddress("");
     setPhone("");
     setNote("");
+    setSelectedRegion(null);
     setCustomers((await http.get(`/customers`)).data.data);
   };
 
@@ -61,6 +67,7 @@ export default function CustomerIndex() {
       address,
       phone,
       note,
+      RegionId: selectedRegion ? selectedRegion.id : undefined,
     });
     // console.log(queryParams);
     setCustomers((await http.get(`/customers?${queryParams}`)).data.data);
@@ -155,25 +162,49 @@ export default function CustomerIndex() {
           FILTERS
         </Typography>
         <Grid spacing={2} container marginTop={1}>
-          <Grid item xs={8}>
+          <Grid item xs={12}>
             <TextField
               fullWidth
+              size="small"
               label="Name"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
             />
           </Grid>
-          <Grid item xs={4}>
+
+          <Grid item xs={6}>
             <TextField
               fullWidth
+              size="small"
               label="Phone"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
             />
           </Grid>
+          <Grid item xs={6}>
+            <Autocomplete
+              value={selectedRegion}
+              onChange={(e, newValue) => {
+                setSelectedRegion(newValue);
+              }}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              renderOption={(props, option) => (
+                <li {...props} key={option.id}>
+                  <Typography>{option.name}</Typography>
+                </li>
+              )}
+              getOptionLabel={(option) => `(#${option.id}) ${option.name}`}
+              options={regions}
+              sx={{ width: "100%" }}
+              renderInput={(params) => (
+                <TextField {...params} label="Region" size="small" />
+              )}
+            />
+          </Grid>
           <Grid item xs={8}>
             <TextField
               fullWidth
+              size="small"
               label="Address"
               onChange={(e) => setAddress(e.target.value)}
               multiline
@@ -184,6 +215,7 @@ export default function CustomerIndex() {
           <Grid item xs={4}>
             <TextField
               fullWidth
+              size="small"
               label="Note"
               onChange={(e) => setNote(e.target.value)}
               multiline
