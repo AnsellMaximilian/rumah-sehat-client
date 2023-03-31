@@ -21,6 +21,9 @@ import { formQueryParams } from "../../helpers/common";
 export default function CustomerIndex() {
   const [customers, setCustomers] = useState([]);
   const [fullName, setFullName] = useState("");
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
+  const [note, setNote] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -46,12 +49,18 @@ export default function CustomerIndex() {
 
   const handleClearFilter = async () => {
     setFullName("");
+    setAddress("");
+    setPhone("");
+    setNote("");
     setCustomers((await http.get(`/customers`)).data.data);
   };
 
   const handleFilter = async () => {
     const queryParams = formQueryParams({
       fullName,
+      address,
+      phone,
+      note,
     });
     // console.log(queryParams);
     setCustomers((await http.get(`/customers?${queryParams}`)).data.data);
@@ -146,15 +155,40 @@ export default function CustomerIndex() {
           FILTERS
         </Typography>
         <Grid spacing={2} container marginTop={1}>
-          <Grid item xs={12}>
+          <Grid item xs={8}>
             <TextField
               fullWidth
               label="Name"
               value={fullName}
-              InputLabelProps={{
-                shrink: true,
-              }}
               onChange={(e) => setFullName(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              fullWidth
+              label="Phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={8}>
+            <TextField
+              fullWidth
+              label="Address"
+              onChange={(e) => setAddress(e.target.value)}
+              multiline
+              value={address}
+              rows={3}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              fullWidth
+              label="Note"
+              onChange={(e) => setNote(e.target.value)}
+              multiline
+              value={note}
+              rows={3}
             />
           </Grid>
         </Grid>
@@ -178,6 +212,7 @@ export default function CustomerIndex() {
             region: customer.Region?.name,
             rsMember: customer.rsMember,
             receiveDrDiscount: customer.receiveDrDiscount,
+            note: customer.note,
           }))}
           columns={columns}
         />
