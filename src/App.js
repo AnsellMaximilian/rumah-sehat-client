@@ -53,6 +53,11 @@ import CustomerShow from "./pages/customers/CustomerShow";
 import InvoiceManage from "./pages/rs/invoices/InvoiceManage";
 import SupplierShow from "./pages/rs/suppliers/SupplierShow";
 import DeliveryShow from "./pages/rs/deliveries/DeliveryShow";
+import DrMyItemIndex from "./pages/dr/my/items/ItemIndex";
+import DrMyItemCreate from "./pages/dr/my/items/ItemCreate";
+import DrMyItemEdit from "./pages/dr/my/items/ItemEdit";
+import DrMyDeliveryIndex from "./pages/dr/my/deliveries/DeliveryIndex";
+import DrMyDeliveryShow from "./pages/dr/my/deliveries/DeliveryShow";
 
 function App() {
   return (
@@ -223,6 +228,33 @@ function App() {
                   >
                     <Route path="" element={<DrSgDeliveryIndex />} />
                     <Route path=":id" element={<DrSgDeliveryShow />} />
+                  </Route>
+                </Route>
+                <Route
+                  path="my"
+                  element={
+                    <DataLayout
+                      title="DR'S SECRET MY"
+                      titleVariant="subtitle"
+                    />
+                  }
+                >
+                  <Route
+                    path="items"
+                    element={<DataLayout title="Items" titleVariant="h5" />}
+                  >
+                    <Route path="" element={<DrMyItemIndex />} />
+                    <Route path="create" element={<DrMyItemCreate />} />
+                    <Route path="edit/:id" element={<DrMyItemEdit />} />
+                  </Route>
+                  <Route
+                    path="deliveries"
+                    element={
+                      <DataLayout title="Deliveries" titleVariant="h5" />
+                    }
+                  >
+                    <Route path="" element={<DrMyDeliveryIndex />} />
+                    <Route path=":id" element={<DrMyDeliveryShow />} />
                   </Route>
                 </Route>
                 <Route

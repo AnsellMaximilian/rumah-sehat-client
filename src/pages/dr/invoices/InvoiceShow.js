@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import DrIdDeliveryTable from "../../../components/dr/id/DeliveryTable";
 import DrSgDeliveryTable from "../../../components/dr/sg/DeliveryTable";
+import DrMyDeliveryTable from "../../../components/dr/my/DeliveryTable";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import http from "../../../http-common";
 import PrintIcon from "@mui/icons-material/Print";
@@ -185,6 +186,53 @@ const DrInvoiceShow = () => {
             ))}
           </Box>
         )}
+
+        {/* MALAYSIA */}
+        {invoice.DrMyDeliveries.length > 0 && (
+          <Box marginTop={2}>
+            <Box sx={{ backgroundColor: "primary.main", color: "white" }}>
+              <Typography
+                textAlign="center"
+                variant="subtitle1"
+                fontWeight="bold"
+              >
+                Malaysia
+              </Typography>
+            </Box>
+            {invoice.DrMyDeliveries.map((delivery, index) => (
+              <Box
+                key={delivery.id}
+                marginBottom={2}
+                sx={{
+                  borderBottom: "0.5rem solid",
+                  borderColor:
+                    invoice.DrMyDeliveries.length - 1 === index
+                      ? "transparent"
+                      : "primary.main",
+                }}
+              >
+                <Box paddingX={2} display="flex" justifyContent="space-between">
+                  <Box>
+                    <Typography variant="caption">DELIVERY #</Typography>
+                    <Typography variant="subtitle2">{delivery.id}</Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="caption">DELIVERY DATE</Typography>
+                    <Typography variant="subtitle2">{delivery.date}</Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="caption">RECIPIENT</Typography>
+                    <Typography variant="subtitle2">
+                      {delivery.customerFullName}
+                    </Typography>
+                  </Box>
+                </Box>
+                <DrMyDeliveryTable delivery={delivery} />
+              </Box>
+            ))}
+          </Box>
+        )}
+
         <Box
           textAlign="right"
           padding={2}

@@ -23,7 +23,7 @@ import { Collapse, Divider, List } from "@mui/material";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import LocalShipping from "@mui/icons-material/LocalShipping";
-import LocalHospital from "@mui/icons-material/LocalHospital";
+// import LocalHospital from "@mui/icons-material/LocalHospital";
 
 const SidebarLink = ({ to, text, icon, ...rest }) => {
   return (
@@ -41,8 +41,8 @@ const Sidebar = () => {
   const [rsReportsOpen, setRsReportsOpen] = useState(false);
 
   // Dr's secret
-  const [drIdOpen, setDrIdOpen] = useState(false);
-  const [drSgOpen, setDrSgOpen] = useState(false);
+  const [drItemsOpen, setDrItemsOpen] = useState(false);
+  const [drDeliveriesOpen, setDrDeliveriesOpen] = useState(false);
   return (
     <List component="nav" sx={{ maxHeight: "calc(100vh - 65px)" }}>
       <SidebarLink to="/" text="Dasbhoard" icon={<DashboardIcon />} />
@@ -153,47 +153,59 @@ const Sidebar = () => {
       <ListSubheader component="div" inset>
         Dr's Secret
       </ListSubheader>
-      <ListItemButton onClick={() => setDrIdOpen(!drIdOpen)}>
+      <ListItemButton onClick={() => setDrItemsOpen(!drItemsOpen)}>
         <ListItemIcon>
-          <LocalHospital />
+          <SanitizerIcon />
         </ListItemIcon>
-        <ListItemText primary="Indonesia" />
-        {drIdOpen ? <ExpandLess /> : <ExpandMore />}
+        <ListItemText primary="Items" />
+        {drItemsOpen ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
-      <Collapse in={drIdOpen} timeout="auto" unmountOnExit>
+      <Collapse in={drItemsOpen} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <SidebarLink
             to="/dr/id/items"
-            text="Items"
+            text="Indonesia"
             icon={<SanitizerIcon />}
             sx={{ pl: 4 }}
           />
           <SidebarLink
-            to="/dr/id/deliveries"
-            text="Delivery"
-            icon={<LocalShipping />}
+            to="/dr/sg/items"
+            text="Singapore"
+            icon={<SanitizerIcon />}
+            sx={{ pl: 4 }}
+          />
+          <SidebarLink
+            to="/dr/my/items"
+            text="Malaysia"
+            icon={<SanitizerIcon />}
             sx={{ pl: 4 }}
           />
         </List>
       </Collapse>
-      <ListItemButton onClick={() => setDrSgOpen(!drSgOpen)}>
+      <ListItemButton onClick={() => setDrDeliveriesOpen(!drDeliveriesOpen)}>
         <ListItemIcon>
-          <LocalHospital />
+          <LocalShipping />
         </ListItemIcon>
-        <ListItemText primary="Singapore" />
-        {drSgOpen ? <ExpandLess /> : <ExpandMore />}
+        <ListItemText primary="Deliveries" />
+        {drDeliveriesOpen ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
-      <Collapse in={drSgOpen} timeout="auto" unmountOnExit>
+      <Collapse in={drDeliveriesOpen} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <SidebarLink
-            to="/dr/sg/items"
-            text="Items"
-            icon={<SanitizerIcon />}
+            to="/dr/id/deliveries"
+            text="Indonesia"
+            icon={<LocalShipping />}
             sx={{ pl: 4 }}
           />
           <SidebarLink
             to="/dr/sg/deliveries"
-            text="Delivery"
+            text="Singapore"
+            icon={<LocalShipping />}
+            sx={{ pl: 4 }}
+          />
+          <SidebarLink
+            to="/dr/my/deliveries"
+            text="Malaysia"
             icon={<LocalShipping />}
             sx={{ pl: 4 }}
           />

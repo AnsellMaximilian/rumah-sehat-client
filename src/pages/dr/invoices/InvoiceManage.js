@@ -13,8 +13,10 @@ import http from "../../../http-common";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import IdDeliveryDisplay from "../../../components/dr/id/DeliveryDisplay";
 import SgDeliveryDisplay from "../../../components/dr/sg/DeliveryDisplay";
+import MyDeliveryDisplay from "../../../components/dr/my/DeliveryDisplay";
 import IdDeliveryCreateForm from "../../../components/dr/id/DeliveryCreateForm";
 import SgDeliveryCreateForm from "../../../components/dr/sg/DeliveryCreateForm";
+import MyDeliveryCreateForm from "../../../components/dr/my/DeliveryCreateForm";
 
 import InvoiceCreateForm from "../../../components/dr/InvoiceCreateForm";
 import Typography from "@mui/material/Typography";
@@ -38,6 +40,11 @@ export default function InvoiceManage() {
   const [sgDeliveryEditId, setSgDeliveryEditId] = useState(null);
   const [sgToDeleteId, setSgToDeleteId] = useState(null);
 
+  // SG Deliveries
+  const [isMyDeliveryFormOpen, setIsMyDeliveryFormOpen] = useState(false);
+  const [myDeliveryEditId, setMyDeliveryEditId] = useState(null);
+  const [myToDeleteId, setMyToDeleteId] = useState(null);
+
   useEffect(() => {
     (async () => {
       setInvoices((await http.get("/dr/invoices?unpaid=yes")).data.data);
@@ -52,6 +59,11 @@ export default function InvoiceManage() {
   const handleSgDeliveryFormClose = () => {
     setSgDeliveryEditId(null);
     setIsSgDeliveryFormOpen(false);
+  };
+
+  const handleMyDeliveryFormClose = () => {
+    setMyDeliveryEditId(null);
+    setIsMyDeliveryFormOpen(false);
   };
 
   const handleInvoiceFormClose = () => {
@@ -78,6 +90,12 @@ export default function InvoiceManage() {
     setSgDeliveryEditId(null);
   };
 
+  const handleMyDeliverySubmit = () => {
+    handleMyDeliveryFormClose();
+    refreshInvoice();
+    setMyDeliveryEditId(null);
+  };
+
   const handleInvoiceSubmit = async (invoiceId) => {
     refreshInvoice(true);
     setInvoice((await http.get(`/dr/invoices/${invoiceId}`)).data.data);
@@ -94,6 +112,10 @@ export default function InvoiceManage() {
     setSgDeliveryEditId(id);
     setIsSgDeliveryFormOpen(true);
   };
+  const handleMyDeliveryEdit = (id) => {
+    setMyDeliveryEditId(id);
+    setIsMyDeliveryFormOpen(true);
+  };
 
   const handleInvoiceEdit = (id) => {
     setInvoiceEditId(id);
@@ -106,7 +128,7 @@ export default function InvoiceManage() {
         const delivery = (await http.delete(`/dr/id/deliveries/${id}`)).data
           .data;
         refreshInvoice();
-        toast.success(`Delivery #${delivery.id} deleted.`);
+        toast.success(`ID Delivery #${delivery.id} deleted.`);
       } catch ({ response: { data: error } }) {
         toast.error(error);
       }
@@ -119,7 +141,20 @@ export default function InvoiceManage() {
         const delivery = (await http.delete(`/dr/sg/deliveries/${id}`)).data
           .data;
         refreshInvoice();
-        toast.success(`Delivery #${delivery.id} deleted.`);
+        toast.success(`SG Delivery #${delivery.id} deleted.`);
+      } catch ({ response: { data: error } }) {
+        toast.error(error);
+      }
+    })();
+  };
+
+  const handleMyDeliveryDelete = (id) => {
+    (async () => {
+      try {
+        const delivery = (await http.delete(`/dr/my/deliveries/${id}`)).data
+          .data;
+        refreshInvoice();
+        toast.success(`MY Delivery #${delivery.id} deleted.`);
       } catch ({ response: { data: error } }) {
         toast.error(error);
       }
@@ -171,6 +206,12 @@ export default function InvoiceManage() {
           onClick={() => setIsSgDeliveryFormOpen(true)}
         >
           Add New SG Delivery
+        </Button>
+        <Button
+          variant="contained"
+          onClick={() => setIsMyDeliveryFormOpen(true)}
+        >
+          Add New MY Delivery
         </Button>
       </Box>
       <Box marginTop={4} marginBottom={4}>
@@ -253,6 +294,19 @@ export default function InvoiceManage() {
       </Dialog>
 
       <Dialog
+        open={isMyDeliveryFormOpen}
+        onClose={handleMyDeliveryFormClose}
+        maxWidth="xl"
+      >
+        <MyDeliveryCreateForm
+          invoice={invoice}
+          onSubmit={handleMyDeliverySubmit}
+          editId={myDeliveryEditId}
+          onCancel={handleMyDeliveryFormClose}
+        />
+      </Dialog>
+
+      <Dialog
         open={isInvoiceFormOpen}
         onClose={handleInvoiceFormClose}
         maxWidth="xl"
@@ -266,13 +320,7 @@ export default function InvoiceManage() {
       <Divider>
         <Chip label="ID Deliveries" />
       </Divider>
-      <Box
-        display="flex"
-        flexDirection="column"
-        gap={2}
-        marginTop={2}
-        marginBottom={4}
-      >
+      <Box display="flex" flexDirection="column" gap={2} marginTop={2}>
         {invoice &&
           invoice.DrIdDeliveries.map((delivery) => {
             return (
@@ -303,6 +351,23 @@ export default function InvoiceManage() {
             );
           })}
       </Box>
+      <Divider>
+        <Chip label="MY Deliveries" />
+      </Divider>
+      <Box display="flex" flexDirection="column" gap={2} marginTop={2}>
+        {invoice &&
+          invoice.DrMyDeliveries.map((delivery) => {
+            return (
+              <MyDeliveryDisplay
+                actions
+                delivery={delivery}
+                key={delivery.id}
+                onDelete={() => setMyToDeleteId(delivery.id)}
+                onEdit={() => handleMyDeliveryEdit(delivery.id)}
+              />
+            );
+          })}
+      </Box>
       <DeleteAlert
         message={`Are you sure you want to delete ID delivery #${idToDeleteId} and its details.`}
         toDeleteId={idToDeleteId}
@@ -316,6 +381,13 @@ export default function InvoiceManage() {
         handleDelete={handleSgDeliveryDelete}
         setToDeleteId={setSgToDeleteId}
         objectName="SG Delivery"
+      />
+      <DeleteAlert
+        message={`Are you sure you want to delete MY delivery #${idToDeleteId} and its details.`}
+        toDeleteId={myToDeleteId}
+        handleDelete={handleMyDeliveryDelete}
+        setToDeleteId={setMyToDeleteId}
+        objectName="MY Delivery"
       />
     </Box>
   );
