@@ -30,6 +30,14 @@ const PurchaseShow = () => {
   return purchase ? (
     <Box>
       <Box display="flex" justifyContent="flex-end" marginBottom={1} gap={2}>
+        <Button
+          color="warning"
+          variant="outlined"
+          component={Link}
+          to={`/rs/purchases/edit/${id}`}
+        >
+          Edit
+        </Button>
         {purchase.Delivery && (
           <Button
             color="primary"
