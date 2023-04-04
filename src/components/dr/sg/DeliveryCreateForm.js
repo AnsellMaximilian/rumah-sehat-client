@@ -54,6 +54,8 @@ export default function DeliveryCreateForm({
   const [deliveryCustomer, setDeliveryCustomer] = useState(null);
   const [exchangeRate, setExchangeRate] = useState(11000);
 
+  const [isSubmitButtonDisabled, setIsSubmitButtonDisabled] = useState(false);
+
   useEffect(() => {
     (async () => {
       setCustomers((await http.get("/customers")).data.data);
@@ -152,6 +154,8 @@ export default function DeliveryCreateForm({
   };
 
   const handleSubmit = async (e) => {
+    setIsSubmitButtonDisabled(true);
+
     e.preventDefault();
     try {
       if (deliveryDetails.length === 0) throw new Error("Delivery is empty.");
@@ -663,7 +667,12 @@ export default function DeliveryCreateForm({
             <Button variant="outlined" onClick={onCancel}>
               Cancel
             </Button>
-            <Button variant="contained" fullWidth onClick={handleSubmit}>
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={handleSubmit}
+              disabled={isSubmitButtonDisabled}
+            >
               {editId ? "Update" : "Create"}
             </Button>
           </Box>

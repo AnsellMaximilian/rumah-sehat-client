@@ -23,6 +23,8 @@ export default function InvoiceCreateForm({ editId, onSubmit, onCancel }) {
   const [invoiceCustomer, setInvoiceCustomer] = useState(null);
   const [status, setStatus] = useState("draft");
 
+  const [isSubmitButtonDisabled, setIsSubmitButtonDisabled] = useState(false);
+
   useEffect(() => {
     (async () => {
       setCustomers((await http.get("/customers")).data.data);
@@ -49,6 +51,7 @@ export default function InvoiceCreateForm({ editId, onSubmit, onCancel }) {
   };
 
   const handleSubmit = async (e) => {
+    setIsSubmitButtonDisabled(true);
     e.preventDefault();
     try {
       if (invoiceCustomer === null)
@@ -183,7 +186,12 @@ export default function InvoiceCreateForm({ editId, onSubmit, onCancel }) {
           <Button variant="outlined" onClick={onCancel}>
             Cancel
           </Button>
-          <Button variant="contained" fullWidth onClick={handleSubmit}>
+          <Button
+            variant="contained"
+            fullWidth
+            onClick={handleSubmit}
+            disabled={isSubmitButtonDisabled}
+          >
             {editId ? "Update" : "Create"}
           </Button>
         </Box>
