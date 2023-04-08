@@ -68,7 +68,7 @@ const InvoiceIndex = () => {
 
   useEffect(() => {
     (async () => {
-      setInvoices((await http.get("/rs/invoices")).data.data);
+      setInvoices((await http.get("/rs/invoices?status=pending")).data.data);
       setCustomers((await http.get("/customers")).data.data);
     })();
   }, []);
@@ -112,7 +112,7 @@ const InvoiceIndex = () => {
     setSelectedCustomer(null);
     setStatus("all");
 
-    setInvoices((await http.get(`/rs/invoices`)).data.data);
+    setInvoices((await http.get(`/rs/invoices?status=pending`)).data.data);
   };
 
   const handleFilter = async () => {
