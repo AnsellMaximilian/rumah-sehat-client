@@ -6,6 +6,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
 import DiscountIcon from "@mui/icons-material/Discount";
 import ReceiptIcon from "@mui/icons-material/Receipt";
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 // import AdjustIcon from "@mui/icons-material/AutoFixNormal";
 import ProductIcon from "@mui/icons-material/Widgets";
 import CategoryIcon from "@mui/icons-material/ManageSearch";
@@ -138,6 +139,12 @@ const Sidebar = () => {
             to="/rs/reports/products"
             text="Products"
             icon={<ProductIcon />}
+            sx={{ pl: 4 }}
+          />
+          <SidebarLink
+            to="/rs/reports/compare"
+            text="Compare"
+            icon={<CompareArrowsIcon />}
             sx={{ pl: 4 }}
           />
         </List>

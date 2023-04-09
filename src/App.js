@@ -58,6 +58,7 @@ import DrMyItemCreate from "./pages/dr/my/items/ItemCreate";
 import DrMyItemEdit from "./pages/dr/my/items/ItemEdit";
 import DrMyDeliveryIndex from "./pages/dr/my/deliveries/DeliveryIndex";
 import DrMyDeliveryShow from "./pages/dr/my/deliveries/DeliveryShow";
+import CompareReport from "./pages/rs/reports/CompareReport";
 
 function App() {
   return (
@@ -161,6 +162,7 @@ function App() {
                     element={<SupplierBillIndex />}
                   />
                   <Route path="products" element={<ProductsReport />} />
+                  <Route path="compare" element={<CompareReport />} />
                 </Route>
               </Route>
 
