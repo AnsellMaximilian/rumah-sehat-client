@@ -39,15 +39,20 @@ export default function CompareReport() {
       )
     ).data.data;
 
-    console.log(purchases, sales);
-
     setCompareData(
       purchases.map((p) => {
         const matchingProductSale = sales.find(
           (s) => s.productId === p.productId
         );
+        const totalPurchased = p.totalPurchased || 0;
+        const totalSold = matchingProductSale.totalSold || 0;
 
-        return { ...p, ...matchingProductSale, id: p.productId };
+        return {
+          ...p,
+          ...matchingProductSale,
+          id: p.productId,
+          match: totalSold === totalPurchased ? "MATCH" : "MISMATCH",
+        };
       })
     );
   };
@@ -143,7 +148,9 @@ export default function CompareReport() {
               rows={compareData}
               columns={[
                 getTableColumn("ID", "id"),
-                getTableColumn("Product", "productName"),
+                getTableColumn("Product", "productName", undefined, undefined, {
+                  width: 220,
+                }),
                 getTableColumn("Total Purchased", "totalPurchased", (params) =>
                   parseFloat(params.row.totalPurchased || 0)
                 ),
@@ -160,6 +167,24 @@ export default function CompareReport() {
                     value={parseFloat(params.row.totalSales || 0)}
                   />
                 )),
+                getTableColumn("Equality", "match"),
+                // getTableColumn("Total Sales", "comparison", (params) =>
+                //   params.row.match ? (
+                //     <Chip
+                //       label="Same"
+                //       size="small"
+                //       color="success"
+                //       variant="contained"
+                //     />
+                //   ) : (
+                //     <Chip
+                //       label="Bruh"
+                //       size="small"
+                //       color="error"
+                //       variant="contained"
+                //     />
+                //   )
+                // ),
               ]}
             />
           </Box>
