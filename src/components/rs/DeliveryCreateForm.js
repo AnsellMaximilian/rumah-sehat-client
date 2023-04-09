@@ -1,11 +1,11 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
-// import Checkbox from "@mui/material/Checkbox";
+import Checkbox from "@mui/material/Checkbox";
 import WarningIcon from "@mui/icons-material/Error";
 
-// import FormControlLabel from "@mui/material/FormControlLabel";
-// import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
 import IconButton from "@mui/material/IconButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
@@ -43,6 +43,9 @@ export default function DeliveryCreateForm({
   const [deliveryTypes, setDeliveryTypes] = useState([]);
   const [products, setProducts] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
+
+  const [disableDesignatedSalesInput, setDisableDesignatedSalesInput] =
+    useState(true);
 
   // Delivery
   const [mode, setMode] = useState("own");
@@ -230,7 +233,11 @@ export default function DeliveryCreateForm({
     deliveryTypes.length > 0 &&
     deliveryTypeId ? (
       <Box component={Paper} width="90vw">
-        <Box>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="flex-start"
+        >
           {editId ? (
             <Box>
               <Typography>Editing delivery #{editId}</Typography>
@@ -253,6 +260,21 @@ export default function DeliveryCreateForm({
                 Supplier Delivery
               </ToggleButton>
             </ToggleButtonGroup>
+          )}
+          {mode === "own" && (
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    onChange={(e) =>
+                      setDisableDesignatedSalesInput(e.target.checked)
+                    }
+                    checked={disableDesignatedSalesInput}
+                  />
+                }
+                label="Disable Designated Sale Inputs"
+              />
+            </FormGroup>
           )}
         </Box>
         <Box marginTop={2} marginX={1} display="flex" gap={2}>
@@ -492,6 +514,9 @@ export default function DeliveryCreateForm({
                     <TableCell align="left">
                       <Autocomplete
                         value={detail.product}
+                        disabled={
+                          disableDesignatedSalesInput && detail.designatedSaleId
+                        }
                         onChange={(e, newValue) => {
                           handleDeliveryDetailAttrChange(
                             "product",
@@ -545,6 +570,9 @@ export default function DeliveryCreateForm({
                         margin="none"
                         type="number"
                         inputProps={{ tabIndex: -1 }}
+                        disabled={
+                          disableDesignatedSalesInput && detail.designatedSaleId
+                        }
                         sx={{ width: 100 }}
                         value={detail.cost}
                         onChange={handleDeliveryDetailAttrChange(
@@ -561,6 +589,9 @@ export default function DeliveryCreateForm({
                         margin="none"
                         type="number"
                         inputProps={{ tabIndex: -1 }}
+                        disabled={
+                          disableDesignatedSalesInput && detail.designatedSaleId
+                        }
                         sx={{ width: 100 }}
                         value={detail.price}
                         onChange={handleDeliveryDetailAttrChange(
@@ -579,6 +610,9 @@ export default function DeliveryCreateForm({
                         value={detail.qty}
                         variant="standard"
                         inputProps={{ min: 0 }}
+                        disabled={
+                          disableDesignatedSalesInput && detail.designatedSaleId
+                        }
                         onChange={handleDeliveryDetailAttrChange(
                           "qty",
                           detail.key
