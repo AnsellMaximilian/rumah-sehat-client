@@ -167,6 +167,8 @@ export default function CompareReport() {
                     value={parseFloat(params.row.totalSales || 0)}
                   />
                 )),
+                getTableColumn("Supplier", "supplierName"),
+
                 getTableColumn("Equality", "match"),
                 // getTableColumn("Total Sales", "comparison", (params) =>
                 //   params.row.match ? (
