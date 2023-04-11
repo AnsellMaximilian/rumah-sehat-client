@@ -59,6 +59,7 @@ import DrMyItemEdit from "./pages/dr/my/items/ItemEdit";
 import DrMyDeliveryIndex from "./pages/dr/my/deliveries/DeliveryIndex";
 import DrMyDeliveryShow from "./pages/dr/my/deliveries/DeliveryShow";
 import CompareReport from "./pages/rs/reports/CompareReport";
+import Actions from "./pages/rs/reports/Actions";
 
 function App() {
   return (
@@ -163,6 +164,7 @@ function App() {
                   />
                   <Route path="products" element={<ProductsReport />} />
                   <Route path="compare" element={<CompareReport />} />
+                  <Route path="actions" element={<Actions />} />
                 </Route>
               </Route>
 

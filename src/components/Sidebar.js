@@ -16,6 +16,7 @@ import ShoppingCart from "@mui/icons-material/ShoppingCart";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import ReportIcon from "@mui/icons-material/Assessment";
 import MoneyIcon from "@mui/icons-material/Paid";
+import PanToolAltIcon from "@mui/icons-material/PanToolAlt";
 
 import SanitizerIcon from "@mui/icons-material/Sanitizer";
 import React, { useState } from "react";
@@ -145,6 +146,13 @@ const Sidebar = () => {
             to="/rs/reports/compare"
             text="Compare"
             icon={<CompareArrowsIcon />}
+            sx={{ pl: 4 }}
+          />
+
+          <SidebarLink
+            to="/rs/reports/actions"
+            text="Actions"
+            icon={<PanToolAltIcon />}
             sx={{ pl: 4 }}
           />
         </List>
