@@ -45,7 +45,7 @@ export default function CompareReport() {
           (s) => s.productId === p.productId
         );
         const totalPurchased = p.totalPurchased || 0;
-        const totalSold = matchingProductSale.totalSold || 0;
+        const totalSold = matchingProductSale?.totalSold || 0;
 
         return {
           ...p,
