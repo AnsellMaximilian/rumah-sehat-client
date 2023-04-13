@@ -7,8 +7,12 @@ import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 import Typography from "@mui/material/Typography";
 import Autocomplete from "@mui/material/Autocomplete";
+import CircularProgress from "@mui/material/CircularProgress";
 import TextField from "@mui/material/TextField";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
@@ -22,7 +26,11 @@ import { toast } from "react-toastify";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteAlert from "../../../components/DeleteAlert";
 import PayIcon from "@mui/icons-material/Paid";
-import { formQueryParams, getWeek } from "../../../helpers/common";
+import {
+  formFileName,
+  formQueryParams,
+  getWeek,
+} from "../../../helpers/common";
 
 const DrInvoiceIndex = () => {
   const [invoices, setInvoices] = useState([]);
@@ -39,6 +47,10 @@ const DrInvoiceIndex = () => {
   const [customers, setCustomers] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [paidStatus, setPaidStatus] = useState("all");
+
+  //PRINT
+  const [isPrinting, setIsPrinting] = useState(false);
+  const [setInvoicesDateToToday, setSetInvoicesDateToToday] = useState(false);
 
   const handleDelete = (id) => {
     (async () => {
@@ -125,6 +137,37 @@ const DrInvoiceIndex = () => {
         : { unpaid: "yes" }),
     });
     setInvoices((await http.get(`/dr/invoices?${queryParams}`)).data.data);
+  };
+
+  const handleBulkPrint = async () => {
+    try {
+      setIsPrinting(true);
+      const body = {
+        invoiceIds: invoices.map((inv) => inv.id),
+        setInvoicesDateToToday,
+        fileNamePrefix: formFileName({
+          invStart: invoiceStartDate,
+          invEnd: invoiceEndDate,
+          status: paidStatus ? "paid" : "unpaid",
+          CustomerId: selectedCustomer ? selectedCustomer.id : undefined,
+        }),
+      };
+
+      const res = (await http.post("/dr/invoices/bulk-print", body)).data.data;
+      setIsPrinting(false);
+      if (res.successes.length > 0)
+        toast.success(`Successfully printed ${res.successes.length} invoices.`);
+      if (res.fails.length > 0)
+        toast.success(
+          `Failed to print ${res.fails.length} invoices. IDs ${res.fails
+            .map((fail) => fail.id)
+            .join(", ")}`
+        );
+      console.log(res);
+    } catch (error) {
+      setIsPrinting(false);
+      toast.error(error);
+    }
   };
 
   const columns = [
@@ -368,6 +411,35 @@ const DrInvoiceIndex = () => {
           </Button>
         </Box>
       </Box>
+
+      <Box marginTop={4} display="flex" justifyContent="flex-end" gap={2}>
+        {isPrinting && (
+          <Box display="flex" gap={2} alignItems="flex-end">
+            <Typography>Printing...</Typography>
+            <CircularProgress />
+          </Box>
+        )}
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Checkbox
+                onChange={(e) => setSetInvoicesDateToToday(e.target.checked)}
+                checked={setInvoicesDateToToday}
+              />
+            }
+            label="Set Invoice Date to Today?"
+          />
+        </FormGroup>
+        <Button
+          variant="contained"
+          color="error"
+          onClick={handleBulkPrint}
+          disabled={isPrinting}
+        >
+          Print
+        </Button>
+      </Box>
+
       <Card sx={{ marginTop: 4 }}>
         <SmartTable
           rows={invoices.map((invoice) => ({
