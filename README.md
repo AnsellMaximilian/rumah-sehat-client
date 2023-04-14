@@ -1,4 +1,4 @@
-# Car Workshop Sales System for Bengkel Sogo Jaya AC
+# Rumah Sehat Sales System Client
 
 This application consumes a corresponding API that can be found [here](https://github.com/AnsellMaximilian/rumah-sehat-server).
 
