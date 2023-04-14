@@ -1,5 +1,7 @@
 # Car Workshop Sales System for Bengkel Sogo Jaya AC
 
+This application consumes a corresponding API that can be found [here](https://github.com/AnsellMaximilian/rumah-sehat-server).
+
 ## Background
 
 The purpose of this document is to provide a technical overview of a React client used to consume an API for a sales system. This client is designed to allow users to manage customers, products, suppliers, deliveries, invoices, purchases, invoice adjustments, and other relevant information. The client is built using React and Material UI.
