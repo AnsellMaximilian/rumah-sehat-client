@@ -50,3 +50,12 @@ export const copyElementToClipboard = async (el) => {
     return false;
   }
 };
+
+export const copyTextToClipboard = (text) => {
+  try {
+    navigator.clipboard.writeText(text);
+    return true;
+  } catch (error) {
+    return false;
+  }
+};

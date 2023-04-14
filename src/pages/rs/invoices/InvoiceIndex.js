@@ -28,7 +28,9 @@ import ShowIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteAlert from "../../../components/DeleteAlert";
 import NoteAltIcon from "@mui/icons-material/NoteAlt";
 import PayIcon from "@mui/icons-material/Paid";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 import {
+  copyTextToClipboard,
   formFileName,
   formQueryParams,
   getWeek,
@@ -217,6 +219,17 @@ const InvoiceIndex = () => {
               color="primary"
             >
               <ShowIcon />
+            </IconButton>
+            <IconButton
+              color="warning"
+              onClick={(e) => {
+                e.stopPropagation();
+                copyTextToClipboard(
+                  `*REMINDER*\nMohon bantuannya untuk dapat menyelesaikan pembayaran atas invoice #${params.row.id}.\nJika sudah boleh boleh konfirmasi ya.\n\nTerima kasih 🙏\n_Rumah Sehat_`
+                );
+              }}
+            >
+              <NotificationsIcon />
             </IconButton>
           </>
         );
