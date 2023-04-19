@@ -38,7 +38,7 @@ const DrSgItemIndex = () => {
 
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
-    { field: "name", headerName: "Name", width: 130 },
+    { field: "name", headerName: "Name", width: 220 },
     {
       field: "priceSGD",
       headerName: "Price (SGD)",
