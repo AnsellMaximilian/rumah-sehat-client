@@ -5,6 +5,9 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import InputLabel from "@mui/material/InputLabel";
 import Tooltip from "@mui/material/Tooltip";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
 
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Select from "@mui/material/Select";
@@ -33,6 +36,8 @@ const SupplierBillIndex = () => {
   const [reportData, setReportData] = useState(null);
 
   const [mode, setMode] = useState("individual"); // individual or report
+
+  const [isCompact, setIsCompact] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -214,6 +219,20 @@ const SupplierBillIndex = () => {
       (reportData && mode === "report") ? (
         <Box marginTop={2}>
           <Box display="flex" justifyContent="flex-end" gap={2}>
+            {mode === "report" && (
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      defaultChecked
+                      checked={isCompact}
+                      onChange={(e) => setIsCompact(e.target.checked)}
+                    />
+                  }
+                  label="Compact"
+                />
+              </FormGroup>
+            )}
             <Button
               component="a"
               href={` http://localhost:1107/rs/reports/print?startDate=${startDate}&endDate=${endDate}`}
@@ -253,6 +272,7 @@ const SupplierBillIndex = () => {
                 startDate={startDate}
                 endDate={endDate}
                 reportData={reportData}
+                isCompact={isCompact}
               />
             </div>
           )}

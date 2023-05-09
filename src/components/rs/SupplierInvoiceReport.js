@@ -14,6 +14,7 @@ export default function SupplierInvoiceReport({
   reportData,
   startDate,
   endDate,
+  isCompact,
 }) {
   return (
     <Box component={Paper} marginTop={2}>
@@ -31,9 +32,13 @@ export default function SupplierInvoiceReport({
             <TableHead>
               <TableRow>
                 <TableCell>Supplier</TableCell>
-                <TableCell align="right">Subtotal</TableCell>
-                <TableCell align="right">Delivery Cost</TableCell>
-                <TableCell align="right">Adjustments</TableCell>
+                {!isCompact && (
+                  <>
+                    <TableCell align="right">Subtotal</TableCell>
+                    <TableCell align="right">Delivery Cost</TableCell>
+                    <TableCell align="right">Adjustments</TableCell>
+                  </>
+                )}
                 <TableCell align="right">Total</TableCell>
               </TableRow>
             </TableHead>
@@ -48,21 +53,25 @@ export default function SupplierInvoiceReport({
                   <TableCell component="th" scope="row">
                     {supplierTotal.supplierName}
                   </TableCell>
-                  <TableCell align="right">
-                    <NumericFormatRp
-                      value={parseFloat(supplierTotal.subtotal)}
-                    />
-                  </TableCell>
-                  <TableCell align="right">
-                    <NumericFormatRp
-                      value={parseFloat(supplierTotal.delivery)}
-                    />
-                  </TableCell>
-                  <TableCell align="right">
-                    <NumericFormatRp
-                      value={parseFloat(supplierTotal.adjustmentTotal)}
-                    />
-                  </TableCell>
+                  {!isCompact && (
+                    <>
+                      <TableCell align="right">
+                        <NumericFormatRp
+                          value={parseFloat(supplierTotal.subtotal)}
+                        />
+                      </TableCell>
+                      <TableCell align="right">
+                        <NumericFormatRp
+                          value={parseFloat(supplierTotal.delivery)}
+                        />
+                      </TableCell>
+                      <TableCell align="right">
+                        <NumericFormatRp
+                          value={parseFloat(supplierTotal.adjustmentTotal)}
+                        />
+                      </TableCell>
+                    </>
+                  )}
                   <TableCell align="right">
                     <NumericFormatRp value={parseFloat(supplierTotal.total)} />
                   </TableCell>
