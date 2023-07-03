@@ -60,6 +60,10 @@ import DrMyDeliveryIndex from "./pages/dr/my/deliveries/DeliveryIndex";
 import DrMyDeliveryShow from "./pages/dr/my/deliveries/DeliveryShow";
 import CompareReport from "./pages/rs/reports/CompareReport";
 import Actions from "./pages/rs/reports/Actions";
+import ExpenseIndex from "./pages/expenses/ExpenseIndex";
+import ExpenseCreate from "./pages/expenses/ExpenseCreate";
+import ExpenditureIndex from "./pages/expenditures/ExpenditureIndex";
+import ExpenditureCreate from "./pages/expenditures/ExpenditureCreate";
 
 function App() {
   return (
@@ -79,6 +83,28 @@ function App() {
                 <Route path="create" element={<CustomerCreate />} />
                 <Route path=":id" element={<CustomerShow />} />
                 <Route path="edit/:id" element={<CustomerCreate edit />} />
+              </Route>
+              <Route
+                path="expenses"
+                element={
+                  <DataLayout title="Expenses" titleVariant="subtitle" />
+                }
+              >
+                <Route path="" element={<ExpenseIndex />} />
+                <Route path="create" element={<ExpenseCreate />} />
+                {/* <Route path=":id" element={<CustomerShow />} /> */}
+                <Route path="edit/:id" element={<ExpenseCreate edit />} />
+              </Route>
+              <Route
+                path="expenditures"
+                element={
+                  <DataLayout title="Expenditures" titleVariant="subtitle" />
+                }
+              >
+                <Route path="" element={<ExpenditureIndex />} />
+                <Route path="create" element={<ExpenditureCreate />} />
+                {/* <Route path=":id" element={<CustomerShow />} /> */}
+                <Route path="edit/:id" element={<ExpenditureCreate edit />} />
               </Route>
               <Route
                 path="rs"

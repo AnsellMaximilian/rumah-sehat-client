@@ -9,6 +9,7 @@ import ReceiptIcon from "@mui/icons-material/Receipt";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 // import AdjustIcon from "@mui/icons-material/AutoFixNormal";
 import ProductIcon from "@mui/icons-material/Widgets";
+import ExpenseIcon from "@mui/icons-material/AttachMoney";
 import CategoryIcon from "@mui/icons-material/ManageSearch";
 import SupplierIcon from "@mui/icons-material/Inventory";
 import ShoppingCart from "@mui/icons-material/ShoppingCart";
@@ -41,6 +42,7 @@ const Sidebar = () => {
   const [rsProductOpen, setRsProductOpen] = useState(false);
   const [rsDeliveryOpen, setRsDeliveryOpen] = useState(false);
   const [rsReportsOpen, setRsReportsOpen] = useState(false);
+  const [expensesOpen, setExpensesOpen] = useState(false);
 
   // Dr's secret
   const [drItemsOpen, setDrItemsOpen] = useState(false);
@@ -49,6 +51,29 @@ const Sidebar = () => {
     <List component="nav" sx={{ maxHeight: "calc(100vh - 65px)" }}>
       <SidebarLink to="/" text="Dasbhoard" icon={<DashboardIcon />} />
       <SidebarLink to="/customers" text="Customers" icon={<PeopleIcon />} />
+      <ListItemButton onClick={() => setExpensesOpen(!expensesOpen)}>
+        <ListItemIcon>
+          <ExpenseIcon />
+        </ListItemIcon>
+        <ListItemText primary="Expenses" />
+        {expensesOpen ? <ExpandLess /> : <ExpandMore />}
+      </ListItemButton>
+      <Collapse in={expensesOpen} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <SidebarLink
+            to="/expenses"
+            text="Expenses"
+            icon={<ExpenseIcon />}
+            sx={{ pl: 4 }}
+          />
+          <SidebarLink
+            to="/expenditures"
+            text="Expenditures"
+            icon={<ReceiptLongIcon />}
+            sx={{ pl: 4 }}
+          />
+        </List>
+      </Collapse>
       {/* <SidebarLink to="/regions" text="Regions" icon={<MyLocationIcon />} /> */}
       <Divider sx={{ my: 1 }} />
       <ListSubheader component="div" inset>
