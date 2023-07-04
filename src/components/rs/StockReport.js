@@ -58,9 +58,11 @@ export default function StockReport({ reportData }) {
                       {parseFloat(pr.totalDrawn)}
                     </TableCell>
                     <TableCell align="right">
-                      {parseFloat(pr.totalIn) -
-                        parseFloat(pr.totalOut) -
-                        parseFloat(pr.totalDrawn)}
+                      <Typography fontSize={24} fontWeight="bold">
+                        {parseFloat(pr.totalIn) -
+                          parseFloat(pr.totalOut) -
+                          parseFloat(pr.totalDrawn)}
+                      </Typography>
                     </TableCell>
                   </TableRow>
                 );
