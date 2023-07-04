@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import DeleteAlert from "../../../components/DeleteAlert";
 import { formQueryParams } from "../../../helpers/common";
+import ShowIcon from "@mui/icons-material/RemoveRedEye";
 
 const ProductIndex = () => {
   const [products, setProducts] = useState([]);
@@ -123,6 +124,19 @@ const ProductIndex = () => {
       renderCell: (params) => <NumericFormatRp value={params.row.cost} />,
     },
     {
+      field: "keepStockSince",
+      headerName: "Keep Stock",
+      width: 175,
+
+      renderCell: (params) => (
+        <Typography>
+          {params.row.keepStockSince === null
+            ? "No"
+            : `Since ${params.row.keepStockSince}`}
+        </Typography>
+      ),
+    },
+    {
       field: "actions",
       headerName: "Actions",
       renderCell: (params) => {
@@ -143,6 +157,13 @@ const ProductIndex = () => {
               }}
             >
               <Delete />
+            </IconButton>
+            <IconButton
+              color="primary"
+              component={Link}
+              to={`/rs/products/${params.row.id}`}
+            >
+              <ShowIcon />
             </IconButton>
           </>
         );
@@ -233,6 +254,7 @@ const ProductIndex = () => {
             resellerPrice: product.resellerPrice,
             cost: product.cost,
             unit: product.unit,
+            keepStockSince: product.keepStockSince,
           }))}
           columns={columns}
         />

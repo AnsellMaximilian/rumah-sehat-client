@@ -5,6 +5,7 @@ import ListSubheader from "@mui/material/ListSubheader";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
 import DiscountIcon from "@mui/icons-material/Discount";
+import StockIcon from "@mui/icons-material/AssignmentTurnedIn";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 // import AdjustIcon from "@mui/icons-material/AutoFixNormal";
@@ -166,6 +167,12 @@ const Sidebar = () => {
             text="Products"
             icon={<ProductIcon />}
             sx={{ pl: 4 }}
+          />
+          <SidebarLink
+            to="/rs/reports/stock"
+            text="Stock Report"
+            sx={{ pl: 4 }}
+            icon={<StockIcon />}
           />
           <SidebarLink
             to="/rs/reports/compare"

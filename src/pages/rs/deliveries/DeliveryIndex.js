@@ -77,7 +77,7 @@ const DeliveryIndex = () => {
   };
 
   const columns = [
-    { field: "id", headerName: "ID", width: 50 },
+    { field: "id", headerName: "ID", width: 100 },
     { field: "date", headerName: "Date", width: 100 },
     { field: "customer", headerName: "Customer", width: 100 },
     { field: "deliveryType", headerName: "Type", width: 100 },

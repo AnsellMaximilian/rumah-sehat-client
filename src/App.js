@@ -64,6 +64,8 @@ import ExpenseIndex from "./pages/expenses/ExpenseIndex";
 import ExpenseCreate from "./pages/expenses/ExpenseCreate";
 import ExpenditureIndex from "./pages/expenditures/ExpenditureIndex";
 import ExpenditureCreate from "./pages/expenditures/ExpenditureCreate";
+import ProductShow from "./pages/rs/products/ProductShow";
+import StockReportIndex from "./pages/rs/reports/StockReportIndex";
 
 function App() {
   return (
@@ -148,6 +150,7 @@ function App() {
                   <Route path="" element={<ProductIndex />} />
                   <Route path="create" element={<ProductCreate />} />
                   <Route path="edit/:id" element={<ProductCreate edit />} />
+                  <Route path=":id" element={<ProductShow />} />
                 </Route>
 
                 <Route
@@ -188,6 +191,7 @@ function App() {
                     path="supplier-invoice"
                     element={<SupplierBillIndex />}
                   />
+                  <Route path="stock" element={<StockReportIndex />} />
                   <Route path="products" element={<ProductsReport />} />
                   <Route path="compare" element={<CompareReport />} />
                   <Route path="actions" element={<Actions />} />

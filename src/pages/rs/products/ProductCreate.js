@@ -6,11 +6,14 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Grid from "@mui/material/Grid";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import http from "../../../http-common";
+import moment from "moment";
 
 export default function ProductCreate({ edit }) {
   const [categories, setCategories] = useState([]);
@@ -23,6 +26,10 @@ export default function ProductCreate({ edit }) {
   const [unit, setUnit] = useState("");
   const [selectedSupplierId, setSelectedSupplierId] = useState(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+
+  // STOCK
+  const [keepStockSince, setKeepStockSince] = useState("");
+  const [keepStock, setKeepStock] = useState(false);
 
   const { id } = useParams();
 
@@ -47,6 +54,12 @@ export default function ProductCreate({ edit }) {
         setSelectedCategoryId(product.ProductCategoryId);
         setSelectedSupplierId(product.SupplierId);
         setUnit(product.unit);
+        if (product.keepStockSince) {
+          setKeepStock(true);
+          setKeepStockSince(
+            moment(product.keepStockSince).format("yyyy-MM-DD")
+          );
+        }
       }
     })();
   }, [edit, id, suppliers, categories]);
@@ -63,6 +76,7 @@ export default function ProductCreate({ edit }) {
         SupplierId: selectedSupplierId,
         ProductCategoryId: selectedCategoryId,
         unit: unit ? unit : null,
+        keepStockSince: keepStock ? keepStockSince : null,
       };
 
       if (!edit) {
@@ -84,7 +98,7 @@ export default function ProductCreate({ edit }) {
     selectedSupplierId ? (
     <Box>
       <Typography component="h1" variant="h5">
-        Add New
+        {edit ? "Edit" : "Add New"}
       </Typography>
       <Box component="form" noValidate sx={{ mt: 1 }}>
         <Grid spacing={2} container>
@@ -167,6 +181,37 @@ export default function ProductCreate({ edit }) {
               value={unit || ""}
               onChange={(e) => setUnit(e.target.value)}
             />
+          </Grid>
+
+          <Grid item xs={6}>
+            <TextField
+              label="Keep Stock Since"
+              type="date"
+              value={keepStockSince}
+              onChange={(e) => setKeepStockSince(e.target.value)}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <ToggleButtonGroup
+              value={keepStock}
+              exclusive
+              fullWidth
+              onChange={(e, value) => {
+                setKeepStock(!!value);
+              }}
+              aria-label="text alignment"
+            >
+              <ToggleButton value={true} aria-label="left aligned">
+                Keep Stock
+              </ToggleButton>
+              <ToggleButton value={false} aria-label="centered">
+                Don't Keep Stock
+              </ToggleButton>
+            </ToggleButtonGroup>
           </Grid>
           <Grid item xs={12}>
             <Button
