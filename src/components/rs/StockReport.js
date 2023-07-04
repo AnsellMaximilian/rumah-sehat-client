@@ -4,13 +4,9 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import moment from "moment";
-import NumericFormatRp from "../NumericFormatRp";
-import { Fragment } from "react";
 
 export default function StockReport({ reportData }) {
   return (
