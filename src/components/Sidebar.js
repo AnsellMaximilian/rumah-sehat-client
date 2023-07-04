@@ -113,6 +113,12 @@ const Sidebar = () => {
             icon={<ShoppingCart />}
             sx={{ pl: 4 }}
           />
+          <SidebarLink
+            to="/rs/purchase-invoices"
+            text="Purchase Invoices"
+            icon={<ReceiptIcon />}
+            sx={{ pl: 4 }}
+          />
         </List>
       </Collapse>
       <ListItemButton onClick={() => setRsDeliveryOpen(!rsDeliveryOpen)}>

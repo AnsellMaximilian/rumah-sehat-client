@@ -29,3 +29,6 @@ export const getPurchaseSubtotal = (purchaseDetails) =>
 
 export const getBillSubtotal = (details) =>
   details.reduce((sum, detail) => sum + parseFloat(detail.total), 0);
+
+export const getPurchaseInvoiceTotal = (purchases) =>
+  purchases.reduce((sum, pc) => sum + pc.totalPrice, 0);

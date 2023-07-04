@@ -47,6 +47,7 @@ export default function PurchaseCreate({ edit }) {
 
   const [displayDesignatedCustomerColumn, setDisplayDesignatedCustomerColumn] =
     useState(false);
+  const [makePurchaseInvoice, setMakePurchaseInvoice] = useState(false);
 
   const navigate = useNavigate();
 
@@ -143,6 +144,7 @@ export default function PurchaseCreate({ edit }) {
     try {
       const body = {
         cost: cost,
+        makePurchaseInvoice,
         SupplierId: selectedSupplierId,
         note: note,
         purchaseDetails: purchaseDetails.map((detail) => {
@@ -240,6 +242,17 @@ export default function PurchaseCreate({ edit }) {
                 />
               }
               label="Display Customer Column"
+            />
+          </FormGroup>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  onChange={(e) => setMakePurchaseInvoice(e.target.checked)}
+                  checked={makePurchaseInvoice}
+                />
+              }
+              label="Make Purchase Invoice"
             />
           </FormGroup>
         </Box>

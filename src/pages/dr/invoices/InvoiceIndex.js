@@ -171,7 +171,7 @@ const DrInvoiceIndex = () => {
   };
 
   const columns = [
-    { field: "id", headerName: "ID", width: 75 },
+    { field: "id", headerName: "ID", width: 100 },
     { field: "customerName", headerName: "Customer", width: 200 },
     { field: "date", headerName: "Date", width: 100 },
     { field: "note", headerName: "Note", width: 100 },

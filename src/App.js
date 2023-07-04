@@ -66,6 +66,8 @@ import ExpenditureIndex from "./pages/expenditures/ExpenditureIndex";
 import ExpenditureCreate from "./pages/expenditures/ExpenditureCreate";
 import ProductShow from "./pages/rs/products/ProductShow";
 import StockReportIndex from "./pages/rs/reports/StockReportIndex";
+import PurchaseInvoiceIndex from "./pages/rs/purchaseInvoices/PurchaseInvoiceIndex";
+import PurchaseInvoiceCreate from "./pages/rs/purchaseInvoices/PurchaseInvoiceCreate";
 
 function App() {
   return (
@@ -132,6 +134,18 @@ function App() {
                   <Route path="bitch" element={<Test />} />
                   <Route path="edit/:id" element={<PurchaseCreate edit />} />
                   <Route path=":id" element={<PurchaseShow />} />
+                </Route>
+                <Route
+                  path="purchase-invoices"
+                  element={
+                    <DataLayout title="Purchase Invoices" titleVariant="h5" />
+                  }
+                >
+                  <Route path="" element={<PurchaseInvoiceIndex />} />
+                  <Route path="create" element={<PurchaseInvoiceCreate />} />
+                  {/* <Route path="bitch" element={<Test />} /> */}
+                  {/* <Route path="edit/:id" element={<PurchaseCreate edit />} /> */}
+                  {/* <Route path=":id" element={<PurchaseShow />} /> */}
                 </Route>
                 <Route
                   path="product-categories"

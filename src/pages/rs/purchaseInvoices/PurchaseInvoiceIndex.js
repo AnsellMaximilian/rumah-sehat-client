@@ -1,6 +1,5 @@
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
-import Chip from "@mui/material/Chip";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
@@ -14,18 +13,18 @@ import { toast } from "react-toastify";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
 import moment from "moment";
 import DeleteAlert from "../../../components/DeleteAlert";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import PayIcon from "@mui/icons-material/Paid";
 
-const PurchaseIndex = () => {
-  const [purchases, setPurchases] = useState([]);
+const PurchaseInvoiceIndex = () => {
+  const [purchaseInvoices, setPurchaseInvoices] = useState([]);
   const [toDeleteId, setToDeleteId] = useState(null);
 
   const handleDelete = (id) => {
     (async () => {
       try {
-        await http.delete(`/rs/purchases/${id}`);
-        setPurchases((purchases) =>
-          purchases.filter((purchase) => purchase.id !== id)
+        await http.delete(`/rs/purchase-invoices/${id}`);
+        setPurchaseInvoices((purchaseInvoices) =>
+          purchaseInvoices.filter((purchase) => purchase.id !== id)
         );
         toast.success("Purchase deleted.");
       } catch ({ response: { data: error } }) {
@@ -34,9 +33,28 @@ const PurchaseIndex = () => {
     })();
   };
 
+  const handlePay = async (id) => {
+    try {
+      const purchaseInvoice = (
+        await http.patch(`/rs/purchase-invoices/${id}/pay`)
+      ).data.data;
+      toast.success(`Updated purchase invoice #${purchaseInvoice.id}`, {
+        autoClose: 500,
+      });
+      setPurchaseInvoices((prev) =>
+        prev.map((exp) => {
+          if (exp.id === id) return { ...exp, paid: purchaseInvoice.paid };
+          return exp;
+        })
+      );
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
   useEffect(() => {
     (async () => {
-      setPurchases((await http.get("/rs/purchases")).data.data);
+      setPurchaseInvoices((await http.get("/rs/purchase-invoices")).data.data);
     })();
   }, []);
 
@@ -45,20 +63,6 @@ const PurchaseIndex = () => {
     { field: "date", headerName: "Date", width: 150 },
     { field: "supplier", headerName: "Supplier", width: 100 },
     {
-      field: "subtotalPrice",
-      headerName: "Subtotal",
-      width: 100,
-      renderCell: (params) => (
-        <NumericFormatRp value={params.row.subtotalPrice} />
-      ),
-    },
-    {
-      field: "cost",
-      headerName: "Cost",
-      width: 100,
-      renderCell: (params) => <NumericFormatRp value={params.row.cost} />,
-    },
-    {
       field: "totalPrice",
       headerName: "Total",
       width: 100,
@@ -66,21 +70,20 @@ const PurchaseIndex = () => {
     },
 
     {
-      field: "totalDesignatedSales",
-      headerName: "Des. Sales",
-      width: 100,
-    },
-
-    {
       field: "paid",
       headerName: "Paid",
       width: 100,
-      renderCell: (params) =>
-        params.row.paid ? (
-          <Chip label="Paid" size="small" color="success" variant="contained" />
-        ) : (
-          <Chip label="Unpaid" size="small" color="error" variant="contained" />
-        ),
+      renderCell: (params) => (
+        <IconButton
+          color={params.row.paid ? "success" : "default"}
+          onClick={(e) => {
+            e.stopPropagation();
+            handlePay(params.row.id);
+          }}
+        >
+          <PayIcon />
+        </IconButton>
+      ),
     },
 
     {
@@ -92,7 +95,7 @@ const PurchaseIndex = () => {
             <IconButton
               color="warning"
               component={Link}
-              to={`/rs/purchases/edit/${params.row.id}`}
+              to={`/rs/purchase-invoices/edit/${params.row.id}`}
             >
               <Edit />
             </IconButton>
@@ -108,16 +111,9 @@ const PurchaseIndex = () => {
             <IconButton
               color="primary"
               component={Link}
-              to={`/rs/purchases/${params.row.id}`}
+              to={`/rs/purchase-invoices/${params.row.id}`}
             >
               <ShowIcon />
-            </IconButton>
-            <IconButton
-              disabled={!!!params.row.delivery}
-              component={Link}
-              to={`/rs/deliveries/${params.row.delivery?.id}`}
-            >
-              <LocalShippingIcon />
             </IconButton>
           </>
         );
@@ -131,25 +127,25 @@ const PurchaseIndex = () => {
         <Button
           variant="contained"
           component={Link}
-          to={"/rs/purchases/create"}
+          to={"/rs/purchase-invoices/create"}
         >
           New Purchase
         </Button>
-        <Button variant="outlined" component={Link} to={"/rs/purchases/create"}>
+        <Button
+          variant="outlined"
+          component={Link}
+          to={"/rs/purchase-invoices/create"}
+        >
           Manage Purchase Invoices
         </Button>
       </Box>
       <Card>
         <SmartTable
-          rows={purchases.map((purchase) => ({
+          rows={purchaseInvoices.map((purchase) => ({
             id: purchase.id,
             date: moment(purchase.date).format("DD-MM-YYYY"),
             supplier: purchase.Supplier.name,
             totalPrice: purchase.totalPrice,
-            subtotalPrice: purchase.subtotalPrice,
-            cost: purchase.cost,
-            totalDesignatedSales: purchase.totalDesignatedSales,
-            delivery: purchase.Delivery,
             paid: purchase.paid,
           }))}
           columns={columns}
@@ -166,4 +162,4 @@ const PurchaseIndex = () => {
   );
 };
 
-export default PurchaseIndex;
+export default PurchaseInvoiceIndex;
