@@ -40,11 +40,9 @@ export default function StockReport({ reportData }) {
                   <TableRow
                     key={pr.id}
                     sx={{
-                      backgroundColor: "primary.main",
+                      padding: 4,
                       ">td": {
-                        color: "white",
-
-                        fontWeight: "bold",
+                        fontSize: "20px",
                       },
                     }}
                   >
