@@ -18,6 +18,7 @@ export default function ProductShow() {
 
   const [drawAmount, setDrawAmount] = useState(0);
   const [drawDate, setDrawDate] = useState("");
+  const [drawDescription, setDrawDescription] = useState("");
 
   const handleDraw = async () => {
     try {
@@ -26,6 +27,7 @@ export default function ProductShow() {
       const body = {
         amount: drawAmount,
         date: drawDate,
+        description: drawDescription ? drawDescription : null,
       };
       const draw = (await http.post(`/rs/products/${id}/draw`, body)).data.data;
       setStock((await http.get(`/rs/products/${id}/stock`)).data.data);
@@ -89,6 +91,12 @@ export default function ProductShow() {
                   autoFocus
                   value={drawAmount}
                   onChange={(e) => setDrawAmount(e.target.value)}
+                />
+                <TextField
+                  fullWidth
+                  value={drawDescription}
+                  label="Description"
+                  onChange={(e) => setDrawDescription(e.target.value)}
                 />
                 <Button
                   type="submit"
