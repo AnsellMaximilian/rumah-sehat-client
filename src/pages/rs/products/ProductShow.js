@@ -6,6 +6,8 @@ import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import { useEffect, useMemo, useState } from "react";
+import Link from "@mui/material/Link";
+import { Link as RouterLink } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import http from "../../../http-common";
 import { toast } from "react-toastify";
@@ -29,7 +31,29 @@ const columns = [
       );
     },
   },
-  { field: "type", headerName: "Type", width: 130 },
+  {
+    field: "type",
+    headerName: "Type",
+    width: 130,
+    renderCell: (params) => {
+      return params.row.type === "DRAW" ? (
+        <Typography>{params.row.type}</Typography>
+      ) : (
+        <Link
+          color="primary"
+          component={RouterLink}
+          to={
+            params.row.type === "PURCHASE"
+              ? `/rs/purchases/${params.row.parentId}`
+              : `/rs/deliveries/${params.row.parentId}`
+          }
+          underline="hover"
+        >
+          {params.row.type}
+        </Link>
+      );
+    },
+  },
   {
     field: "amount",
     headerName: "Amount",
@@ -95,6 +119,7 @@ export default function ProductShow() {
     if (!productHistory) return null;
     const purchases = productHistory.purchaseDetails.map((det) => ({
       id: `in-${det.id}`,
+      parentId: det.Purchase.id,
       flow: "IN",
       type: "PURCHASE",
       amount: det.qty,
@@ -103,14 +128,18 @@ export default function ProductShow() {
     }));
     const deliveries = productHistory.deliveryDetails.map((det) => ({
       id: `out-${det.id}`,
+      parentId: det.Delivery.id,
+
       flow: "OUT",
       type: "SALE",
       amount: det.qty,
       date: det.Delivery.date,
-      description: det.Delivery.note,
+      description: `Sold to ${det.Delivery.customerFullName}`,
     }));
     const draws = productHistory.draws.map((det) => ({
       id: `draw-${det.id}`,
+      parentId: det.id,
+
       flow: "OUT",
       type: "DRAW",
       amount: det.amount,
@@ -197,6 +226,7 @@ export default function ProductShow() {
                   rows={productHistoryOrganized.map((his) => ({
                     id: his.id,
                     date: his.date,
+                    parentId: his.parentId,
                     type: his.type,
                     flow: his.flow,
                     amount: his.amount,
