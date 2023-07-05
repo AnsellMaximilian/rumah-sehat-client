@@ -5,11 +5,52 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import http from "../../../http-common";
 import { toast } from "react-toastify";
 import AutoSelectTextField from "../../../components/AutoSelectTextField";
+import SmartTable from "../../../components/SmartTable";
+const columns = [
+  { field: "id", headerName: "ID", width: 125 },
+  { field: "date", headerName: "Date", width: 125 },
+  {
+    field: "flow",
+    headerName: "Flow",
+    width: 130,
+    renderCell: (params) => {
+      return (
+        <Typography
+          color={params.row.flow === "IN" ? "success.main" : "error.main"}
+          fontWeight="bold"
+        >
+          {params.row.flow}
+        </Typography>
+      );
+    },
+  },
+  { field: "type", headerName: "Type", width: 130 },
+  {
+    field: "amount",
+    headerName: "Amount",
+    width: 100,
+    renderCell: (params) => {
+      return (
+        <Typography
+          color={params.row.flow === "IN" ? "success.main" : "error.main"}
+          fontWeight="bold"
+        >
+          {parseFloat(params.row.amount)}
+        </Typography>
+      );
+    },
+  },
+  {
+    field: "description",
+    headerName: "Description",
+    width: 250,
+  },
+];
 
 export default function ProductShow() {
   const { id } = useParams();
@@ -19,6 +60,7 @@ export default function ProductShow() {
   const [drawAmount, setDrawAmount] = useState(0);
   const [drawDate, setDrawDate] = useState("");
   const [drawDescription, setDrawDescription] = useState("");
+  const [productHistory, setProductHistory] = useState(null);
 
   const handleDraw = async () => {
     try {
@@ -39,11 +81,45 @@ export default function ProductShow() {
 
   useEffect(() => {
     (async () => {
-      setProduct((await http.get(`/rs/products/${id}`)).data.data);
+      const product = (await http.get(`/rs/products/${id}`)).data.data;
+      setProduct(product);
       setStock((await http.get(`/rs/products/${id}/stock`)).data.data);
+      if (product.keepStockSince) {
+        const his = (await http.get(`/rs/products/${id}/history`)).data.data;
+        console.log(his);
+        setProductHistory(his);
+      }
     })();
   }, [id]);
-  console.log({ stock });
+  const productHistoryOrganized = useMemo(() => {
+    if (!productHistory) return null;
+    const purchases = productHistory.purchaseDetails.map((det) => ({
+      id: `in-${det.id}`,
+      flow: "IN",
+      type: "PURCHASE",
+      amount: det.qty,
+      date: det.Purchase.date,
+      description: det.Purchase.note,
+    }));
+    const deliveries = productHistory.deliveryDetails.map((det) => ({
+      id: `out-${det.id}`,
+      flow: "OUT",
+      type: "SALE",
+      amount: det.qty,
+      date: det.Delivery.date,
+      description: det.Delivery.note,
+    }));
+    const draws = productHistory.draws.map((det) => ({
+      id: `draw-${det.id}`,
+      flow: "OUT",
+      type: "DRAW",
+      amount: det.amount,
+      date: det.date,
+      description: det.description,
+    }));
+    return [...draws, ...deliveries, ...purchases];
+  }, [productHistory]);
+
   return product ? (
     <>
       <Grid container spacing={2}>
@@ -110,6 +186,28 @@ export default function ProductShow() {
             </Stack>
           </Paper>
         </Grid>
+        {productHistory && (
+          <Grid item xs={12}>
+            <Paper sx={{ padding: 2, height: "100%" }}>
+              <Stack spacing={2}>
+                <Typography variant="h4" fontWeight="bold">
+                  Product History
+                </Typography>
+                <SmartTable
+                  rows={productHistoryOrganized.map((his) => ({
+                    id: his.id,
+                    date: his.date,
+                    type: his.type,
+                    flow: his.flow,
+                    amount: his.amount,
+                    description: his.description,
+                  }))}
+                  columns={columns}
+                />
+              </Stack>
+            </Paper>
+          </Grid>
+        )}
       </Grid>
     </>
   ) : (
