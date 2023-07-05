@@ -5,7 +5,6 @@
  */
 
 export const getSubtotal = (deliveryDetails, attribute) =>
-  deliveryDetails.reduce(
-    (sum, detail) => sum + detail[attribute] * detail.qty,
-    0
-  );
+  deliveryDetails
+    .filter((dd) => !dd.free)
+    .reduce((sum, detail) => sum + detail[attribute] * detail.qty, 0);

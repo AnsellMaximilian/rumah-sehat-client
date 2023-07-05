@@ -124,11 +124,13 @@ export default function DeliveryDisplay({
             )),
             getTableColumn("Qty", "qty", (row) => parseFloat(row.qty)),
 
-            getTableColumn("Subtotal Points", "totalPoints"),
+            getTableColumn("Subtotal Points", "totalCountedPoints"),
             getTableColumn(
               "Subtotal Price",
-              "totalPriceRP",
-              (row) => <NumericFormatRp value={parseFloat(row.totalPriceRP)} />,
+              "totalCountedPriceRP",
+              (row) => (
+                <NumericFormatRp value={parseFloat(row.totalCountedPriceRP)} />
+              ),
               { align: "right" }
             ),
           ]}

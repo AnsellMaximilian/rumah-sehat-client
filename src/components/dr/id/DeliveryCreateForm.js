@@ -80,6 +80,7 @@ export default function DeliveryCreateForm({
               priceRP: detail.priceRP,
               points: detail.points,
               qty: detail.qty,
+              free: detail.free,
             };
           })
         );
@@ -108,6 +109,7 @@ export default function DeliveryCreateForm({
             points: item.points,
             qty: 0,
             item: item,
+            free: false,
           },
     ]);
   };
@@ -164,14 +166,14 @@ export default function DeliveryCreateForm({
         note: deliveryNote,
         DrDiscountModelId: useDiscount ? selectedDiscountModel : null,
         deliveryDetails: deliveryDetails.map((detail) => {
-          const { qty, priceRP, points, item } = detail;
+          const { qty, priceRP, points, item, free } = detail;
           if (item === null) throw new Error("Please select an item.");
           return {
             qty,
             priceRP,
             points,
             DrIdItemId: item.id,
-
+            free,
             item,
           };
         }),
@@ -347,6 +349,8 @@ export default function DeliveryCreateForm({
 
                   <TableCell align="right">Price (Rp)</TableCell>
                   <TableCell align="right">Qty</TableCell>
+                  <TableCell align="right">Free?</TableCell>
+
                   <TableCell align="right">Subtotal Points</TableCell>
                   <TableCell align="right">Subtotal Price (Rp)</TableCell>
                 </TableRow>
@@ -459,19 +463,36 @@ export default function DeliveryCreateForm({
                         )}
                       />
                     </TableCell>
+                    <TableCell align="center">
+                      <Checkbox
+                        tabIndex={-1}
+                        onChange={handleDeliveryDetailAttrChange(
+                          "free",
+                          detail.key,
+                          !detail.free
+                        )}
+                        checked={detail.free}
+                      />
+                    </TableCell>
                     <TableCell align="right">
-                      {(detail.points * detail.qty).toFixed(0)}
+                      {detail.free
+                        ? 0
+                        : (detail.points * detail.qty).toFixed(0)}
                     </TableCell>
                     <TableCell align="right">
                       <NumericFormatRp
-                        value={(detail.priceRP * detail.qty).toFixed(0)}
+                        value={
+                          detail.free
+                            ? 0
+                            : (detail.priceRP * detail.qty).toFixed(0)
+                        }
                       />
                     </TableCell>
                   </TableRow>
                 ))}
                 <TableRow>
                   <TableCell
-                    colSpan={5}
+                    colSpan={6}
                     align="right"
                     component="th"
                     sx={{ fontWeight: "500" }}
@@ -490,7 +511,7 @@ export default function DeliveryCreateForm({
                 {useDiscount && (
                   <TableRow>
                     <TableCell
-                      colSpan={6}
+                      colSpan={7}
                       align="right"
                       component="th"
                       sx={{ fontWeight: "500" }}
@@ -511,7 +532,7 @@ export default function DeliveryCreateForm({
                 )}
                 <TableRow>
                   <TableCell
-                    colSpan={6}
+                    colSpan={7}
                     align="right"
                     component="th"
                     sx={{ fontWeight: "500" }}
@@ -524,7 +545,7 @@ export default function DeliveryCreateForm({
                 </TableRow>
                 <TableRow>
                   <TableCell
-                    colSpan={6}
+                    colSpan={7}
                     align="right"
                     component="th"
                     sx={{ fontWeight: "500" }}
