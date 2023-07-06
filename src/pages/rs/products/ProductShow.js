@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "@mui/material/Link";
 import { Link as RouterLink } from "react-router-dom";
 import { useParams } from "react-router-dom";
@@ -64,7 +64,7 @@ const columns = [
           color={params.row.flow === "IN" ? "success.main" : "error.main"}
           fontWeight="bold"
         >
-          {parseFloat(params.row.amount)}
+          {Math.abs(parseFloat(params.row.amount))}
         </Typography>
       );
     },
@@ -84,7 +84,12 @@ export default function ProductShow() {
   const [drawAmount, setDrawAmount] = useState(0);
   const [drawDate, setDrawDate] = useState("");
   const [drawDescription, setDrawDescription] = useState("");
+
   const [productHistory, setProductHistory] = useState(null);
+
+  const [adjustAmount, setAdjustAmount] = useState(0);
+  const [adjustDate, setAdjustDate] = useState("");
+  const [adjustDescription, setAdjustDescription] = useState("");
 
   const handleDraw = async () => {
     try {
@@ -96,12 +101,46 @@ export default function ProductShow() {
         description: drawDescription ? drawDescription : null,
       };
       const draw = (await http.post(`/rs/products/${id}/draw`, body)).data.data;
-      setStock((await http.get(`/rs/products/${id}/stock`)).data.data);
+      refreshMetaData();
+      setDrawAmount(0);
+      setDrawDate("");
+      setDrawDescription("");
       toast.success(`Succesfully drawn ${draw.amount}`);
     } catch (error) {
       toast.error(error?.message || "Unknown error");
     }
   };
+
+  const handleAdjust = async () => {
+    try {
+      if (!adjustDate) throw new Error("Date can't be empty");
+      const body = {
+        amount: adjustAmount,
+        date: adjustDate,
+        description: adjustDescription ? adjustDescription : null,
+      };
+      const adjust = (await http.post(`/rs/products/${id}/adjust-stock`, body))
+        .data.data;
+      refreshMetaData();
+      setAdjustAmount(0);
+      setAdjustDate("");
+      setAdjustDescription("");
+      toast.success(`Succesfully adjusted ${adjust.amount}`);
+    } catch (error) {
+      toast.error(error?.message || "Unknown error");
+    }
+  };
+
+  const refreshMetaData = useCallback(() => {
+    (async () => {
+      setStock((await http.get(`/rs/products/${id}/stock`)).data.data);
+      if (product.keepStockSince) {
+        const his = (await http.get(`/rs/products/${id}/history`)).data.data;
+        console.log(his);
+        setProductHistory(his);
+      }
+    })();
+  }, [product, id]);
 
   useEffect(() => {
     (async () => {
@@ -115,6 +154,7 @@ export default function ProductShow() {
       }
     })();
   }, [id]);
+
   const productHistoryOrganized = useMemo(() => {
     if (!productHistory) return null;
     const purchases = productHistory.purchaseDetails.map((det) => ({
@@ -146,7 +186,17 @@ export default function ProductShow() {
       date: det.date,
       description: det.description,
     }));
-    return [...draws, ...deliveries, ...purchases];
+
+    const adjustments = productHistory.adjustments.map((det) => ({
+      id: `adj-${det.id}`,
+      parentId: det.id,
+      flow: det.amount < 0 ? "OUT" : "IN",
+      type: "ADJUST",
+      amount: det.amount,
+      date: det.date,
+      description: det.description,
+    }));
+    return [...draws, ...deliveries, ...purchases, ...adjustments];
   }, [productHistory]);
 
   return product ? (
@@ -210,6 +260,40 @@ export default function ProductShow() {
                   onClick={handleDraw}
                 >
                   Personal Draw
+                </Button>
+              </Stack>
+              <Stack spacing={2} direction={"row"}>
+                <TextField
+                  label="Adjustment Date"
+                  type="date"
+                  value={adjustDate}
+                  onChange={(e) => setAdjustDate(e.target.value)}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  fullWidth
+                />
+                <AutoSelectTextField
+                  required
+                  fullWidth
+                  label="Adjust Amount"
+                  autoFocus
+                  value={adjustAmount}
+                  onChange={(e) => setAdjustAmount(e.target.value)}
+                />
+                <TextField
+                  fullWidth
+                  value={adjustDescription}
+                  label="Description"
+                  onChange={(e) => setAdjustDescription(e.target.value)}
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="outlined"
+                  onClick={handleAdjust}
+                >
+                  Adjust Stock
                 </Button>
               </Stack>
             </Stack>
