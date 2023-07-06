@@ -129,7 +129,7 @@ const PurchaseInvoiceIndex = () => {
           component={Link}
           to={"/rs/purchase-invoices/create"}
         >
-          New Purchase
+          New Purchase Invoice
         </Button>
         <Button
           variant="outlined"

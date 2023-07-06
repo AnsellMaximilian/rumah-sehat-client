@@ -1,12 +1,8 @@
 import Box from "@mui/material/Box";
-import FormControl from "@mui/material/FormControl";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import InputLabel from "@mui/material/InputLabel";
 import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 import Table from "@mui/material/Table";
@@ -23,82 +19,62 @@ import { getPurchaseInvoiceTotal } from "../../../helpers/rs";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
+import { Typography } from "@mui/material";
 
-export default function PurchaseInvoiceCreate({ edit }) {
+export default function PurchaseInvoiceEdit({}) {
   // Invoice details
-  const [selectedSupplierId, setSelectedSupplierId] = useState(null);
   const [date, setDate] = useState(moment().format("yyyy-MM-DD"));
-  const [note, setNote] = useState(undefined);
+  const [note, setNote] = useState("");
 
   const { id } = useParams();
 
   const [purchases, setPurchases] = useState([]);
-
-  const [customers, setCustomers] = useState([]);
+  const [currentPurchaseInvoice, setCurrentPurchaseInvoice] = useState(null);
 
   // Select values
   const [suppliers, setSuppliers] = useState([]);
-  const [products, setProducts] = useState([]);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
-      setProducts((await http.get("/rs/products")).data.data);
       setSuppliers((await http.get("/rs/suppliers/active")).data.data);
-      setCustomers((await http.get("/customers")).data.data);
     })();
   }, []);
 
   useEffect(() => {
     (async () => {
-      if (selectedSupplierId) {
-        const fetchedPurchases = (
-          await http.get(
-            `/rs/purchases?SupplierId=${selectedSupplierId}&invoiced=false`
-          )
-        ).data.data;
-        setPurchases(fetchedPurchases.map((p) => ({ ...p, selected: true })));
-      }
-    })();
-  }, [selectedSupplierId]);
+      const purchaseInvoice = (await http.get(`/rs/purchase-invoices/${id}`))
+        .data.data;
+      setCurrentPurchaseInvoice(purchaseInvoice);
+      const linkedPurchases = purchaseInvoice.Purchases;
+      const unlinkedPurchases = (
+        await http.get(
+          `/rs/purchases?SupplierId=${purchaseInvoice.SupplierId}&invoiced=false`
+        )
+      ).data.data;
 
-  useEffect(() => {
-    (async () => {
-      const purchase = edit
-        ? (await http.get(`/rs/purchases-invoices/${id}`)).data.data
-        : null;
-      if (suppliers.length > 0)
-        setSelectedSupplierId(edit ? purchase.SupplierId : suppliers[0].id);
+      setPurchases([
+        ...unlinkedPurchases.map((p) => ({ ...p, selected: false })),
+        ...linkedPurchases.map((p) => ({ ...p, selected: true })),
+      ]);
 
-      if (edit) {
-        if (products.length > 0 && customers.length > 0) {
-          setNote(purchase.note || "");
-          setDate(moment(purchase.date).format("yyyy-MM-DD"));
-          setSelectedSupplierId(purchase.SupplierId);
-        }
-      }
+      setNote(purchaseInvoice.note || "");
+      setDate(moment(purchaseInvoice.date).format("yyyy-MM-DD"));
     })();
-  }, [edit, id, products, suppliers, customers]);
+  }, [id, suppliers]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const body = {
-        SupplierId: selectedSupplierId,
         note: note,
         purchaseIds: purchases.filter((pc) => pc.selected).map((pc) => pc.id),
         date: moment(date).format("YYYY-MM-DD"),
       };
-      if (!edit) {
-        await http.post("/rs/purchase-invoices", body);
-        toast.success("Created purchase invoice.");
-        navigate("/rs/purchase-invoices");
-      } else {
-        await http.patch(`/rs/purchase-invoices/${id}`, body);
-        toast.success("Updated purchase.");
-        navigate(`/rs/purchase-invoices/`);
-      }
+      await http.patch(`/rs/purchase-invoices/${id}`, body);
+      toast.success("Updated purchase.");
+      navigate(`/rs/purchase-invoices/`);
     } catch (error) {
       const errorValue = error?.response?.data?.error;
       const errorMsg = errorValue ? errorValue : error.message;
@@ -106,11 +82,14 @@ export default function PurchaseInvoiceCreate({ edit }) {
     }
   };
 
-  return selectedSupplierId &&
-    products.length > 0 &&
-    suppliers.length > 0 &&
-    customers.length > 0 ? (
+  return currentPurchaseInvoice ? (
     <Box paddingBottom={10}>
+      <Box marginBottom={2}>
+        <Typography fontWeight="bold">
+          Purchase Invoice #{currentPurchaseInvoice.id} -{" "}
+          {currentPurchaseInvoice.Supplier.name}
+        </Typography>
+      </Box>
       <Box display="flex" gap={2} alignItems="stretch">
         <Box display="flex" flexDirection="column" gap={2}>
           <TextField
@@ -123,23 +102,6 @@ export default function PurchaseInvoiceCreate({ edit }) {
               shrink: true,
             }}
           />
-
-          <FormControl margin="none">
-            <InputLabel id="demo-simple-select-label">Supplier</InputLabel>
-            <Select
-              label="Supplier"
-              value={selectedSupplierId}
-              onChange={(e) => {
-                setSelectedSupplierId(e.target.value);
-              }}
-            >
-              {suppliers.map((supplier) => (
-                <MenuItem value={supplier.id} key={supplier.id}>
-                  {supplier.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
         </Box>
         <Box>
           <TextField
@@ -243,7 +205,7 @@ export default function PurchaseInvoiceCreate({ edit }) {
           aria-label="add"
           onClick={handleSubmit}
         >
-          {edit ? "Update" : "Create"}
+          Update
         </Fab>
       </Box>
     </Box>

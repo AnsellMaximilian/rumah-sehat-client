@@ -12,6 +12,9 @@ import SmartTable from "../../../components/SmartTable";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import { toast } from "react-toastify";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
+import LinkOff from "@mui/icons-material/LinkOff";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+
 import moment from "moment";
 import DeleteAlert from "../../../components/DeleteAlert";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
@@ -28,6 +31,29 @@ const PurchaseIndex = () => {
           purchases.filter((purchase) => purchase.id !== id)
         );
         toast.success("Purchase deleted.");
+      } catch ({ response: { data: error } }) {
+        toast.error(error);
+      }
+    })();
+  };
+
+  const handleUnlink = (id) => {
+    (async () => {
+      try {
+        await http.post(`/rs/purchases/${id}/unlink`);
+        setPurchases((purchases) =>
+          purchases.map((purchase) => {
+            if (purchase.id === id) {
+              return {
+                ...purchase,
+                PurchaseInvoiceId: null,
+                PurchaseInvoice: null,
+              };
+            }
+            return purchase;
+          })
+        );
+        toast.success("Purchase unlinked from invoice.");
       } catch ({ response: { data: error } }) {
         toast.error(error);
       }
@@ -82,6 +108,31 @@ const PurchaseIndex = () => {
           <Chip label="Unpaid" size="small" color="error" variant="contained" />
         ),
     },
+    {
+      field: "invoice",
+      headerName: "Invoice",
+      width: 100,
+      renderCell: (params) =>
+        params.row.invoice ? (
+          <>
+            <IconButton
+              color="primary"
+              component={Link}
+              to={`/rs/purchase-invoices/${params.row.invoice.id}`}
+            >
+              <ReceiptIcon />
+            </IconButton>
+            <IconButton
+              color="warning"
+              onClick={() => handleUnlink(params.row.id)}
+            >
+              <LinkOff />
+            </IconButton>
+          </>
+        ) : (
+          <span>None</span>
+        ),
+    },
 
     {
       field: "actions",
@@ -125,6 +176,7 @@ const PurchaseIndex = () => {
       width: 200,
     },
   ];
+  console.log(purchases);
   return (
     <Box>
       <Box paddingBottom={2} display="flex" justifyContent="space-between">
@@ -150,6 +202,7 @@ const PurchaseIndex = () => {
             cost: purchase.cost,
             totalDesignatedSales: purchase.totalDesignatedSales,
             delivery: purchase.Delivery,
+            invoice: purchase.PurchaseInvoice,
             paid: purchase.paid,
           }))}
           columns={columns}
