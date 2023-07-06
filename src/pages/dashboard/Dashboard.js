@@ -137,7 +137,7 @@ export default function Dashboard() {
               getTableColumn("ID", "id"),
               getTableColumn("Supplier", "supplier"),
               getTableColumn("Total", "total", (row) => (
-                <NumericFormatRp value={row.amount} />
+                <NumericFormatRp value={row.total} />
               )),
             ]}
           />
