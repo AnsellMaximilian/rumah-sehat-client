@@ -204,19 +204,25 @@ export default function ProductShow() {
       <Grid container spacing={2}>
         <Grid item xs={6}>
           <Paper sx={{ padding: 2, height: "100%" }}>
-            <Box display="flex" flexDirection="column">
+            <Box marginBottom={2}>
               <Typography variant="subtitle" fontWeight="bold" color="GrayText">
                 #{product.id}
               </Typography>
-              <Typography variant="h5" fontWeight="bold" lineHeight={0.7}>
-                {product.name}
-              </Typography>
+              <Box>
+                <Typography variant="h5" fontWeight="bold" lineHeight={0.7}>
+                  {product.name}
+                </Typography>
+                <Typography variant="subtitle1">
+                  {product.Supplier.name}
+                </Typography>
+              </Box>
             </Box>
-            <Box display="flex" flexWrap="wrap" gap={2} marginTop={2}>
-              {/* <ValueDisplay value={product.phone} label="Phone" />
-              <ValueDisplay value={product.Region.name} label="Region" />
-              <ValueDisplay value={product.address} label="Address" /> */}
-            </Box>
+            <Stack spacing={2}>
+              <Stack direction="row" spacing={2}>
+                <Typography fontWeight="bold">Keep Stock Since</Typography>
+                <Typography>{product.keepStockSince}</Typography>
+              </Stack>
+            </Stack>
           </Paper>
         </Grid>
         <Grid item xs={12}>
