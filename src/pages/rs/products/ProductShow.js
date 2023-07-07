@@ -40,10 +40,7 @@ export default function ProductShow() {
     (async () => {
       try {
         await http.delete(`/rs/draws/${id}`);
-        setProductHistory((prev) => ({
-          ...prev,
-          draws: prev.draws.filter((draw) => draw.id !== id),
-        }));
+        refreshMetaData();
         toast.success("Draw deleted.");
       } catch ({ response: { data: error } }) {
         toast.error(error);
@@ -97,7 +94,6 @@ export default function ProductShow() {
       setStock((await http.get(`/rs/products/${id}/stock`)).data.data);
       if (product.keepStockSince) {
         const his = (await http.get(`/rs/products/${id}/history`)).data.data;
-        console.log(his);
         setProductHistory(his);
       }
     })();
