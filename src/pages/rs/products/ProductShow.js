@@ -10,71 +10,14 @@ import Link from "@mui/material/Link";
 import { Link as RouterLink } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import http from "../../../http-common";
+import Delete from "@mui/icons-material/Delete";
+
 import { toast } from "react-toastify";
+import IconButton from "@mui/material/IconButton";
+
 import AutoSelectTextField from "../../../components/AutoSelectTextField";
 import SmartTable from "../../../components/SmartTable";
-const columns = [
-  { field: "id", headerName: "ID", width: 125 },
-  { field: "date", headerName: "Date", width: 125 },
-  {
-    field: "flow",
-    headerName: "Flow",
-    width: 130,
-    renderCell: (params) => {
-      return (
-        <Typography
-          color={params.row.flow === "IN" ? "success.main" : "error.main"}
-          fontWeight="bold"
-        >
-          {params.row.flow}
-        </Typography>
-      );
-    },
-  },
-  {
-    field: "type",
-    headerName: "Type",
-    width: 130,
-    renderCell: (params) => {
-      return params.row.type === "DRAW" ? (
-        <Typography>{params.row.type}</Typography>
-      ) : (
-        <Link
-          color="primary"
-          component={RouterLink}
-          to={
-            params.row.type === "PURCHASE"
-              ? `/rs/purchases/${params.row.parentId}`
-              : `/rs/deliveries/${params.row.parentId}`
-          }
-          underline="hover"
-        >
-          {params.row.type}
-        </Link>
-      );
-    },
-  },
-  {
-    field: "amount",
-    headerName: "Amount",
-    width: 100,
-    renderCell: (params) => {
-      return (
-        <Typography
-          color={params.row.flow === "IN" ? "success.main" : "error.main"}
-          fontWeight="bold"
-        >
-          {Math.abs(parseFloat(params.row.amount))}
-        </Typography>
-      );
-    },
-  },
-  {
-    field: "description",
-    headerName: "Description",
-    width: 250,
-  },
-];
+import DeleteAlert from "../../../components/DeleteAlert";
 
 export default function ProductShow() {
   const { id } = useParams();
@@ -91,6 +34,23 @@ export default function ProductShow() {
   const [adjustDate, setAdjustDate] = useState("");
   const [adjustDescription, setAdjustDescription] = useState("");
 
+  const [toDeleteDrawId, setToDeleteDrawId] = useState(null);
+
+  const handleDeleteDraw = (id) => {
+    (async () => {
+      try {
+        await http.delete(`/rs/draws/${id}`);
+        setProductHistory((prev) => ({
+          ...prev,
+          draws: prev.draws.filter((draw) => draw.id !== id),
+        }));
+        toast.success("Draw deleted.");
+      } catch ({ response: { data: error } }) {
+        toast.error(error);
+      }
+    })();
+  };
+
   const handleDraw = async () => {
     try {
       if (drawAmount <= 0) throw new Error("Amount can't be 0.");
@@ -99,8 +59,9 @@ export default function ProductShow() {
         amount: drawAmount,
         date: drawDate,
         description: drawDescription ? drawDescription : null,
+        ProductId: product.id,
       };
-      const draw = (await http.post(`/rs/products/${id}/draw`, body)).data.data;
+      const draw = (await http.post(`/rs/draws`, body)).data.data;
       refreshMetaData();
       setDrawAmount(0);
       setDrawDate("");
@@ -154,6 +115,94 @@ export default function ProductShow() {
       }
     })();
   }, [id]);
+
+  const columns = useMemo(
+    () => [
+      { field: "id", headerName: "ID", width: 125 },
+      { field: "date", headerName: "Date", width: 125 },
+      {
+        field: "flow",
+        headerName: "Flow",
+        width: 130,
+        renderCell: (params) => {
+          return (
+            <Typography
+              color={params.row.flow === "IN" ? "success.main" : "error.main"}
+              fontWeight="bold"
+            >
+              {params.row.flow}
+            </Typography>
+          );
+        },
+      },
+      {
+        field: "type",
+        headerName: "Type",
+        width: 130,
+        renderCell: (params) => {
+          return params.row.type === "DRAW" ? (
+            <Typography>{params.row.type}</Typography>
+          ) : (
+            <Link
+              color="primary"
+              component={RouterLink}
+              to={
+                params.row.type === "PURCHASE"
+                  ? `/rs/purchases/${params.row.parentId}`
+                  : `/rs/deliveries/${params.row.parentId}`
+              }
+              underline="hover"
+            >
+              {params.row.type}
+            </Link>
+          );
+        },
+      },
+      {
+        field: "amount",
+        headerName: "Amount",
+        width: 100,
+        renderCell: (params) => {
+          return (
+            <Typography
+              color={params.row.flow === "IN" ? "success.main" : "error.main"}
+              fontWeight="bold"
+            >
+              {Math.abs(parseFloat(params.row.amount))}
+            </Typography>
+          );
+        },
+      },
+      {
+        field: "description",
+        headerName: "Description",
+        width: 250,
+      },
+      {
+        field: "actions",
+        headerName: "Actions",
+        renderCell: (params) => {
+          return (
+            <>
+              {params.row.type === "DRAW" && (
+                <IconButton
+                  color="error"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setToDeleteDrawId(params.row.parentId);
+                  }}
+                >
+                  <Delete />
+                </IconButton>
+              )}
+            </>
+          );
+        },
+        width: 200,
+      },
+    ],
+    []
+  );
 
   const productHistoryOrganized = useMemo(() => {
     if (!productHistory) return null;
@@ -329,6 +378,13 @@ export default function ProductShow() {
           </Grid>
         )}
       </Grid>
+      <DeleteAlert
+        message="Are you sure you want to remove this draw?"
+        toDeleteId={toDeleteDrawId}
+        handleDelete={handleDeleteDraw}
+        setToDeleteId={setToDeleteDrawId}
+        objectName="Draw"
+      />
     </>
   ) : (
     <h1>Loading...</h1>
