@@ -20,6 +20,7 @@ export default function DrSgItemEdit() {
           priceSGD: d.priceSGD,
           points: d.points,
           deliveryCost: d.deliveryCost,
+          weight: d.weight,
         });
         toast.success("Successfully updated item.");
         navigate("/dr/sg/items");
@@ -44,6 +45,7 @@ export default function DrSgItemEdit() {
         priceSGD: item.priceSGD,
         points: item.points,
         deliveryCost: item.deliveryCost,
+        weight: item.weight,
       });
     }
   }, [item, reset]);
@@ -73,6 +75,14 @@ export default function DrSgItemEdit() {
           label="Price (SGD)"
           type="number"
           {...register("priceSGD")}
+        />
+        <TextField
+          margin="normal"
+          fullWidth
+          required
+          label="Weight (g)"
+          type="number"
+          {...register("weight")}
         />
         <TextField
           margin="normal"

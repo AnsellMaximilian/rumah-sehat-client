@@ -2,6 +2,7 @@ import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
 import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/ModeEdit";
@@ -53,12 +54,29 @@ const DrSgItemIndex = () => {
       width: 100,
     },
     {
+      field: "weight",
+      headerName: "Weight",
+      width: 100,
+      renderCell: ({ value }) => (
+        <Typography>{parseFloat(value)} grams</Typography>
+      ),
+    },
+    {
       field: "deliveryCost",
       headerName: "Delivery Cost (Rp)",
       width: 130,
 
       renderCell: (params) => (
         <NumericFormatRp value={params.row.deliveryCost} />
+      ),
+    },
+    {
+      field: "recommendedDeliveryCost",
+      headerName: "Recommended Delivery Cost (Rp)",
+      width: 130,
+
+      renderCell: (params) => (
+        <NumericFormatRp value={params.row.recommendedDeliveryCost} />
       ),
     },
     {
@@ -104,6 +122,8 @@ const DrSgItemIndex = () => {
             priceSGD: item.priceSGD,
             deliveryCost: item.deliveryCost,
             points: item.points,
+            weight: item.weight,
+            recommendedDeliveryCost: item.recommendedDeliveryCost,
           }))}
           columns={columns}
         />

@@ -15,6 +15,7 @@ export default function DrSgItemCreate() {
           priceSGD: d.priceSGD,
           deliveryCost: d.deliveryCost,
           points: d.points,
+          weight: d.weight,
         });
         navigate("/dr/sg/items");
       } catch ({ response: { data: error } }) {
@@ -54,6 +55,13 @@ export default function DrSgItemCreate() {
           label="Points"
           type="number"
           {...register("points")}
+        />
+        <TextField
+          margin="normal"
+          fullWidth
+          type="number"
+          label="Weight (g)"
+          {...register("weight")}
         />
         <TextField
           margin="normal"
