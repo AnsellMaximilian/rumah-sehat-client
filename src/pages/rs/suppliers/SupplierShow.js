@@ -1,11 +1,12 @@
 import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import http from "../../../http-common";
 import Table from "../../../components/Table";
@@ -15,10 +16,13 @@ import Edit from "@mui/icons-material/ModeEdit";
 import DeleteAlert from "../../../components/DeleteAlert";
 import { toast } from "react-toastify";
 import PurchaseAdjustmentForm from "../../../components/rs/PurchaseAdjustmentForm";
+import SmartTable from "../../../components/SmartTable";
+import NumericFormatRp from "../../../components/NumericFormatRp";
 
 export default function SupplierShow() {
   const { id } = useParams();
   const [supplier, setSupplier] = useState(null);
+  const [details, setDetails] = useState(null);
 
   // Adjustments
   const [adjustmentFormOpen, setAdjustmentFormOpen] = useState(false);
@@ -28,6 +32,62 @@ export default function SupplierShow() {
 
   //delete
   const [adjustmentDeleteId, setToDeleteId] = useState(null);
+
+  const deliveryDetailColumns = useMemo(
+    () => [
+      { field: "id", headerName: "ID", width: 125 },
+      { field: "DeliveryId", headerName: "Delivery", width: 75 },
+      { field: "date", headerName: "Date", width: 125 },
+      {
+        field: "price",
+        headerName: "Price",
+        width: 100,
+        renderCell: (params) => <NumericFormatRp value={params.row.price} />,
+      },
+      {
+        field: "qty",
+        headerName: "Qty",
+        width: 50,
+        renderCell: (params) => parseFloat(params.value),
+      },
+      {
+        field: "total",
+        headerName: "Total",
+        width: 100,
+        renderCell: (params) => (
+          <NumericFormatRp value={params.row.totalPrice} />
+        ),
+      },
+      {
+        field: "soldTo",
+        headerName: "Sold To",
+        width: 100,
+      },
+      {
+        field: "actions",
+        headerName: "Actions",
+        renderCell: (params) => {
+          return (
+            <>
+              {params.row.type === "DRAW" && (
+                <IconButton
+                  color="error"
+                  // onClick={(e) => {
+                  //   e.stopPropagation();
+                  //   setToDeleteDrawId(params.row.parentId);
+                  // }}
+                >
+                  <Delete />
+                </IconButton>
+              )}
+            </>
+          );
+        },
+        width: 200,
+      },
+    ],
+    []
+  );
 
   const handleAdjustmentFormClose = () => setAdjustmentFormOpen(false);
   const handleAdjustmentSubmit = async () => {
@@ -59,6 +119,7 @@ export default function SupplierShow() {
   useEffect(() => {
     (async () => {
       setSupplier((await http.get(`/rs/suppliers/${id}`)).data.data);
+      setDetails((await http.get(`/rs/suppliers/${id}/details`)).data.data);
     })();
   }, [id]);
   return supplier ? (
@@ -151,6 +212,29 @@ export default function SupplierShow() {
             </Dialog>
           </Paper>
         </Grid>
+        {details && (
+          <Grid item xs={12}>
+            <Paper sx={{ padding: 2, height: "100%" }}>
+              <Stack spacing={2}>
+                <Typography variant="h4" fontWeight="bold">
+                  Delivery Details
+                </Typography>
+                <SmartTable
+                  rows={details.deliveryDetails.map((det) => ({
+                    id: det.id,
+                    DeliveryId: det.DeliveryId,
+                    date: det.Delivery?.date,
+                    price: det.price,
+                    qty: det.qty,
+                    totalPrice: det.totalPrice,
+                    soldTo: det.Delivery.Customer.fullName,
+                  }))}
+                  columns={deliveryDetailColumns}
+                />
+              </Stack>
+            </Paper>
+          </Grid>
+        )}
       </Grid>
       <DeleteAlert
         message={`Are you sure you want to delete adjustment #${adjustmentDeleteId}.`}
