@@ -176,7 +176,6 @@ const PurchaseIndex = () => {
       width: 200,
     },
   ];
-  console.log(purchases);
   return (
     <Box>
       <Box paddingBottom={2} display="flex" justifyContent="space-between">
@@ -203,7 +202,7 @@ const PurchaseIndex = () => {
             totalDesignatedSales: purchase.totalDesignatedSales,
             delivery: purchase.Delivery,
             invoice: purchase.PurchaseInvoice,
-            paid: purchase.paid,
+            paid: !!purchase.PurchaseInvoice?.paid,
           }))}
           columns={columns}
         />
