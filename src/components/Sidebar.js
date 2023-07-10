@@ -157,6 +157,12 @@ const Sidebar = () => {
       <Collapse in={rsReportsOpen} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <SidebarLink
+            to="/rs/reports/full-report"
+            text="Full Report"
+            sx={{ pl: 4 }}
+            icon={<ReportIcon />}
+          />
+          <SidebarLink
             to="/rs/reports/supplier-invoice"
             text="Supplier Invoice"
             sx={{ pl: 4 }}

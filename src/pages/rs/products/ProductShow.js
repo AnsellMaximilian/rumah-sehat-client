@@ -293,6 +293,7 @@ export default function ProductShow() {
                 <AutoSelectTextField
                   required
                   fullWidth
+                  type="number"
                   label="Draw Amount"
                   autoFocus
                   value={drawAmount}
@@ -327,6 +328,7 @@ export default function ProductShow() {
                 <AutoSelectTextField
                   required
                   fullWidth
+                  type="number"
                   label="Adjust Amount"
                   autoFocus
                   value={adjustAmount}

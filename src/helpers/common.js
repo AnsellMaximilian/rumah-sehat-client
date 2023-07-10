@@ -9,6 +9,15 @@ export const getWeek = () => {
   return { weekStart, weekEnd };
 };
 
+export const getLastWeek = () => {
+  const currentDate = moment();
+  const lastSunday = currentDate.clone().startOf("isoWeek").subtract(1, "day");
+  const weekStart = lastSunday.startOf("isoWeek").format("yyyy-MM-DD");
+  const weekEnd = lastSunday.endOf("isoWeek").format("yyyy-MM-DD");
+
+  return { weekStart, weekEnd };
+};
+
 export const formQueryParams = (obj) => {
   return Object.keys(obj)
     .filter((key) => obj[key])
