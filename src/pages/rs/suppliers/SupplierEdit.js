@@ -17,6 +17,7 @@ export default function SupplierEdit() {
       try {
         await http.patch(`/rs/suppliers/${id}`, {
           name: d.name,
+          accountNumber: d.accountNumber,
         });
         navigate("/rs/suppliers");
       } catch ({ response: { data: error } }) {
@@ -37,6 +38,7 @@ export default function SupplierEdit() {
     if (supplier) {
       reset({
         name: supplier.name,
+        accountNumber: supplier.accountNumber,
       });
     }
   }, [supplier, reset]);
@@ -58,6 +60,14 @@ export default function SupplierEdit() {
           label="Name"
           autoFocus
           {...register("name")}
+        />
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          label="Account Number"
+          autoFocus
+          {...register("accountNumber")}
         />
         <Button
           type="submit"

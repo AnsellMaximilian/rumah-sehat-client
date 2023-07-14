@@ -38,6 +38,8 @@ const SupplierIndex = () => {
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
     { field: "name", headerName: "Name", width: 130 },
+    { field: "accountNumber", headerName: "Account", width: 200 },
+    { field: "accountName", headerName: "Account Name", width: 200 },
     {
       field: "actions",
       headerName: "Actions",
@@ -89,6 +91,8 @@ const SupplierIndex = () => {
           rows={suppliers.map((item) => ({
             id: item.id,
             name: item.name,
+            accountNumber: item.accountNumber,
+            accountName: item.accountName,
           }))}
           columns={columns}
         />

@@ -27,7 +27,6 @@ import DrInvoiceCreate from "./pages/dr/invoices/InvoiceCreate";
 import DrInvoiceShow from "./pages/dr/invoices/InvoiceShow";
 import SupplierIndex from "./pages/rs/suppliers/SupplierIndex";
 import SupplierCreate from "./pages/rs/suppliers/SupplierCreate";
-import SupplierEdit from "./pages/rs/suppliers/SupplierEdit";
 import ProductCategoryIndex from "./pages/rs/productCategories/ProductCategoryIndex";
 import ProductCategoryCreate from "./pages/rs/productCategories/ProductCategoryCreate";
 import ProductCategoryEdit from "./pages/rs/productCategories/ProductCategoryEdit";
@@ -126,7 +125,7 @@ function App() {
                   <Route path="" element={<SupplierIndex />} />
                   <Route path="create" element={<SupplierCreate />} />
                   <Route path=":id" element={<SupplierShow />} />
-                  <Route path="edit/:id" element={<SupplierEdit />} />
+                  <Route path="edit/:id" element={<SupplierCreate edit />} />
                 </Route>
                 <Route
                   path="purchases"
