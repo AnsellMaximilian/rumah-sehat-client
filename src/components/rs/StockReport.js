@@ -9,6 +9,7 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 
 export default function StockReport({ reportData }) {
+  console.log(reportData);
   return (
     <Box component={Paper} marginTop={2}>
       <Box padding={2} backgroundColor="primary.main" color="white">
@@ -27,6 +28,7 @@ export default function StockReport({ reportData }) {
                 <TableCell align="right">In</TableCell>
                 <TableCell align="right">Out</TableCell>
                 <TableCell align="right">Drawn</TableCell>
+                <TableCell align="right">Adjusted</TableCell>
                 <TableCell align="right">Available Stock</TableCell>
               </TableRow>
             </TableHead>
@@ -52,6 +54,9 @@ export default function StockReport({ reportData }) {
                     </TableCell>
                     <TableCell align="right">
                       {parseFloat(pr.totalDrawn)}
+                    </TableCell>
+                    <TableCell align="right">
+                      {parseFloat(pr.totalAdjusted)}
                     </TableCell>
                     <TableCell align="right">
                       <Typography fontSize={24} fontWeight="bold">
