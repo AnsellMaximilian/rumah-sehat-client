@@ -22,7 +22,7 @@ import moment from "moment";
 import { getPurchaseInvoiceTotal } from "../../../helpers/rs";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import { toast } from "react-toastify";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 export default function PurchaseInvoiceCreate({ edit }) {
   // Invoice details
@@ -205,7 +205,9 @@ export default function PurchaseInvoiceCreate({ edit }) {
                       />
                     </FormGroup>
                   </TableCell>
-                  <TableCell align="left">{detail.id}</TableCell>
+                  <TableCell align="left">
+                    <Link to={`/rs/purchases/${detail.id}`}>{detail.id}</Link>
+                  </TableCell>
 
                   <TableCell align="right">
                     {detail.note ? detail.note : "No notes."}
