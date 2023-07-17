@@ -2,6 +2,13 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
+import Checkbox from "@mui/material/Checkbox";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 import Autocomplete from "@mui/material/Autocomplete";
 import { toast } from "react-toastify";
@@ -17,30 +24,41 @@ export default function InvoiceCreateForm({ editId, onSubmit, onCancel }) {
   const [invoiceDate, setInvoiceDate] = useState(moment().format("YYYY-MM-DD"));
   const [invoiceNote, setInvoiceNote] = useState("");
   const [invoiceCustomer, setInvoiceCustomer] = useState(null);
+  const [selectedDiscountModel, setSelectedDiscountModel] = useState(null);
+  const [useDiscount, setUseDiscount] = useState(false);
+  const [discountModels, setDiscountModels] = useState([]);
 
   const [isSubmitButtonDisabled, setIsSubmitButtonDisabled] = useState(false);
 
   useEffect(() => {
     (async () => {
       setCustomers((await http.get("/customers")).data.data);
+      setDiscountModels((await http.get("/dr/discount-models")).data.data);
     })();
   }, []);
 
   useEffect(() => {
     (async () => {
+      if (discountModels.length > 0)
+        setSelectedDiscountModel(discountModels[0].id);
       if (editId) {
         const invoice = (await http.get(`/dr/invoices/${editId}`)).data.data;
         setInvoiceDate(invoice.date);
+        setUseDiscount(!!invoice.DrDiscountModelId);
+
         setInvoiceNote(invoice.note || "");
         setInvoiceCustomer(invoice.Customer);
+        if (invoice.DrDiscountModelId)
+          setSelectedDiscountModel(invoice.DrDiscountModelId);
       }
     })();
-  }, [editId]);
+  }, [editId, discountModels]);
 
   const reset = () => {
     setInvoiceDate("");
     setInvoiceNote("");
     setInvoiceCustomer(null);
+    setSelectedDiscountModel(discountModels[0].id);
   };
 
   const handleSubmit = async (e) => {
@@ -58,6 +76,7 @@ export default function InvoiceCreateForm({ editId, onSubmit, onCancel }) {
         CustomerId: invoiceCustomer.id,
         date: invoiceDate,
         note: invoiceNote,
+        DrDiscountModelId: useDiscount ? selectedDiscountModel : null,
       };
       if (!editId) {
         const invoice = (await http.post("/dr/invoices", body)).data.data;
@@ -152,6 +171,39 @@ export default function InvoiceCreateForm({ editId, onSubmit, onCancel }) {
               onChange={(e) => setInvoiceNote(e.target.value)}
             />
           </Box>
+        </Box>
+        <Box display="flex" flexDirection="column" gap={2}>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  onChange={(e) => setUseDiscount(e.target.checked)}
+                  checked={useDiscount}
+                />
+              }
+              label="Discount"
+            />
+          </FormGroup>
+          {useDiscount && (
+            <FormControl margin="none">
+              <InputLabel id="demo-simple-select-label">
+                Discount Model
+              </InputLabel>
+              <Select
+                size="small"
+                sx={{ width: 200 }}
+                label="Discount Model"
+                value={selectedDiscountModel}
+                onChange={(e) => setSelectedDiscountModel(e.target.value)}
+              >
+                {discountModels.map((discountModel) => (
+                  <MenuItem value={discountModel.id} key={discountModel.id}>
+                    {discountModel.description}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
         </Box>
       </Box>
       <Box marginTop={2}>

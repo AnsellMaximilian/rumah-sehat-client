@@ -2,6 +2,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 
 import Divider from "@mui/material/Divider";
+import Stack from "@mui/material/Stack";
 import Chip from "@mui/material/Chip";
 import Dialog from "@mui/material/Dialog";
 import TextField from "@mui/material/TextField";
@@ -160,7 +161,6 @@ export default function InvoiceManage() {
       }
     })();
   };
-
   return (
     <Box>
       <Box display="flex" gap={2}>
@@ -229,17 +229,27 @@ export default function InvoiceManage() {
             </Box>
 
             <Box display="flex" gap={2} marginTop={2}>
-              <Box flex={1}>
+              <Stack flex={1} gap={2}>
                 <ValueDisplay label={"Date"} value={invoice.date} />
                 <ValueDisplay
                   label={"Customer"}
                   value={invoice.customerFullName}
                 />
-              </Box>
-              <Box flex={1}>
                 <ValueDisplay
                   label={"Note"}
                   value={invoice.note || "No notes."}
+                />
+              </Stack>
+              <Stack flex={1} gap={2}>
+                <ValueDisplay
+                  label={"Total Points"}
+                  value={invoice.totalPoints}
+                />
+                <ValueDisplay
+                  label={"Discount"}
+                  renderValue={() => (
+                    <NumericFormatRp value={invoice.totalDiscount} />
+                  )}
                 />
                 <ValueDisplay
                   label={"Total"}
@@ -247,7 +257,7 @@ export default function InvoiceManage() {
                     <NumericFormatRp value={invoice.totalPriceRP} />
                   )}
                 />
-              </Box>
+              </Stack>
               <Box flex={0.5} display="flex" justifyContent="flex-end">
                 <ValueDisplay
                   label={"Actions"}

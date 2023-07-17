@@ -322,7 +322,7 @@ export default function DeliveryCreateForm({
                 label="Apply Individual Delivery Cost"
               />
             </FormGroup>
-            <FormGroup>
+            {/* <FormGroup>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -352,7 +352,7 @@ export default function DeliveryCreateForm({
                   ))}
                 </Select>
               </FormControl>
-            )}
+            )} */}
           </Box>
         </Box>
         <Box marginTop={2}>
@@ -587,7 +587,7 @@ export default function DeliveryCreateForm({
                     />
                   </TableCell>
                 </TableRow>
-                {useDiscount && (
+                {/* {useDiscount && (
                   <TableRow>
                     <TableCell
                       colSpan={useIndividualDeliveryCost ? 8 : 6}
@@ -608,7 +608,7 @@ export default function DeliveryCreateForm({
                       />
                     </TableCell>
                   </TableRow>
-                )}
+                )} */}
                 <TableRow>
                   <TableCell
                     colSpan={useIndividualDeliveryCost ? 8 : 6}
@@ -641,15 +641,16 @@ export default function DeliveryCreateForm({
                                 getSubtotal(deliveryDetails, "deliveryCost")
                               )
                             : 0) +
-                          parseInt(cost) -
-                          (useDiscount
-                            ? getDiscountTotal(
-                                discountModels.find(
-                                  (dm) => dm.id === selectedDiscountModel
-                                ),
-                                getSubtotal(deliveryDetails, "points")
-                              )
-                            : 0)
+                          parseInt(cost)
+                        // -
+                        // (useDiscount
+                        //   ? getDiscountTotal(
+                        //       discountModels.find(
+                        //         (dm) => dm.id === selectedDiscountModel
+                        //       ),
+                        //       getSubtotal(deliveryDetails, "points")
+                        //     )
+                        //   : 0)
                       )}
                     />
                   </TableCell>

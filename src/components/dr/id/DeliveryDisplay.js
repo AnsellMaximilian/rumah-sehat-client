@@ -73,23 +73,9 @@ export default function DeliveryDisplay({
           <Typography>{delivery.note || "None"}</Typography>
         </Grid>
         <Grid item xs={6}>
-          <Typography variant="subtitle2">Discount Model</Typography>
-          <Typography>
-            {delivery.DrDiscountId
-              ? delivery.DrDiscountModel.description
-              : "None"}
-          </Typography>
-        </Grid>
-        <Grid item xs={6}>
           <Typography variant="subtitle2">Subtotal</Typography>
           <Typography>
             <NumericFormatRp value={delivery.subtotalPriceRP} />
-          </Typography>
-        </Grid>
-        <Grid item xs={6}>
-          <Typography variant="subtitle2">Total Discount</Typography>
-          <Typography>
-            <NumericFormatRp value={delivery.totalDiscount} />
           </Typography>
         </Grid>
         <Grid item xs={12}>
@@ -150,21 +136,6 @@ export default function DeliveryDisplay({
                   <NumericFormatRp value={parseInt(delivery.subtotalPriceRP)} />
                 </TableCell>
               </TableRow>
-              {delivery.DrDiscountModelId && (
-                <TableRow>
-                  <TableCell
-                    colSpan={5}
-                    align="right"
-                    component="th"
-                    sx={{ fontWeight: "500" }}
-                  >
-                    Total Discount
-                  </TableCell>
-                  <TableCell align="right">
-                    <NumericFormatRp value={parseInt(delivery.totalDiscount)} />
-                  </TableCell>
-                </TableRow>
-              )}
               <TableRow>
                 <TableCell
                   colSpan={5}
