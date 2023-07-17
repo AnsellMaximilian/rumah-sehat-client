@@ -18,6 +18,23 @@ export const getLastWeek = () => {
   return { weekStart, weekEnd };
 };
 
+export const getMonth = () => {
+  const currentDate = moment();
+  const monthStart = currentDate.clone().startOf("month").format("yyyy-MM-DD");
+  const monthEnd = currentDate.clone().endOf("month").format("yyyy-MM-DD");
+
+  return { monthStart, monthEnd };
+};
+
+export const getLastMonth = () => {
+  const currentDate = moment();
+  const lastDay = currentDate.clone().startOf("month").subtract(1, "day");
+  const monthStart = lastDay.startOf("month").format("yyyy-MM-DD");
+  const monthEnd = lastDay.endOf("month").format("yyyy-MM-DD");
+
+  return { monthStart, monthEnd };
+};
+
 export const formQueryParams = (obj) => {
   return Object.keys(obj)
     .filter((key) => obj[key])

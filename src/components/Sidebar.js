@@ -5,6 +5,7 @@ import ListSubheader from "@mui/material/ListSubheader";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
 import DiscountIcon from "@mui/icons-material/Discount";
+import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
 import StockIcon from "@mui/icons-material/AssignmentTurnedIn";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
@@ -161,6 +162,12 @@ const Sidebar = () => {
             text="Full Report"
             sx={{ pl: 4 }}
             icon={<ReportIcon />}
+          />
+          <SidebarLink
+            to="/rs/reports/financial-report"
+            text="Financial Report"
+            sx={{ pl: 4 }}
+            icon={<RequestQuoteIcon />}
           />
           <SidebarLink
             to="/rs/reports/supplier-invoice"

@@ -70,6 +70,7 @@ import PurchaseInvoiceCreate from "./pages/rs/purchaseInvoices/PurchaseInvoiceCr
 import PurchaseInvoiceEdit from "./pages/rs/purchaseInvoices/PurchaseInvoiceEdit";
 import PurchaseInvoiceShow from "./pages/rs/purchaseInvoices/PurchaseInvoiceShow";
 import FullReport from "./pages/rs/reports/FullReport";
+import FinancialReport from "./pages/rs/reports/FinancialReport";
 
 function App() {
   return (
@@ -214,6 +215,10 @@ function App() {
                   <Route path="products" element={<ProductsReport />} />
                   <Route path="compare" element={<CompareReport />} />
                   <Route path="full-report" element={<FullReport />} />
+                  <Route
+                    path="financial-report"
+                    element={<FinancialReport />}
+                  />
                   <Route path="actions" element={<Actions />} />
                 </Route>
               </Route>
