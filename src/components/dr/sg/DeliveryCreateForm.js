@@ -89,6 +89,7 @@ export default function DeliveryCreateForm({
               deliveryCost: detail.deliveryCost,
               points: detail.points,
               qty: detail.qty,
+              weight: detail.weight,
             };
           })
         );
@@ -116,6 +117,7 @@ export default function DeliveryCreateForm({
             priceSGD: item.priceSGD,
             deliveryCost: item.deliveryCost,
             points: item.points,
+            weight: item.weight,
             qty: 0,
             item: item,
           },
@@ -176,12 +178,13 @@ export default function DeliveryCreateForm({
         note: deliveryNote,
         DrDiscountModelId: useDiscount ? selectedDiscountModel : null,
         deliveryDetails: deliveryDetails.map((detail) => {
-          const { qty, priceSGD, points, item, deliveryCost } = detail;
+          const { qty, priceSGD, points, item, deliveryCost, weight } = detail;
           if (item === null) throw new Error("Please select an item.");
           return {
             qty,
             priceSGD,
             points,
+            weight,
             DrSgItemId: item.id,
             deliveryCost: useIndividualDeliveryCost ? deliveryCost : null,
 
@@ -378,12 +381,14 @@ export default function DeliveryCreateForm({
                   <TableCell>Actions</TableCell>
                   <TableCell align="left">Item</TableCell>
                   <TableCell align="right">Points</TableCell>
+                  <TableCell align="right">Weight</TableCell>
                   {useIndividualDeliveryCost && (
                     <TableCell align="right">Delivery Cost</TableCell>
                   )}
                   <TableCell align="right">Price (SGD)</TableCell>
                   <TableCell align="right">Qty</TableCell>
                   <TableCell align="right">Subtotal Points</TableCell>
+                  <TableCell align="right">Subtotal Weight</TableCell>
                   {useIndividualDeliveryCost && (
                     <TableCell align="right">Subtotal Delivery Cost</TableCell>
                   )}
@@ -434,6 +439,11 @@ export default function DeliveryCreateForm({
                               detail.key,
                               newValue.points
                             )(e);
+                            handleDeliveryDetailAttrChange(
+                              "weight",
+                              detail.key,
+                              newValue.weight
+                            )(e);
                           }
                         }}
                         isOptionEqualToValue={(option, value) =>
@@ -467,6 +477,21 @@ export default function DeliveryCreateForm({
                         value={detail.points}
                         onChange={handleDeliveryDetailAttrChange(
                           "points",
+                          detail.key
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell align="right">
+                      <AutoSelectTextField
+                        variant="standard"
+                        size="small"
+                        margin="none"
+                        type="number"
+                        inputProps={{ tabIndex: -1 }}
+                        sx={{ width: 100 }}
+                        value={detail.weight}
+                        onChange={handleDeliveryDetailAttrChange(
+                          "weight",
                           detail.key
                         )}
                       />
@@ -523,6 +548,9 @@ export default function DeliveryCreateForm({
                     <TableCell align="right">
                       {(detail.points * detail.qty).toFixed(0)}
                     </TableCell>
+                    <TableCell align="right">
+                      {(detail.weight * detail.qty).toFixed(0)}
+                    </TableCell>
                     {useIndividualDeliveryCost && (
                       <TableCell align="right">
                         <NumericFormatRp
@@ -539,7 +567,7 @@ export default function DeliveryCreateForm({
                 ))}
                 <TableRow>
                   <TableCell
-                    colSpan={useIndividualDeliveryCost ? 6 : 5}
+                    colSpan={useIndividualDeliveryCost ? 7 : 6}
                     align="right"
                     component="th"
                     sx={{ fontWeight: "500" }}
@@ -548,6 +576,9 @@ export default function DeliveryCreateForm({
                   </TableCell>
                   <TableCell align="right">
                     {parseInt(getSubtotal(deliveryDetails, "points"))}
+                  </TableCell>
+                  <TableCell align="right">
+                    {parseInt(getSubtotal(deliveryDetails, "weight"))}
                   </TableCell>
                   {useIndividualDeliveryCost && (
                     <TableCell align="right">
@@ -566,7 +597,7 @@ export default function DeliveryCreateForm({
                 </TableRow>
                 <TableRow>
                   <TableCell
-                    colSpan={useIndividualDeliveryCost ? 8 : 6}
+                    colSpan={useIndividualDeliveryCost ? 10 : 8}
                     align="right"
                     component="th"
                     sx={{ fontWeight: "500" }}
@@ -590,7 +621,7 @@ export default function DeliveryCreateForm({
                 {useDiscount && (
                   <TableRow>
                     <TableCell
-                      colSpan={useIndividualDeliveryCost ? 8 : 6}
+                      colSpan={useIndividualDeliveryCost ? 10 : 8}
                       align="right"
                       component="th"
                       sx={{ fontWeight: "500" }}
@@ -611,7 +642,7 @@ export default function DeliveryCreateForm({
                 )}
                 <TableRow>
                   <TableCell
-                    colSpan={useIndividualDeliveryCost ? 8 : 6}
+                    colSpan={useIndividualDeliveryCost ? 10 : 8}
                     align="right"
                     component="th"
                     sx={{ fontWeight: "500" }}
@@ -624,7 +655,7 @@ export default function DeliveryCreateForm({
                 </TableRow>
                 <TableRow>
                   <TableCell
-                    colSpan={useIndividualDeliveryCost ? 8 : 6}
+                    colSpan={useIndividualDeliveryCost ? 10 : 8}
                     align="right"
                     component="th"
                     sx={{ fontWeight: "500" }}
