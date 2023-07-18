@@ -6,6 +6,7 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
 
 import {
   formQueryParams,
@@ -29,7 +30,15 @@ import NumericFormatRp from "../../../components/NumericFormatRp";
 export default function FinancialReport() {
   const saleColumns = useMemo(
     () => [
-      { field: "id", headerName: "Invoice ID", width: 125 },
+      {
+        field: "id",
+        headerName: "Invoice ID",
+        width: 125,
+
+        renderCell: ({ value }) => (
+          <Link to={`/rs/invoices/${value}`}>{value}</Link>
+        ),
+      },
       { field: "date", headerName: "Date", width: 125 },
       {
         field: "customer",
@@ -47,7 +56,15 @@ export default function FinancialReport() {
   );
   const purchaseColumns = useMemo(
     () => [
-      { field: "id", headerName: "Invoice ID", width: 125 },
+      {
+        field: "id",
+        headerName: "Invoice ID",
+        width: 125,
+
+        renderCell: ({ value }) => (
+          <Link to={`/rs/purchase-invoices/${value}`}>{value}</Link>
+        ),
+      },
       { field: "date", headerName: "Date", width: 125 },
       {
         field: "supplier",
@@ -66,7 +83,7 @@ export default function FinancialReport() {
 
   const expenditureColumns = useMemo(
     () => [
-      { field: "id", headerName: "Invoice ID", width: 125 },
+      { field: "id", headerName: "Expenditure ID", width: 125 },
       { field: "date", headerName: "Date", width: 125 },
       {
         field: "expense",
