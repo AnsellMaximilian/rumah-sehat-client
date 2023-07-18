@@ -10,7 +10,7 @@ import Table from "@mui/material/Table";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import http from "../../../http-common";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 
 export default function PurchaseInvoiceShow() {
@@ -86,7 +86,9 @@ export default function PurchaseInvoiceShow() {
                         }}
                       >
                         <TableCell align="left">{detail.id}</TableCell>
-                        <TableCell align="left">{p.id}</TableCell>
+                        <TableCell align="left">
+                          <Link to={`/rs/purchases/${p.id}`}>{p.id}</Link>
+                        </TableCell>
                         <TableCell align="left">{p.date}</TableCell>
 
                         <TableCell align="left">
