@@ -12,11 +12,38 @@ import TableCell from "@mui/material/TableCell";
 import http from "../../../http-common";
 import { Link, useParams } from "react-router-dom";
 import NumericFormatRp from "../../../components/NumericFormatRp";
+import { toast } from "react-toastify";
+import moment from "moment";
+import { Button } from "@mui/material";
 
 export default function PurchaseInvoiceShow() {
   const { id } = useParams();
 
   const [purchaseInvoice, setPurchaseInvoice] = useState(null);
+
+  const handlePay = async () => {
+    try {
+      const updatedPurchaseInvoice = (
+        await http.patch(`/rs/purchase-invoices/${id}/pay`)
+      ).data.data;
+      toast.success(`Updated purchase invoice #${updatedPurchaseInvoice.id}`, {
+        autoClose: 500,
+      });
+      setPurchaseInvoice((prev) => ({
+        ...prev,
+        paid: updatedPurchaseInvoice.paid,
+      }));
+      await http.post("/transactions", {
+        date: moment().format("YYYY-MM-DD"),
+        description: `Purchase invoice #${id} payment`,
+        amount: -purchaseInvoice.totalPrice,
+        PurchaseInvoiceId: id,
+      });
+      toast.success("Invoice paid");
+    } catch (error) {
+      toast.error(error);
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -29,13 +56,27 @@ export default function PurchaseInvoiceShow() {
 
   return purchaseInvoice ? (
     <Paper sx={{ paddingX: 4, paddingY: 2 }}>
-      <Stack marginBottom={4}>
-        <Typography fontSize={24} fontWeight="bold">
-          Purchase Invoice #{purchaseInvoice.id}
-        </Typography>
-        <Typography fontSize={20} fontWeight="medium">
-          {purchaseInvoice.Supplier.name}
-        </Typography>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="flex-start"
+      >
+        <Stack marginBottom={4}>
+          <Typography fontSize={24} fontWeight="bold">
+            Purchase Invoice #{purchaseInvoice.id}
+          </Typography>
+          <Typography fontSize={20} fontWeight="medium">
+            {purchaseInvoice.Supplier.name}
+          </Typography>
+        </Stack>
+        <Button
+          disabled={purchaseInvoice.paid}
+          onClick={handlePay}
+          variant="contained"
+          color="success"
+        >
+          {purchaseInvoice.paid ? "PAID" : "PAY"}
+        </Button>
       </Stack>
       <Stack>
         <Box display="flex" gap={2}>

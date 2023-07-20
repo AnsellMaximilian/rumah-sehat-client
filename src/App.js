@@ -71,6 +71,7 @@ import PurchaseInvoiceEdit from "./pages/rs/purchaseInvoices/PurchaseInvoiceEdit
 import PurchaseInvoiceShow from "./pages/rs/purchaseInvoices/PurchaseInvoiceShow";
 import FullReport from "./pages/rs/reports/FullReport";
 import FinancialReport from "./pages/rs/reports/FinancialReport";
+import TransactionIndex from "./pages/transactions/TransactionIndex";
 
 function App() {
   return (
@@ -112,6 +113,14 @@ function App() {
                 <Route path="create" element={<ExpenditureCreate />} />
                 {/* <Route path=":id" element={<CustomerShow />} /> */}
                 <Route path="edit/:id" element={<ExpenditureCreate edit />} />
+              </Route>
+              <Route
+                path="transactions"
+                element={
+                  <DataLayout title="Transactions" titleVariant="subtitle" />
+                }
+              >
+                <Route path="" element={<TransactionIndex />} />
               </Route>
               <Route
                 path="rs"

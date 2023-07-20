@@ -20,7 +20,7 @@ import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import ReportIcon from "@mui/icons-material/Assessment";
 import MoneyIcon from "@mui/icons-material/Paid";
 import PanToolAltIcon from "@mui/icons-material/PanToolAlt";
-
+import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import SanitizerIcon from "@mui/icons-material/Sanitizer";
 import React, { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
@@ -53,6 +53,11 @@ const Sidebar = () => {
     <List component="nav" sx={{ maxHeight: "calc(100vh - 65px)" }}>
       <SidebarLink to="/" text="Dasbhoard" icon={<DashboardIcon />} />
       <SidebarLink to="/customers" text="Customers" icon={<PeopleIcon />} />
+      <SidebarLink
+        to="/transactions"
+        text="Transactions"
+        icon={<CurrencyExchangeIcon />}
+      />
       <ListItemButton onClick={() => setExpensesOpen(!expensesOpen)}>
         <ListItemIcon>
           <ExpenseIcon />
