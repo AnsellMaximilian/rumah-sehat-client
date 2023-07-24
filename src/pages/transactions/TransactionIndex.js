@@ -101,7 +101,16 @@ const TransactionIndex = () => {
       field: "PurchaseInvoiceId",
       headerName: "Purchase Invoice",
       width: 150,
-      renderCell: ({ value }) => (value ? value : "None"),
+      renderCell: ({ value, row }) => (
+        <Typography>
+          {value ? (
+            <Link to={`/rs/purchase-invoices/${value}`}>{value}</Link>
+          ) : (
+            "None"
+          )}
+          {row.Supplier ? ` - ${row.Supplier.name}` : ""}
+        </Typography>
+      ),
     },
 
     {
@@ -219,6 +228,9 @@ const TransactionIndex = () => {
             description: transaction.description,
             amount: transaction.amount,
             PurchaseInvoiceId: transaction.PurchaseInvoiceId,
+            Supplier: transaction.PurchaseInvoiceId
+              ? transaction.PurchaseInvoice.Supplier
+              : undefined,
           }))}
           columns={columns}
         />
