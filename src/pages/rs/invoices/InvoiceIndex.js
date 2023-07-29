@@ -225,7 +225,7 @@ const InvoiceIndex = () => {
               onClick={(e) => {
                 e.stopPropagation();
                 copyTextToClipboard(
-                  `*REMINDER*\nMohon bantuannya untuk dapat menyelesaikan pembayaran atas invoice #${params.row.id}.\nJika sudah boleh boleh konfirmasi ya.\n\nTerima kasih 🙏\n_Rumah Sehat_`
+                  `*REMINDER*\nMohon bantuannya untuk dapat menyelesaikan pembayaran atas invoice #${params.row.id}.\nJika sudah boleh konfirmasi ya.\n\nTerima kasih 🙏\n_Rumah Sehat_`
                 );
               }}
             >
