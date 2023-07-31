@@ -36,6 +36,7 @@ const ExpenditureIndex = () => {
   const [description, setDescription] = useState("");
   const [unit, setUnit] = useState("");
   const [date, setDate] = useState("");
+  const [deliveryId, setDeliveryId] = useState("");
 
   const handleDelete = (id) => {
     (async () => {
@@ -84,6 +85,15 @@ const ExpenditureIndex = () => {
       if (!date) throw new Error("Please select a date.");
       if (!amount) throw new Error("Please set an amount.");
 
+      if (!!deliveryId) {
+        try {
+          const delivery = (await http.get(`/rs/deliveries/${deliveryId}`)).data
+            .data;
+        } catch (error) {
+          throw new Error(`Delivery of ID ${deliveryId} doesn't exist.`);
+        }
+      }
+
       const body = {
         date,
         description,
@@ -92,6 +102,7 @@ const ExpenditureIndex = () => {
         qty,
         unit,
         ExpenseId: selectedExpense.id,
+        DeliveryId: !!deliveryId ? deliveryId : null,
       };
       await http.post("/expenditures", body);
       toast.success("Created expenditure.");
@@ -101,6 +112,7 @@ const ExpenditureIndex = () => {
       setSelectedExpense(null);
       setDescription("");
       setUnit("");
+      setDeliveryId("");
       setExpenditures((await http.get("/expenditures")).data.data);
     } catch (error) {
       const errorValue = error?.response?.data?.error;
@@ -216,6 +228,7 @@ const ExpenditureIndex = () => {
                 renderInput={(params) => <TextField {...params} fullWidth />}
               />
             </Grid>
+
             <Grid item xs={5}>
               <AutoSelectTextField
                 margin="none"
@@ -226,7 +239,7 @@ const ExpenditureIndex = () => {
                 onChange={(e) => setDescription(e.target.value)}
               />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={2}>
               <AutoSelectTextField
                 margin="none"
                 inputProps={{ tabIndex: -1 }}
@@ -257,6 +270,16 @@ const ExpenditureIndex = () => {
                 fullWidth
                 value={qty}
                 onChange={(e) => setQty(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={2}>
+              <AutoSelectTextField
+                margin="none"
+                type="number"
+                label="Delivery ID"
+                fullWidth
+                value={deliveryId}
+                onChange={(e) => setDeliveryId(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
