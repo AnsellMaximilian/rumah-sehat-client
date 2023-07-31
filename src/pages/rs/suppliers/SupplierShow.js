@@ -89,6 +89,35 @@ export default function SupplierShow() {
     []
   );
 
+  const purchaseDetailColumns = useMemo(
+    () => [
+      { field: "id", headerName: "ID", width: 125 },
+      { field: "PurchaseId", headerName: "Purchase", width: 75 },
+      { field: "date", headerName: "Date", width: 125 },
+      {
+        field: "price",
+        headerName: "Price",
+        width: 100,
+        renderCell: (params) => <NumericFormatRp value={params.row.price} />,
+      },
+      {
+        field: "qty",
+        headerName: "Qty",
+        width: 50,
+        renderCell: (params) => parseFloat(params.value),
+      },
+      {
+        field: "total",
+        headerName: "Total",
+        width: 100,
+        renderCell: (params) => (
+          <NumericFormatRp value={params.row.totalPrice} />
+        ),
+      },
+    ],
+    []
+  );
+
   const handleAdjustmentFormClose = () => setAdjustmentFormOpen(false);
   const handleAdjustmentSubmit = async () => {
     handleAdjustmentFormClose();
@@ -213,27 +242,49 @@ export default function SupplierShow() {
           </Paper>
         </Grid>
         {details && (
-          <Grid item xs={12}>
-            <Paper sx={{ padding: 2, height: "100%" }}>
-              <Stack spacing={2}>
-                <Typography variant="h4" fontWeight="bold">
-                  Delivery Details
-                </Typography>
-                <SmartTable
-                  rows={details.deliveryDetails.map((det) => ({
-                    id: det.id,
-                    DeliveryId: det.DeliveryId,
-                    date: det.Delivery?.date,
-                    price: det.price,
-                    qty: det.qty,
-                    totalPrice: det.totalPrice,
-                    soldTo: det.Delivery.Customer.fullName,
-                  }))}
-                  columns={deliveryDetailColumns}
-                />
-              </Stack>
-            </Paper>
-          </Grid>
+          <>
+            <Grid item xs={12}>
+              <Paper sx={{ padding: 2, height: "100%" }}>
+                <Stack spacing={2}>
+                  <Typography variant="h4" fontWeight="bold">
+                    Delivery Details
+                  </Typography>
+                  <SmartTable
+                    rows={details.deliveryDetails.map((det) => ({
+                      id: det.id,
+                      DeliveryId: det.DeliveryId,
+                      date: det.Delivery?.date,
+                      price: det.price,
+                      qty: det.qty,
+                      totalPrice: det.totalPrice,
+                      soldTo: det.Delivery.Customer.fullName,
+                    }))}
+                    columns={deliveryDetailColumns}
+                  />
+                </Stack>
+              </Paper>
+            </Grid>
+            <Grid item xs={12}>
+              <Paper sx={{ padding: 2, height: "100%" }}>
+                <Stack spacing={2}>
+                  <Typography variant="h4" fontWeight="bold">
+                    Purchase Details
+                  </Typography>
+                  <SmartTable
+                    rows={details.purchaseDetails.map((det) => ({
+                      id: det.id,
+                      PurchaseId: det.PurchaseId,
+                      date: det.Purchase?.date,
+                      price: det.price,
+                      qty: det.qty,
+                      totalPrice: det.totalPrice,
+                    }))}
+                    columns={purchaseDetailColumns}
+                  />
+                </Stack>
+              </Paper>
+            </Grid>
+          </>
         )}
       </Grid>
       <DeleteAlert
