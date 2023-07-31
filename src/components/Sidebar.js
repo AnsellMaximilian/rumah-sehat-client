@@ -22,6 +22,7 @@ import MoneyIcon from "@mui/icons-material/Paid";
 import PanToolAltIcon from "@mui/icons-material/PanToolAlt";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import SanitizerIcon from "@mui/icons-material/Sanitizer";
+import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import React, { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { Collapse, Divider, List } from "@mui/material";
@@ -175,11 +176,17 @@ const Sidebar = () => {
             icon={<RequestQuoteIcon />}
           />
           <SidebarLink
+            to="/rs/reports/outstanding-customers"
+            text="Outstanding Customers"
+            sx={{ pl: 4 }}
+            icon={<ReportProblemIcon />}
+          />
+          {/* <SidebarLink
             to="/rs/reports/supplier-invoice"
             text="Supplier Invoice"
             sx={{ pl: 4 }}
             icon={<ReceiptLongIcon />}
-          />
+          /> */}
           <SidebarLink
             to="/rs/reports/profits"
             text="Profits"

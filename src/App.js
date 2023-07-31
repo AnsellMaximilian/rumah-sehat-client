@@ -72,6 +72,7 @@ import PurchaseInvoiceShow from "./pages/rs/purchaseInvoices/PurchaseInvoiceShow
 import FullReport from "./pages/rs/reports/FullReport";
 import FinancialReport from "./pages/rs/reports/FinancialReport";
 import TransactionIndex from "./pages/transactions/TransactionIndex";
+import OutstandingCustomers from "./pages/rs/reports/OutstandingCustomers";
 
 function App() {
   return (
@@ -221,6 +222,10 @@ function App() {
                     element={<SupplierBillIndex />}
                   />
                   <Route path="stock" element={<StockReportIndex />} />
+                  <Route
+                    path="outstanding-customers"
+                    element={<OutstandingCustomers />}
+                  />
                   <Route path="products" element={<ProductsReport />} />
                   <Route path="compare" element={<CompareReport />} />
                   <Route path="full-report" element={<FullReport />} />
