@@ -38,6 +38,7 @@ export default function SupplierShow() {
       { field: "id", headerName: "ID", width: 125 },
       { field: "DeliveryId", headerName: "Delivery", width: 75 },
       { field: "date", headerName: "Date", width: 125 },
+      { field: "product", headerName: "Product", width: 125 },
       {
         field: "price",
         headerName: "Price",
@@ -94,6 +95,8 @@ export default function SupplierShow() {
       { field: "id", headerName: "ID", width: 125 },
       { field: "PurchaseId", headerName: "Purchase", width: 75 },
       { field: "date", headerName: "Date", width: 125 },
+      { field: "product", headerName: "Product", width: 125 },
+
       {
         field: "price",
         headerName: "Price",
@@ -258,6 +261,7 @@ export default function SupplierShow() {
                       qty: det.qty,
                       totalPrice: det.totalPrice,
                       soldTo: det.Delivery.Customer.fullName,
+                      product: det.Product.name,
                     }))}
                     columns={deliveryDetailColumns}
                   />
@@ -278,6 +282,7 @@ export default function SupplierShow() {
                       price: det.price,
                       qty: det.qty,
                       totalPrice: det.totalPrice,
+                      product: det.Product.name,
                     }))}
                     columns={purchaseDetailColumns}
                   />
