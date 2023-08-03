@@ -117,6 +117,11 @@ export default function SupplierShow() {
           <NumericFormatRp value={params.row.totalPrice} />
         ),
       },
+      {
+        field: "soldTo",
+        headerName: "Sold To",
+        width: 100,
+      },
     ],
     []
   );
@@ -283,6 +288,7 @@ export default function SupplierShow() {
                       qty: det.qty,
                       totalPrice: det.totalPrice,
                       product: det.Product.name,
+                      soldTo: det.DeliveryDetail?.Delivery.Customer.fullName,
                     }))}
                     columns={purchaseDetailColumns}
                   />
