@@ -288,7 +288,9 @@ export default function SupplierShow() {
                       qty: det.qty,
                       totalPrice: det.totalPrice,
                       product: det.Product.name,
-                      soldTo: det.DeliveryDetail?.Delivery.Customer.fullName,
+                      soldTo:
+                        det.DeliveryDetail?.Delivery.Customer.fullName ||
+                        det.Purchase?.Delivery?.Customer?.fullName,
                     }))}
                     columns={purchaseDetailColumns}
                   />
