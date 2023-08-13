@@ -25,6 +25,8 @@ export default function CustomerCreate({ edit }) {
   const [regions, setRegions] = useState([]);
   const [selectedRegionId, setSelectedRegionId] = useState(null);
   const [note, setNote] = useState("");
+  const [accountName, setAccountName] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
 
   const { id } = useParams();
 
@@ -45,6 +47,10 @@ export default function CustomerCreate({ edit }) {
         setPhone(customer.phone || "");
         setRsMember(customer.rsMember);
         setReceiveDrDiscount(customer.receiveDrDiscount);
+
+        setAccountName(customer.accountName || "");
+        setAccountNumber(customer.accountNumber || "");
+
         if (customer.RegionId) setSelectedRegionId(customer.RegionId);
       }
     })();
@@ -61,6 +67,8 @@ export default function CustomerCreate({ edit }) {
         note,
         receiveDrDiscount,
         RegionId: selectedRegionId,
+        accountName,
+        accountNumber,
       };
 
       if (!edit) {
@@ -166,6 +174,20 @@ export default function CustomerCreate({ edit }) {
             multiline
             value={note}
             rows={2}
+          />
+        </Box>
+        <Box display="flex" gap={2}>
+          <TextField
+            fullWidth
+            label="Account Name"
+            onChange={(e) => setAccountName(e.target.value)}
+            value={accountName}
+          />
+          <TextField
+            fullWidth
+            label="Account Number"
+            onChange={(e) => setAccountNumber(e.target.value)}
+            value={accountNumber}
           />
         </Box>
 
