@@ -21,9 +21,17 @@ export default function Actions() {
   };
   return (
     <Box paddingBottom={4}>
-      <Box paddingBottom={2}>
+      <Box paddingBottom={2} display="flex" gap={2}>
         <Button variant="contained" onClick={exportSheets}>
           Export Sales Data to Sheets
+        </Button>
+        <Button
+          href={`http://localhost:1107/rs/reports/petty-cash`}
+          target="__blank"
+          component="a"
+          variant="contained"
+        >
+          Petty Cash Report
         </Button>
       </Box>
       <Card sx={{ padding: 2 }}>
