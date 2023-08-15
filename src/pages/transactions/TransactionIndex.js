@@ -223,7 +223,7 @@ const TransactionIndex = () => {
         <SmartTable
           rows={transactions.map((transaction) => ({
             id: transaction.id,
-            date: moment(transaction.date).format("DD-MM-YYYY"),
+            date: moment(transaction.date).format("YYYY-MM-DD"),
             type: transaction.type,
             description: transaction.description,
             amount: transaction.amount,
