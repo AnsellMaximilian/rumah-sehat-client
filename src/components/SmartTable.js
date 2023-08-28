@@ -9,7 +9,7 @@ export default function SmartTable({ rows, columns }) {
         rows={rows}
         columns={columns}
         pageSize={pageSize}
-        rowsPerPageOptions={[10, 20, 30]}
+        rowsPerPageOptions={[10, 20, 30, 50, 100]}
         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
         checkboxSelection
         rowHeight={25}
