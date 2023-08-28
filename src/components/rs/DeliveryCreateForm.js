@@ -91,6 +91,7 @@ export default function DeliveryCreateForm({
               price: detail.price,
               cost: detail.cost,
               qty: detail.qty,
+              PurchaseDetailId: detail.PurchaseDetailId,
             };
           })
         );
@@ -193,14 +194,20 @@ export default function DeliveryCreateForm({
         note: deliveryNote,
         DeliveryTypeId: deliveryTypeId,
         deliveryDetails: deliveryDetails.map((detail) => {
-          const { qty, price, cost, product, designatedSaleId } = detail;
+          const {
+            qty,
+            price,
+            cost,
+            product,
+            designatedSaleId,
+            PurchaseDetailId,
+          } = detail;
           if (product === null) throw new Error("Please select a product.");
-
           return {
             qty,
             price,
             ProductId: product.id,
-
+            PurchaseDetailId,
             cost,
             designatedSaleId,
             product,
