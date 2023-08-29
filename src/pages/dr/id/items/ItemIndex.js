@@ -11,6 +11,7 @@ import SmartTable from "../../../../components/SmartTable";
 import { toast } from "react-toastify";
 import NumericFormatRp from "../../../../components/NumericFormatRp";
 import DeleteAlert from "../../../../components/DeleteAlert";
+import ShowIcon from "@mui/icons-material/RemoveRedEye";
 
 const DrIdItemIndex = () => {
   const [items, setItems] = useState([]);
@@ -71,6 +72,13 @@ const DrIdItemIndex = () => {
               }}
             >
               <Delete />
+            </IconButton>
+            <IconButton
+              color="primary"
+              component={Link}
+              to={`/dr/id/items/${params.row.id}`}
+            >
+              <ShowIcon />
             </IconButton>
           </>
         );

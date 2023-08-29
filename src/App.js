@@ -73,6 +73,7 @@ import FullReport from "./pages/rs/reports/FullReport";
 import FinancialReport from "./pages/rs/reports/FinancialReport";
 import TransactionIndex from "./pages/transactions/TransactionIndex";
 import OutstandingCustomers from "./pages/rs/reports/OutstandingCustomers";
+import DrIdItemShow from "./pages/dr/id/items/ItemShow";
 
 function App() {
   return (
@@ -264,7 +265,8 @@ function App() {
                   >
                     <Route path="" element={<DrIdItemIndex />} />
                     <Route path="create" element={<DrIdItemCreate />} />
-                    <Route path="edit/:id" element={<DrIdItemEdit />} />
+                    <Route path="edit/:id" element={<DrIdItemCreate edit />} />
+                    <Route path=":id" element={<DrIdItemShow />} />
                   </Route>
                   <Route
                     path="deliveries"
