@@ -73,6 +73,7 @@ import TransactionIndex from "./pages/transactions/TransactionIndex";
 import OutstandingCustomers from "./pages/rs/reports/OutstandingCustomers";
 import DrIdItemShow from "./pages/dr/id/items/ItemShow";
 import DrSgItemShow from "./pages/dr/sg/items/ItemShow";
+import DrLoanIndex from "./pages/dr/loans/LoanIndex";
 
 function App() {
   return (
@@ -344,6 +345,15 @@ function App() {
                   <Route path="" element={<DrDiscountModelIndex />} />
                   <Route path="create" element={<DrDiscountModelCreate />} />
                   {/* <Route path="edit/:id" element={<DrIdItemEdit />} /> */}
+                </Route>
+                <Route
+                  path="loans"
+                  element={<DataLayout title="Loans" titleVariant="subtitle" />}
+                >
+                  <Route path="" element={<DrLoanIndex />} />
+                  {/* <Route path="manage" element={<DrInvoiceManage />} />
+                  <Route path="create" element={<DrInvoiceCreate />} />
+                  <Route path=":id" element={<DrInvoiceShow />} /> */}
                 </Route>
               </Route>
               <Route path="other" element={<h1>Other Page</h1>} />

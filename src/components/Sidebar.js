@@ -14,6 +14,7 @@ import ProductIcon from "@mui/icons-material/Widgets";
 import ExpenseIcon from "@mui/icons-material/AttachMoney";
 import CategoryIcon from "@mui/icons-material/ManageSearch";
 import SupplierIcon from "@mui/icons-material/Inventory";
+import SyncIcon from "@mui/icons-material/Sync";
 import ShoppingCart from "@mui/icons-material/ShoppingCart";
 // import MyLocationIcon from "@mui/icons-material/MyLocation";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
@@ -260,6 +261,8 @@ const Sidebar = () => {
           />
         </List>
       </Collapse>
+      <SidebarLink to="/dr/loans" text="Loans" icon={<SyncIcon />} />
+
       <ListItemButton onClick={() => setDrDeliveriesOpen(!drDeliveriesOpen)}>
         <ListItemIcon>
           <LocalShipping />
