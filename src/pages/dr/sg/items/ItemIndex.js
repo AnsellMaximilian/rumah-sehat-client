@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import NumericFormatSGD from "../../../../components/NumericFormatSGD";
 import NumericFormatRp from "../../../../components/NumericFormatRp";
 import DeleteAlert from "../../../../components/DeleteAlert";
+import ShowIcon from "@mui/icons-material/RemoveRedEye";
 
 const DrSgItemIndex = () => {
   const [items, setItems] = useState([]);
@@ -100,6 +101,13 @@ const DrSgItemIndex = () => {
               }}
             >
               <Delete />
+            </IconButton>
+            <IconButton
+              color="primary"
+              component={Link}
+              to={`/dr/sg/items/${params.row.id}`}
+            >
+              <ShowIcon />
             </IconButton>
           </>
         );

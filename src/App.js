@@ -9,7 +9,6 @@ import DrIdItemIndex from "./pages/dr/id/items/ItemIndex";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DrIdItemCreate from "./pages/dr/id/items/ItemCreate";
-import DrIdItemEdit from "./pages/dr/id/items/ItemEdit";
 import DrIdDeliveryIndex from "./pages/dr/id/deliveries/DeliveryIndex";
 import DrDiscountModelIndex from "./pages/dr/discountModels/DiscountModelIndex";
 import DrDiscountModelCreate from "./pages/dr/discountModels/DiscountModelCreate";
@@ -18,7 +17,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import DrIdDeliveryShow from "./pages/dr/id/deliveries/DeliveryShow";
 import DrSgItemIndex from "./pages/dr/sg/items/ItemIndex";
 import DrSgItemCreate from "./pages/dr/sg/items/ItemCreate";
-import DrSgItemEdit from "./pages/dr/sg/items/ItemEdit";
 import DrSgDeliveryIndex from "./pages/dr/sg/deliveries/DeliveryIndex";
 import DrSgDeliveryShow from "./pages/dr/sg/deliveries/DeliveryShow";
 import DrInvoiceIndex from "./pages/dr/invoices/InvoiceIndex";
@@ -74,6 +72,7 @@ import FinancialReport from "./pages/rs/reports/FinancialReport";
 import TransactionIndex from "./pages/transactions/TransactionIndex";
 import OutstandingCustomers from "./pages/rs/reports/OutstandingCustomers";
 import DrIdItemShow from "./pages/dr/id/items/ItemShow";
+import DrSgItemShow from "./pages/dr/sg/items/ItemShow";
 
 function App() {
   return (
@@ -293,7 +292,8 @@ function App() {
                   >
                     <Route path="" element={<DrSgItemIndex />} />
                     <Route path="create" element={<DrSgItemCreate />} />
-                    <Route path="edit/:id" element={<DrSgItemEdit />} />
+                    <Route path="edit/:id" element={<DrSgItemCreate edit />} />
+                    <Route path=":id" element={<DrSgItemShow />} />
                   </Route>
                   <Route
                     path="deliveries"

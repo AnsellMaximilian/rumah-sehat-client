@@ -7,7 +7,6 @@ import {
   ToggleButtonGroup,
   ToggleButton,
 } from "@mui/material";
-import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import http from "../../../../http-common";
@@ -15,7 +14,6 @@ import { useEffect, useState } from "react";
 import moment from "moment";
 
 export default function DrIdItemCreate({ edit }) {
-  const { handleSubmit } = useForm();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [priceRP, setPriceRP] = useState(0);
