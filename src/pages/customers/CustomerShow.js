@@ -1,6 +1,7 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
+import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
@@ -9,6 +10,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import http from "../../http-common";
 import { Link } from "react-router-dom";
+import NumericFormatRp from "../../components/NumericFormatRp";
 
 import ValueDisplay from "../../components/ValueDisplay";
 import AdjustmentForm from "../../components/rs/AdjustmentForm";
@@ -64,6 +66,7 @@ export default function CustomerShow() {
       setCustomer((await http.get(`/customers/${id}`)).data.data);
     })();
   }, [id]);
+  console.log(customer);
   return customer ? (
     <>
       <Grid container spacing={2}>
@@ -154,6 +157,53 @@ export default function CustomerShow() {
                 editId={editId}
               />
             </Dialog>
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper sx={{ padding: 2, height: "100%" }}>
+            <Box display="flex" justifyContent="space-between" gap={2}>
+              <Typography variant="h6" fontWeight="bold">
+                Dr's Secret
+              </Typography>
+            </Box>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <Stack direction="row" gap={2}>
+                  <Typography fontWeight="bold">Monthly Points</Typography>
+                  <Typography>{customer.getMonthlyDrPointTotal}</Typography>
+                </Stack>
+                <Stack direction="row" gap={2}>
+                  <Typography fontWeight="bold">Monthly Sales</Typography>
+                  <Typography>
+                    <NumericFormatRp value={customer.getMonthlyDrPriceTotal} />
+                  </Typography>
+                </Stack>
+                <Stack direction="row" gap={2}>
+                  <Typography fontWeight="bold">Free Item Claimed?</Typography>
+                  <Typography>
+                    {customer.hasUsedMonthlyFreeItem ? "YES" : "NO"}
+                  </Typography>
+                </Stack>
+                <Stack direction="row" gap={2}>
+                  <Typography fontWeight="bold">PWP Claimed?</Typography>
+                  <Typography>
+                    {customer.hasUsedMonthlyPWP ? "YES" : "NO"}
+                  </Typography>
+                </Stack>
+                <Stack direction="row" gap={2}>
+                  <Typography fontWeight="bold">PWP Eligible</Typography>
+                  <Typography>
+                    {customer.isEligibleForPWP ? "YES" : "NO"}
+                  </Typography>
+                </Stack>
+                <Stack direction="row" gap={2}>
+                  <Typography fontWeight="bold">Free Item Eligible</Typography>
+                  <Typography>
+                    {customer.isEligibleForFreeItem ? "YES" : "NO"}
+                  </Typography>
+                </Stack>
+              </Grid>
+            </Grid>
           </Paper>
         </Grid>
       </Grid>
