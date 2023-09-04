@@ -90,6 +90,9 @@ export default function DeliveryCreateForm({
               product: product,
               price: detail.price,
               cost: detail.cost,
+              overallCost: detail.overallCost
+                ? detail.overallCost
+                : detail.cost,
               qty: detail.qty,
               PurchaseDetailId: detail.PurchaseDetailId,
             };
@@ -129,6 +132,9 @@ export default function DeliveryCreateForm({
             key: uuidv4(),
             price: product.price,
             cost: product.cost,
+            overallCost: product.overallCost
+              ? product.overallCost
+              : product.cost,
             qty: 0,
             product: product,
           },
@@ -198,6 +204,7 @@ export default function DeliveryCreateForm({
             qty,
             price,
             cost,
+            overallCost,
             product,
             designatedSaleId,
             PurchaseDetailId,
@@ -209,6 +216,7 @@ export default function DeliveryCreateForm({
             ProductId: product.id,
             PurchaseDetailId,
             cost,
+            overallCost,
             designatedSaleId,
             product,
           };
@@ -464,6 +472,9 @@ export default function DeliveryCreateForm({
                         key: uuidv4(),
                         price: product.price,
                         cost: sale.price,
+                        overallCost: product.overallCost
+                          ? product.overallCost
+                          : product.cost,
                         qty: parseFloat(sale.qty),
                         product: product,
                         designatedSaleId: sale.id,
@@ -541,6 +552,13 @@ export default function DeliveryCreateForm({
                               "cost",
                               detail.key,
                               newValue.cost
+                            )(e);
+                            handleDeliveryDetailAttrChange(
+                              "overallCost",
+                              detail.key,
+                              newValue.overallCost
+                                ? newValue.overallCost
+                                : newValue.cost
                             )(e);
                           }
                         }}

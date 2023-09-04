@@ -23,6 +23,7 @@ export default function ProductCreate({ edit }) {
   const [price, setPrice] = useState(0);
   const [resellerPrice, setResellerPrice] = useState(0);
   const [cost, setCost] = useState(0);
+  const [overallCost, setOverallCost] = useState(0);
   const [unit, setUnit] = useState("");
   const [selectedSupplierId, setSelectedSupplierId] = useState(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
@@ -51,6 +52,7 @@ export default function ProductCreate({ edit }) {
         setPrice(product.price);
         setResellerPrice(product.resellerPrice ? product.resellerPrice : null);
         setCost(product.cost);
+        setOverallCost(product.overallCost ? product.overallCost : null);
         setSelectedCategoryId(product.ProductCategoryId);
         setSelectedSupplierId(product.SupplierId);
         setUnit(product.unit);
@@ -72,6 +74,7 @@ export default function ProductCreate({ edit }) {
         name: name,
         price: price,
         resellerPrice: resellerPrice ? resellerPrice : null,
+        overallCost: overallCost ? overallCost : null,
         cost: cost,
         SupplierId: selectedSupplierId,
         ProductCategoryId: selectedCategoryId,
@@ -102,7 +105,7 @@ export default function ProductCreate({ edit }) {
       </Typography>
       <Box component="form" noValidate sx={{ mt: 1 }}>
         <Grid spacing={2} container>
-          <Grid item xs={8}>
+          <Grid item xs={4}>
             <TextField
               required
               fullWidth
@@ -146,6 +149,16 @@ export default function ProductCreate({ edit }) {
               label="Cost"
               value={cost}
               onChange={(e) => setCost(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              required
+              type="number"
+              fullWidth
+              label="Overall Cost"
+              value={overallCost}
+              onChange={(e) => setOverallCost(e.target.value)}
             />
           </Grid>
           <Grid item xs={4}>
