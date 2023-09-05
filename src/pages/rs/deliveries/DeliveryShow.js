@@ -172,6 +172,19 @@ const DeliveryShow = () => {
       ),
     },
     {
+      field: "totalItemQty",
+      headerName: "Item QTY",
+      width: 150,
+    },
+    {
+      field: "totalSplitCost",
+      headerName: "Added Cost",
+      width: 150,
+      renderCell: (params) => (
+        <NumericFormatRp value={params.row.totalSplitCost} />
+      ),
+    },
+    {
       field: "actions",
       headerName: "Actions",
       renderCell: (params) => {
@@ -192,6 +205,8 @@ const DeliveryShow = () => {
       width: 200,
     },
   ];
+
+  console.log(deliveryExpenses);
 
   return delivery ? (
     <Box marginBottom={4}>
@@ -222,6 +237,8 @@ const DeliveryShow = () => {
               amount: ex.amount,
               qty: ex.qty,
               totalAmount: ex.totalAmount,
+              totalItemQty: ex.totalItemQty,
+              totalSplitCost: ex.totalSplitCost,
             }))}
             columns={expenseColumns}
           />

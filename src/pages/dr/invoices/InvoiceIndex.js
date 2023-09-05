@@ -68,7 +68,7 @@ const DrInvoiceIndex = () => {
 
   useEffect(() => {
     (async () => {
-      setInvoices((await http.get("/dr/invoices")).data.data);
+      setInvoices((await http.get("/dr/invoices?unpaid=true")).data.data);
       setCustomers((await http.get("/customers")).data.data);
     })();
   }, []);
