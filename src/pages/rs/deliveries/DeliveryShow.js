@@ -206,8 +206,6 @@ const DeliveryShow = () => {
     },
   ];
 
-  console.log(deliveryExpenses);
-
   return delivery ? (
     <Box marginBottom={4}>
       <Box display="flex" justifyContent="flex-end" marginBottom={1} gap={2}>

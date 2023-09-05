@@ -124,6 +124,18 @@ const ProductIndex = () => {
       renderCell: (params) => <NumericFormatRp value={params.row.cost} />,
     },
     {
+      field: "overallCost",
+      headerName: "Overall Cost",
+      width: 130,
+
+      renderCell: (params) =>
+        params.row.overallCost ? (
+          <NumericFormatRp value={params.row.overallCost} />
+        ) : (
+          "Not Set"
+        ),
+    },
+    {
       field: "keepStockSince",
       headerName: "Keep Stock",
       width: 175,
@@ -174,9 +186,16 @@ const ProductIndex = () => {
 
   return (
     <Box>
-      <Box paddingBottom={2}>
+      <Box paddingBottom={2} display="flex" gap={2}>
         <Button variant="contained" component={Link} to={"/rs/products/create"}>
           New Product
+        </Button>
+        <Button
+          variant="outlined"
+          component={Link}
+          to={"/rs/products/configure-overall-cost"}
+        >
+          Configure Overall Cost
         </Button>
       </Box>
       <Box marginTop={2}>
@@ -253,6 +272,7 @@ const ProductIndex = () => {
             supplier: product.Supplier.name,
             resellerPrice: product.resellerPrice,
             cost: product.cost,
+            overallCost: product.overallCost,
             unit: product.unit,
             keepStockSince: product.keepStockSince,
           }))}

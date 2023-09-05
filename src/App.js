@@ -74,6 +74,8 @@ import OutstandingCustomers from "./pages/rs/reports/OutstandingCustomers";
 import DrIdItemShow from "./pages/dr/id/items/ItemShow";
 import DrSgItemShow from "./pages/dr/sg/items/ItemShow";
 import DrLoanIndex from "./pages/dr/loans/LoanIndex";
+import ConfigureOverallCost from "./pages/rs/products/ConfigureOverallCost";
+import DetailedProfitsIndex from "./pages/rs/profits/DetailedProfitsIndex";
 
 function App() {
   return (
@@ -180,6 +182,10 @@ function App() {
                 >
                   <Route path="" element={<ProductIndex />} />
                   <Route path="create" element={<ProductCreate />} />
+                  <Route
+                    path="configure-overall-cost"
+                    element={<ConfigureOverallCost />}
+                  />
                   <Route path="edit/:id" element={<ProductCreate edit />} />
                   <Route path=":id" element={<ProductShow />} />
                 </Route>
@@ -218,6 +224,10 @@ function App() {
                   element={<DataLayout title="Reports" titleVariant="h5" />}
                 >
                   <Route path="profits" element={<ProfitsIndex />} />
+                  <Route
+                    path="detailed-profits"
+                    element={<DetailedProfitsIndex />}
+                  />
                   <Route
                     path="supplier-invoice"
                     element={<SupplierBillIndex />}
