@@ -32,3 +32,12 @@ export const getBillSubtotal = (details) =>
 
 export const getPurchaseInvoiceTotal = (purchases) =>
   purchases.reduce((sum, pc) => sum + pc.totalPrice, 0);
+
+export const getProductStockColor = (restockNumber, stock) => {
+  if (stock < restockNumber) return "red";
+  if (Math.ceil(restockNumber + restockNumber * 0.1667) < restockNumber)
+    return "orange";
+  if (Math.ceil(restockNumber + restockNumber * 0.3333) < restockNumber)
+    return "yellowgreen";
+  return "black";
+};

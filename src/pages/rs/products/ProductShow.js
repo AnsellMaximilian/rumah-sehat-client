@@ -11,6 +11,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import http from "../../../http-common";
 import Delete from "@mui/icons-material/Delete";
+import NumericFormatRp from "../../../components/NumericFormatRp";
 
 import { toast } from "react-toastify";
 import IconButton from "@mui/material/IconButton";
@@ -247,7 +248,7 @@ export default function ProductShow() {
   return product ? (
     <>
       <Grid container spacing={2}>
-        <Grid item xs={6}>
+        <Grid item xs={12}>
           <Paper sx={{ padding: 2, height: "100%" }}>
             <Box marginBottom={2}>
               <Typography variant="subtitle" fontWeight="bold" color="GrayText">
@@ -264,8 +265,36 @@ export default function ProductShow() {
             </Box>
             <Stack spacing={2}>
               <Stack direction="row" spacing={2}>
-                <Typography fontWeight="bold">Keep Stock Since</Typography>
-                <Typography>{product.keepStockSince}</Typography>
+                <Typography fontWeight="bold">Price</Typography>
+                <Typography>
+                  <NumericFormatRp value={product.price} />
+                </Typography>
+              </Stack>
+              <Stack direction="row" spacing={2}>
+                <Typography fontWeight="bold">Cost</Typography>
+                <Typography>
+                  <NumericFormatRp value={product.cost} />
+                </Typography>
+              </Stack>
+              <Stack direction="row" spacing={2}>
+                <Typography fontWeight="bold">Restock Number</Typography>
+                <Typography>
+                  {product.restockNumber ? product.restockNumber : 1}
+                </Typography>
+              </Stack>
+              <Stack direction="row" spacing={2}>
+                <Typography fontWeight="bold">Stock Colors</Typography>
+                <Stack direction="row" spacing={1}>
+                  <Typography color="red">
+                    {product.getStockColors.red}
+                  </Typography>
+                  <Typography color="orange">
+                    {product.getStockColors.orange}
+                  </Typography>
+                  <Typography color="yellowgreen">
+                    {product.getStockColors.yellow}
+                  </Typography>
+                </Stack>
               </Stack>
             </Stack>
           </Paper>
@@ -273,9 +302,16 @@ export default function ProductShow() {
         <Grid item xs={12}>
           <Paper sx={{ padding: 2, height: "100%" }}>
             <Stack spacing={2}>
-              <Typography variant="h4" fontWeight="bold">
-                Stock
-              </Typography>
+              <Stack direction="row" spacing={2} alignItems="center">
+                <Typography variant="h4" fontWeight="bold">
+                  Stock
+                </Typography>
+                <Typography>
+                  {product.keepStockSince
+                    ? `Since ${product.keepStockSince}`
+                    : ""}
+                </Typography>
+              </Stack>
               <Typography variant="h5" fontWeight="bold">
                 {product.keepStockSince ? stock : "Not keeping stock"}
               </Typography>

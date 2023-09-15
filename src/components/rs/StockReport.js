@@ -7,6 +7,7 @@ import TableRow from "@mui/material/TableRow";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
+import { getProductStockColor } from "../../helpers/rs";
 
 export default function StockReport({ reportData }) {
   console.log(reportData);
@@ -33,39 +34,48 @@ export default function StockReport({ reportData }) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {reportData.map((pr) => {
-                return (
-                  <TableRow
-                    key={pr.id}
-                    sx={{
-                      padding: 4,
-                      ">td": {
-                        fontSize: "20px",
-                      },
-                    }}
-                  >
-                    <TableCell>{pr.id}</TableCell>
-                    <TableCell>{pr.name}</TableCell>
-                    <TableCell align="right">
-                      {parseFloat(pr.totalIn)}
-                    </TableCell>
-                    <TableCell align="right">
-                      {parseFloat(pr.totalOut)}
-                    </TableCell>
-                    <TableCell align="right">
-                      {parseFloat(pr.totalDrawn)}
-                    </TableCell>
-                    <TableCell align="right">
-                      {parseFloat(pr.totalAdjusted)}
-                    </TableCell>
-                    <TableCell align="right">
-                      <Typography fontSize={24} fontWeight="bold">
-                        {parseFloat(pr.stock)}
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+              {reportData
+                // .sort((a, b) => a.stock - b.stock)
+                .map((pr) => {
+                  return (
+                    <TableRow
+                      key={pr.id}
+                      sx={{
+                        padding: 4,
+                        ">td": {
+                          fontSize: "20px",
+                        },
+                      }}
+                    >
+                      <TableCell>{pr.id}</TableCell>
+                      <TableCell>{pr.name}</TableCell>
+                      <TableCell align="right">
+                        {parseFloat(pr.totalIn)}
+                      </TableCell>
+                      <TableCell align="right">
+                        {parseFloat(pr.totalOut)}
+                      </TableCell>
+                      <TableCell align="right">
+                        {parseFloat(pr.totalDrawn)}
+                      </TableCell>
+                      <TableCell align="right">
+                        {parseFloat(pr.totalAdjusted)}
+                      </TableCell>
+                      <TableCell align="right">
+                        <Typography
+                          fontSize={24}
+                          fontWeight="bold"
+                          color={getProductStockColor(
+                            pr.restockNumber,
+                            pr.stock || 0
+                          )}
+                        >
+                          {parseFloat(pr.stock)}
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
             </TableBody>
           </Table>
         </TableContainer>

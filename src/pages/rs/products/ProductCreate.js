@@ -22,6 +22,7 @@ export default function ProductCreate({ edit }) {
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [resellerPrice, setResellerPrice] = useState(0);
+  const [restockNumber, setRestockNumber] = useState(0);
   const [cost, setCost] = useState(0);
   const [overallCost, setOverallCost] = useState(0);
   const [unit, setUnit] = useState("");
@@ -52,6 +53,7 @@ export default function ProductCreate({ edit }) {
         setPrice(product.price);
         setResellerPrice(product.resellerPrice ? product.resellerPrice : null);
         setCost(product.cost);
+        setRestockNumber(product.restockNumber ? product.restockNumber : 0);
         setOverallCost(product.overallCost ? product.overallCost : null);
         setSelectedCategoryId(product.ProductCategoryId);
         setSelectedSupplierId(product.SupplierId);
@@ -74,6 +76,7 @@ export default function ProductCreate({ edit }) {
         name: name,
         price: price,
         resellerPrice: resellerPrice ? resellerPrice : null,
+        restockNumber: restockNumber ? restockNumber : 0,
         overallCost: overallCost ? overallCost : null,
         cost: cost,
         SupplierId: selectedSupplierId,
@@ -195,8 +198,18 @@ export default function ProductCreate({ edit }) {
               onChange={(e) => setUnit(e.target.value)}
             />
           </Grid>
+          <Grid item xs={2}>
+            <TextField
+              required
+              type="number"
+              fullWidth
+              label="Restock Number"
+              onChange={(e) => setRestockNumber(e.target.value)}
+              value={restockNumber}
+            />
+          </Grid>
 
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <TextField
               label="Keep Stock Since"
               type="date"
