@@ -134,7 +134,7 @@ export default function ProfitsReport({
                         .map((profit) => {
                           return (
                             <TableRow
-                              key={`${profit.productId}-${profit.price}`}
+                              key={`${profit.productId}-${profit.price}-${profit.cost}`}
                               sx={{
                                 "&:last-child td, &:last-child th": {
                                   border: 0,
