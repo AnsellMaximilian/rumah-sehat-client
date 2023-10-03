@@ -76,6 +76,7 @@ import DrSgItemShow from "./pages/dr/sg/items/ItemShow";
 import DrLoanIndex from "./pages/dr/loans/LoanIndex";
 import ConfigureOverallCost from "./pages/rs/products/ConfigureOverallCost";
 import DetailedProfitsIndex from "./pages/rs/profits/DetailedProfitsIndex";
+import Analytics from "./pages/rs/reports/Analytics";
 
 function App() {
   return (
@@ -245,6 +246,7 @@ function App() {
                     element={<FinancialReport />}
                   />
                   <Route path="actions" element={<Actions />} />
+                  <Route path="analytics" element={<Analytics />} />
                 </Route>
               </Route>
 

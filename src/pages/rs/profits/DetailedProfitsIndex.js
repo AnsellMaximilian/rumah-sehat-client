@@ -121,7 +121,7 @@ export default function DetailedProfitsIndex() {
           <Box display="flex" justifyContent="flex-end" gap={2}>
             <Button
               component="a"
-              href={` http://localhost:1107/rs/reports/print?startDate=${startDate}&endDate=${endDate}`}
+              href={` http://localhost:1107/rs/reports/print-overall?startDate=${startDate}&endDate=${endDate}`}
               color="error"
               target="_blank"
               variant="contained"

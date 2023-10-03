@@ -7,6 +7,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import DiscountIcon from "@mui/icons-material/Discount";
 import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
 import StockIcon from "@mui/icons-material/AssignmentTurnedIn";
+import AnalyticsIcon from "@mui/icons-material/Analytics";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 // import AdjustIcon from "@mui/icons-material/AutoFixNormal";
@@ -182,12 +183,6 @@ const Sidebar = () => {
             sx={{ pl: 4 }}
             icon={<ReportProblemIcon />}
           />
-          {/* <SidebarLink
-            to="/rs/reports/supplier-invoice"
-            text="Supplier Invoice"
-            sx={{ pl: 4 }}
-            icon={<ReceiptLongIcon />}
-          /> */}
           <SidebarLink
             to="/rs/reports/profits"
             text="Profits"
@@ -218,7 +213,12 @@ const Sidebar = () => {
             icon={<CompareArrowsIcon />}
             sx={{ pl: 4 }}
           />
-
+          <SidebarLink
+            to="/rs/reports/analytics"
+            text="Analytics"
+            icon={<AnalyticsIcon />}
+            sx={{ pl: 4 }}
+          />
           <SidebarLink
             to="/rs/reports/actions"
             text="Actions"
