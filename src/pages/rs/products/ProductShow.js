@@ -19,6 +19,7 @@ import IconButton from "@mui/material/IconButton";
 import AutoSelectTextField from "../../../components/AutoSelectTextField";
 import SmartTable from "../../../components/SmartTable";
 import DeleteAlert from "../../../components/DeleteAlert";
+import ProductAnalysis from "../../../components/rs/ProductAnalysis";
 
 export default function ProductShow() {
   const { id } = useParams();
@@ -411,6 +412,9 @@ export default function ProductShow() {
             </Paper>
           </Grid>
         )}
+        <Grid item xs={12}>
+          <ProductAnalysis productId={id} />
+        </Grid>
       </Grid>
       <DeleteAlert
         message="Are you sure you want to remove this draw?"
