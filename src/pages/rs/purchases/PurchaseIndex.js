@@ -194,7 +194,7 @@ const PurchaseIndex = () => {
         <SmartTable
           rows={purchases.map((purchase) => ({
             id: purchase.id,
-            date: moment(purchase.date).format("DD-MM-YYYY"),
+            date: moment(purchase.date).format("YYYY-MM-DD"),
             supplier: purchase.Supplier.name,
             totalPrice: purchase.totalPrice,
             subtotalPrice: purchase.subtotalPrice,
