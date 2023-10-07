@@ -67,7 +67,7 @@ const PurchaseIndex = () => {
   }, []);
 
   const columns = [
-    { field: "id", headerName: "ID", width: 50 },
+    { field: "id", headerName: "ID", width: 100 },
     { field: "date", headerName: "Date", width: 150 },
     { field: "supplier", headerName: "Supplier", width: 100 },
     {
