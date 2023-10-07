@@ -6,20 +6,13 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer,
 } from "recharts";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import Divider from "@mui/material/Divider";
-import Chip from "@mui/material/Chip";
 import Autocomplete from "@mui/material/Autocomplete";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
 import http from "../../../http-common";
 import { toast } from "react-toastify";
@@ -36,9 +29,9 @@ import NumericFormatRp from "../../../components/NumericFormatRp";
 export default function Analytics() {
   const [deliveryStartDate, setDeliveryStartDate] = useState("");
   const [deliveryEndDate, setDeliveryEndDate] = useState("");
-  const [invoiceStartDate, setInvoiceStartDate] = useState("");
-  const [invoiceEndDate, setInvoiceEndDate] = useState("");
 
+  const [selectedSupplier, setSelectedSupplier] = useState(null);
+  const [suppliers, setSuppliers] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [products, setProducts] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
@@ -46,10 +39,14 @@ export default function Analytics() {
 
   const [analyticsData, setAnalyticsData] = useState([]);
 
+  const [selectedProductIds, setSelectedProductIds] = useState([]);
+  const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
+
   useEffect(() => {
     (async () => {
       setCustomers((await http.get("/customers")).data.data);
       setProducts((await http.get("/rs/products")).data.data);
+      setSuppliers((await http.get("/rs/suppliers")).data.data);
     })();
   }, []);
 
@@ -67,28 +64,51 @@ export default function Analytics() {
     setDeliveryEndDate(monthEnd);
   };
 
-  const handleSetInvoiceWeek = () => {
-    const { weekStart, weekEnd } = getWeek();
-
-    setInvoiceStartDate(weekStart);
-    setInvoiceEndDate(weekEnd);
+  const handleAddCustomerId = () => {
+    if (selectedCustomer) {
+      setSelectedCustomerIds((prev) => [...prev, selectedCustomer.id]);
+      setSelectedCustomer(null);
+      setCustomers((prev) =>
+        prev.filter((cus) => cus.id !== selectedCustomer.id)
+      );
+    }
   };
 
-  const handleSetInvoicesMonth = () => {
-    const { monthStart, monthEnd } = getMonth();
+  const handleAddProductId = () => {
+    if (selectedProduct) {
+      setSelectedProductIds((prev) => [...prev, selectedProduct.id]);
+      setSelectedProduct(null);
+      setProducts((prev) =>
+        prev.filter((cus) => cus.id !== selectedProduct.id)
+      );
+    }
+  };
 
-    setInvoiceStartDate(monthStart);
-    setInvoiceEndDate(monthEnd);
+  const handleResetProducts = async () => {
+    setProducts((await http.get("/rs/products")).data.data);
+    setSelectedProductIds([]);
+  };
+
+  const handleResetCustomers = async () => {
+    setCustomers((await http.get("/customers")).data.data);
+    setSelectedCustomerIds([]);
   };
 
   const handleSubmit = async () => {
     const queryParams = formQueryParams({
       deliveryStartDate,
       deliveryEndDate,
-      invoiceEndDate,
-      invoiceStartDate,
       CustomerId: selectedCustomer ? selectedCustomer.id : undefined,
       ProductId: selectedProduct ? selectedProduct.id : undefined,
+      SupplierId: selectedSupplier ? selectedSupplier.id : undefined,
+      customerIds:
+        selectedCustomerIds.length > 0
+          ? selectedCustomerIds.join(",")
+          : undefined,
+      productIds:
+        selectedProductIds.length > 0
+          ? selectedProductIds.join(",")
+          : undefined,
     });
     const analytics = (await http.get(`/rs/analytics?${queryParams}`)).data
       .data;
@@ -185,79 +205,116 @@ export default function Analytics() {
             </Box>
           </Grid>
 
-          <Grid item xs={4}>
-            <TextField
-              fullWidth
-              size="small"
-              label="Invoice Start Date"
-              type="date"
-              value={invoiceStartDate}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              onChange={(e) => setInvoiceStartDate(e.target.value)}
-            />
+          <Grid item xs={12}>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <Autocomplete
+                  value={selectedCustomer}
+                  onChange={(e, newValue) => {
+                    setSelectedCustomer(newValue);
+                  }}
+                  isOptionEqualToValue={(option, value) =>
+                    option.id === value.id
+                  }
+                  renderOption={(props, option) => (
+                    <li {...props} key={option.id}>
+                      <Typography>{option.fullName}</Typography>
+                    </li>
+                  )}
+                  getOptionLabel={(option) =>
+                    `(#${option.id}) ${option.fullName}`
+                  }
+                  options={customers}
+                  sx={{ width: "100%" }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Customer" size="small" />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={2}>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  onClick={handleAddCustomerId}
+                >
+                  Add
+                </Button>
+              </Grid>
+              <Grid item xs={2}>
+                <Button
+                  variant="outlined"
+                  fullWidth
+                  onClick={handleResetCustomers}
+                >
+                  Reset
+                </Button>
+              </Grid>
+              <Grid item xs={2} display="flex" alignItems="center">
+                {selectedCustomerIds.length <= 0 ? (
+                  <Typography>All</Typography>
+                ) : (
+                  <Typography>Selected {selectedCustomerIds.length}</Typography>
+                )}
+              </Grid>
+            </Grid>
           </Grid>
-          <Grid item xs={4}>
-            <TextField
-              fullWidth
-              size="small"
-              label="Invoice End Date"
-              type="date"
-              value={invoiceEndDate}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              onChange={(e) => setInvoiceEndDate(e.target.value)}
-            />
+
+          <Grid item xs={12}>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <Autocomplete
+                  value={selectedProduct}
+                  onChange={(e, newValue) => {
+                    setSelectedProduct(newValue);
+                  }}
+                  isOptionEqualToValue={(option, value) =>
+                    option.id === value.id
+                  }
+                  renderOption={(props, option) => (
+                    <li {...props} key={option.id}>
+                      <Typography>{option.name}</Typography>
+                    </li>
+                  )}
+                  getOptionLabel={(option) => `(#${option.id}) ${option.name}`}
+                  options={products}
+                  sx={{ width: "100%" }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Products" size="small" />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={2}>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  onClick={handleAddProductId}
+                >
+                  Add
+                </Button>
+              </Grid>
+              <Grid item xs={2}>
+                <Button
+                  variant="outlined"
+                  fullWidth
+                  onClick={handleResetProducts}
+                >
+                  Reset
+                </Button>
+              </Grid>
+              <Grid item xs={2} display="flex" alignItems="center">
+                {selectedProductIds.length <= 0 ? (
+                  <Typography>All</Typography>
+                ) : (
+                  <Typography>Selected {selectedProductIds.length}</Typography>
+                )}
+              </Grid>
+            </Grid>
           </Grid>
-          <Grid item xs={2}>
-            <Box display="flex" height="100%">
-              <Button
-                variant="outlined"
-                fullWidth
-                onClick={handleSetInvoiceWeek}
-              >
-                This Week
-              </Button>
-            </Box>
-          </Grid>
-          <Grid item xs={2}>
-            <Box display="flex" height="100%">
-              <Button
-                variant="outlined"
-                fullWidth
-                onClick={handleSetInvoicesMonth}
-              >
-                This Month
-              </Button>
-            </Box>
-          </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <Autocomplete
-              value={selectedCustomer}
+              value={selectedSupplier}
               onChange={(e, newValue) => {
-                setSelectedCustomer(newValue);
-              }}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              renderOption={(props, option) => (
-                <li {...props} key={option.id}>
-                  <Typography>{option.fullName}</Typography>
-                </li>
-              )}
-              getOptionLabel={(option) => `(#${option.id}) ${option.fullName}`}
-              options={customers}
-              sx={{ width: "100%" }}
-              renderInput={(params) => (
-                <TextField {...params} label="Customer" size="small" />
-              )}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <Autocomplete
-              value={selectedProduct}
-              onChange={(e, newValue) => {
-                setSelectedProduct(newValue);
+                setSelectedSupplier(newValue);
               }}
               isOptionEqualToValue={(option, value) => option.id === value.id}
               renderOption={(props, option) => (
@@ -266,10 +323,10 @@ export default function Analytics() {
                 </li>
               )}
               getOptionLabel={(option) => `(#${option.id}) ${option.name}`}
-              options={products}
+              options={suppliers}
               sx={{ width: "100%" }}
               renderInput={(params) => (
-                <TextField {...params} label="Products" size="small" />
+                <TextField {...params} label="Supplier" size="small" />
               )}
             />
           </Grid>
