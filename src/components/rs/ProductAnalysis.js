@@ -35,6 +35,7 @@ export default function ProductAnalysis({ productId }) {
 
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [customers, setCustomers] = useState([]);
+  const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
 
   const [analyticsData, setAnalyticsData] = useState([]);
 
@@ -58,12 +59,30 @@ export default function ProductAnalysis({ productId }) {
     setDeliveryEndDate(monthEnd);
   };
 
+  const handleAddCustomerId = () => {
+    if (selectedCustomer) {
+      setSelectedCustomerIds((prev) => [...prev, selectedCustomer.id]);
+      setSelectedCustomer(null);
+      setCustomers((prev) =>
+        prev.filter((cus) => cus.id !== selectedCustomer.id)
+      );
+    }
+  };
+
+  const handleResetCustomers = async () => {
+    setCustomers((await http.get("/customers")).data.data);
+    setSelectedCustomerIds([]);
+  };
+
   const handleSubmit = async () => {
     const queryParams = formQueryParams({
       deliveryStartDate,
       deliveryEndDate,
-      ProductId: productId,
-      CustomerId: selectedCustomer ? selectedCustomer.id : undefined,
+      productIds: productId,
+      customerIds:
+        selectedCustomerIds.length > 0
+          ? selectedCustomerIds.join(",")
+          : undefined,
     });
     const analytics = (await http.get(`/rs/analytics?${queryParams}`)).data
       .data;
@@ -162,25 +181,58 @@ export default function ProductAnalysis({ productId }) {
             </Box>
           </Grid>
 
-          <Grid item xs={6}>
-            <Autocomplete
-              value={selectedCustomer}
-              onChange={(e, newValue) => {
-                setSelectedCustomer(newValue);
-              }}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              renderOption={(props, option) => (
-                <li {...props} key={option.id}>
-                  <Typography>{option.fullName}</Typography>
-                </li>
-              )}
-              getOptionLabel={(option) => `(#${option.id}) ${option.fullName}`}
-              options={customers}
-              sx={{ width: "100%" }}
-              renderInput={(params) => (
-                <TextField {...params} label="Customer" size="small" />
-              )}
-            />
+          <Grid item xs={12}>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <Autocomplete
+                  value={selectedCustomer}
+                  onChange={(e, newValue) => {
+                    setSelectedCustomer(newValue);
+                  }}
+                  isOptionEqualToValue={(option, value) =>
+                    option.id === value.id
+                  }
+                  renderOption={(props, option) => (
+                    <li {...props} key={option.id}>
+                      <Typography>{option.fullName}</Typography>
+                    </li>
+                  )}
+                  getOptionLabel={(option) =>
+                    `(#${option.id}) ${option.fullName}`
+                  }
+                  options={customers}
+                  sx={{ width: "100%" }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Customer" size="small" />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={2}>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  onClick={handleAddCustomerId}
+                >
+                  Add
+                </Button>
+              </Grid>
+              <Grid item xs={2}>
+                <Button
+                  variant="outlined"
+                  fullWidth
+                  onClick={handleResetCustomers}
+                >
+                  Reset
+                </Button>
+              </Grid>
+              <Grid item xs={2} display="flex" alignItems="center">
+                {selectedCustomerIds.length <= 0 ? (
+                  <Typography>All</Typography>
+                ) : (
+                  <Typography>Selected {selectedCustomerIds.length}</Typography>
+                )}
+              </Grid>
+            </Grid>
           </Grid>
           <Grid item xs={12}></Grid>
         </Grid>
