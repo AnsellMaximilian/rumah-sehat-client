@@ -8,6 +8,8 @@ import {
   Tooltip,
 } from "recharts";
 import Stack from "@mui/material/Stack";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -20,6 +22,7 @@ import {
   formQueryParams,
   getDaysInRange,
   getMonth,
+  getMonthsInRange,
   getWeek,
   rupiah,
 } from "../../../helpers/common";
@@ -41,6 +44,8 @@ export default function Analytics() {
 
   const [selectedProductIds, setSelectedProductIds] = useState([]);
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
+
+  const [chartMode, setChartMode] = useState("DAY"); // DAY OR MONTH
 
   useEffect(() => {
     (async () => {
@@ -121,10 +126,7 @@ export default function Analytics() {
       return;
     }
 
-    const days = getDaysInRange(
-      analyticsDateSorted[0].date,
-      analyticsDateSorted[analyticsDateSorted.length - 1].date
-    );
+    const days = getDaysInRange(deliveryStartDate, deliveryEndDate);
 
     const analyticsData = days.map((day) => {
       const saleDay = analytics.find((analytic) => {
@@ -146,7 +148,33 @@ export default function Analytics() {
       };
     });
 
-    setAnalyticsData(analyticsData);
+    if (chartMode === "DAY") {
+      setAnalyticsData(analyticsData);
+    } else {
+      const months = getMonthsInRange(deliveryStartDate, deliveryEndDate);
+      const monthsData = months.map((month) => {
+        const monthlyAnalytics = analyticsData.filter(
+          (day) => moment(day.date, "ddd DD-MM").format("YYYY-MM") === month
+        );
+
+        return {
+          date: moment(month, "YYYY-MM").format("MMM"),
+          revenue: monthlyAnalytics.reduce(
+            (total, day) => total + day.revenue,
+            0
+          ),
+          profit: monthlyAnalytics.reduce(
+            (total, day) => total + day.profit,
+            0
+          ),
+          expense: monthlyAnalytics.reduce(
+            (total, day) => total + day.expense,
+            0
+          ),
+        };
+      });
+      setAnalyticsData(monthsData);
+    }
   };
 
   return (
@@ -156,6 +184,24 @@ export default function Analytics() {
           FILTERS
         </Typography>
         <Grid spacing={2} container marginTop={1}>
+          <Grid item xs={12}>
+            <ToggleButtonGroup
+              value={chartMode}
+              exclusive
+              onChange={(e, newMode) => {
+                const mode = newMode || "DAY";
+                setChartMode(mode);
+              }}
+              aria-label="text alignment"
+            >
+              <ToggleButton value="DAY" aria-label="left aligned">
+                Day
+              </ToggleButton>
+              <ToggleButton value="MONTH" aria-label="centered">
+                Month
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Grid>
           <Grid item xs={4}>
             <TextField
               fullWidth

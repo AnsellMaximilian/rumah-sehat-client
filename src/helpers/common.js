@@ -48,6 +48,19 @@ export const getDaysInRange = (start, end) => {
   return dates;
 };
 
+export const getMonthsInRange = (start, end) => {
+  const startDate = moment(start);
+  const endDate = moment(end);
+  let current = startDate.clone();
+  const months = [];
+
+  while (current.isBefore(endDate) || current.isSame(endDate, "month")) {
+    months.push(current.format("YYYY-MM"));
+    current.add(1, "months");
+  }
+  return months;
+};
+
 export const formQueryParams = (obj) => {
   return Object.keys(obj)
     .filter((key) => obj[key])
