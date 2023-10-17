@@ -218,7 +218,7 @@ export default function DeliveryCreateForm({
             cost,
             overallCost,
             designatedSaleId,
-            product,
+            // product,
           };
         }),
         // Supplier delivery
