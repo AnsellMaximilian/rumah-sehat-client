@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 import http from "../../../http-common";
 import Delete from "@mui/icons-material/Delete";
 import NumericFormatRp from "../../../components/NumericFormatRp";
+import moment from "moment";
 
 import { toast } from "react-toastify";
 import IconButton from "@mui/material/IconButton";
@@ -25,6 +26,7 @@ export default function ProductShow() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [stock, setStock] = useState(0);
+  const [stockMatches, setStockMatches] = useState([]);
 
   const [drawAmount, setDrawAmount] = useState(0);
   const [drawDate, setDrawDate] = useState("");
@@ -91,9 +93,28 @@ export default function ProductShow() {
     }
   };
 
+  const handleMatchStock = async () => {
+    try {
+      const body = {
+        qty: stock,
+        date: moment().format("YYYY-MM-DD"),
+        description: null,
+      };
+      const match = (await http.post(`/rs/products/${id}/match-stock`, body))
+        .data.data;
+      refreshMetaData();
+      toast.success(`Succesfully matched stock. ID: ${match.id}`);
+    } catch (error) {
+      toast.error(error?.message || "Unknown error");
+    }
+  };
+
   const refreshMetaData = useCallback(() => {
     (async () => {
       setStock((await http.get(`/rs/products/${id}/stock`)).data.data);
+      setStockMatches(
+        (await http.get(`/rs/products/${id}/stock-matches`)).data.data
+      );
       if (product.keepStockSince) {
         const his = (await http.get(`/rs/products/${id}/history`)).data.data;
         setProductHistory(his);
@@ -106,9 +127,11 @@ export default function ProductShow() {
       const product = (await http.get(`/rs/products/${id}`)).data.data;
       setProduct(product);
       setStock((await http.get(`/rs/products/${id}/stock`)).data.data);
+      setStockMatches(
+        (await http.get(`/rs/products/${id}/stock-matches`)).data.data
+      );
       if (product.keepStockSince) {
         const his = (await http.get(`/rs/products/${id}/history`)).data.data;
-        console.log(his);
         setProductHistory(his);
       }
     })();
@@ -312,6 +335,25 @@ export default function ProductShow() {
                     ? `Since ${product.keepStockSince}`
                     : ""}
                 </Typography>
+              </Stack>
+              <Stack direction="row" spacing={2} alignItems="center">
+                <Typography variant="subtitle" fontWeight="medium">
+                  Latest Stock Match
+                </Typography>
+                {stockMatches.length > 0 ? (
+                  <Typography>
+                    {stockMatches[0].date} at {parseFloat(stockMatches[0].qty)}
+                  </Typography>
+                ) : (
+                  <Typography>No matches.</Typography>
+                )}
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={handleMatchStock}
+                >
+                  Match Stock
+                </Button>
               </Stack>
               <Typography variant="h5" fontWeight="bold">
                 {product.keepStockSince ? stock : "Not keeping stock"}
