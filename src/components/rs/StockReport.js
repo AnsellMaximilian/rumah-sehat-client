@@ -8,6 +8,7 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import { getProductStockColor } from "../../helpers/rs";
+import { Link } from "react-router-dom";
 
 export default function StockReport({ reportData }) {
   console.log(reportData);
@@ -47,7 +48,9 @@ export default function StockReport({ reportData }) {
                         },
                       }}
                     >
-                      <TableCell>{pr.id}</TableCell>
+                      <TableCell>
+                        <Link to={`/rs/products/${pr.id}`}>{pr.id}</Link>
+                      </TableCell>
                       <TableCell>{pr.name}</TableCell>
                       <TableCell align="right">
                         {parseFloat(pr.totalIn)}
