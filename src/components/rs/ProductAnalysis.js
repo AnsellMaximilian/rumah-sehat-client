@@ -95,10 +95,7 @@ export default function ProductAnalysis({ productId }) {
       return;
     }
 
-    const days = getDaysInRange(
-      analyticsDateSorted[0].date,
-      analyticsDateSorted[analyticsDateSorted.length - 1].date
-    );
+    const days = getDaysInRange(deliveryStartDate, deliveryEndDate);
 
     const analyticsData = days.map((day) => {
       const saleDay = analytics.find((analytic) => {
