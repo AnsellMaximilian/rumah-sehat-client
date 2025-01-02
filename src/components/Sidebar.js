@@ -47,6 +47,7 @@ const Sidebar = () => {
   const [rsProductOpen, setRsProductOpen] = useState(false);
   const [rsDeliveryOpen, setRsDeliveryOpen] = useState(false);
   const [rsReportsOpen, setRsReportsOpen] = useState(false);
+  const [drReportsOpen, setDrReportsOpen] = useState(false);
   const [expensesOpen, setExpensesOpen] = useState(false);
 
   // Dr's secret
@@ -304,6 +305,23 @@ const Sidebar = () => {
         text="Discount Models"
         icon={<DiscountIcon />}
       />
+      <ListItemButton onClick={() => setDrReportsOpen(!drReportsOpen)}>
+        <ListItemIcon>
+          <ReportIcon />
+        </ListItemIcon>
+        <ListItemText primary="Reports" />
+        {drReportsOpen ? <ExpandLess /> : <ExpandMore />}
+      </ListItemButton>
+      <Collapse in={drReportsOpen} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <SidebarLink
+            to="/dr/reports/stock"
+            text="Stock Report"
+            sx={{ pl: 4 }}
+            icon={<StockIcon />}
+          />
+        </List>
+      </Collapse>
     </List>
   );
 };
