@@ -274,19 +274,40 @@ export default function ProductShow() {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Paper sx={{ padding: 2, height: "100%" }}>
-            <Box marginBottom={2}>
-              <Typography variant="subtitle" fontWeight="bold" color="GrayText">
-                #{product.id}
-              </Typography>
-              <Box>
-                <Typography variant="h5" fontWeight="bold" lineHeight={0.7}>
-                  {product.name}
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="start"
+            >
+              <Box marginBottom={2}>
+                <Typography
+                  variant="subtitle"
+                  fontWeight="bold"
+                  color="GrayText"
+                >
+                  #{product.id}
                 </Typography>
-                <Typography variant="subtitle1">
-                  {product.Supplier.name}
-                </Typography>
+                <Box>
+                  <Typography variant="h5" fontWeight="bold" lineHeight={0.7}>
+                    {product.name}
+                  </Typography>
+                  <Typography variant="subtitle1">
+                    {product.Supplier.name}
+                  </Typography>
+                </Box>
               </Box>
+              <Stack direction="row" spacing={2}>
+                <Button
+                  variant="contained"
+                  component={RouterLink}
+                  color="warning"
+                  to={`/rs/products/edit/${id}`}
+                >
+                  Edit
+                </Button>
+              </Stack>
             </Box>
+
             <Stack spacing={2}>
               <Stack direction="row" spacing={2}>
                 <Typography fontWeight="bold">Price</Typography>
