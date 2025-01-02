@@ -45,7 +45,7 @@ export default function DrStockReport({ reportData }) {
                     }}
                   >
                     <TableCell>
-                      <Link to={`/rs/products/${pr.id}`}>{pr.id}</Link>
+                      <Link to={`/dr/id/items/${pr.id}`}>{pr.id}</Link>
                     </TableCell>
                     <TableCell>{pr.name}</TableCell>
 
