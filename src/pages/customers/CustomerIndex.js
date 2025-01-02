@@ -68,9 +68,27 @@ export default function CustomerIndex() {
       phone,
       note,
       RegionId: selectedRegion ? selectedRegion.id : undefined,
+      includeInactive: "true",
     });
     // console.log(queryParams);
     setCustomers((await http.get(`/customers?${queryParams}`)).data.data);
+  };
+
+  const cycleActiveStatus = async (id) => {
+    try {
+      const customer = (
+        await http.patch(`/customers/${id}/cycle-active-status`)
+      ).data.data;
+      toast.success(`Updated customer #${customer.id}`, { autoClose: 500 });
+      setCustomers((prev) =>
+        prev.map((cus) => {
+          if (cus.id === id) return { ...cus, isActive: customer.isActive };
+          return cus;
+        })
+      );
+    } catch (error) {
+      toast.error(error);
+    }
   };
 
   const columns = [
@@ -110,6 +128,25 @@ export default function CustomerIndex() {
           <CheckCircleIcon color="success" />
         ) : (
           <CancelIcon color="error" />
+        );
+      },
+    },
+    {
+      field: "isActive",
+      headerName: "Active",
+      width: 100,
+      align: "center",
+      renderCell: (params) => {
+        return (
+          <IconButton
+            color={params.row.isActive ? "success" : "error"}
+            onClick={(e) => {
+              e.stopPropagation();
+              cycleActiveStatus(params.row.id);
+            }}
+          >
+            {params.row.isActive ? <CheckCircleIcon /> : <CancelIcon />}
+          </IconButton>
         );
       },
     },
@@ -245,6 +282,7 @@ export default function CustomerIndex() {
             rsMember: customer.rsMember,
             receiveDrDiscount: customer.receiveDrDiscount,
             note: customer.note,
+            isActive: customer.isActive,
           }))}
           columns={columns}
         />
