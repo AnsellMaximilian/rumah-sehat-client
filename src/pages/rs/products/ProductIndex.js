@@ -197,6 +197,13 @@ const ProductIndex = () => {
         >
           Configure Overall Cost
         </Button>
+        <Button
+          variant="outlined"
+          component={Link}
+          to={"/rs/products/bulk-draw"}
+        >
+          Bulk Draw
+        </Button>
       </Box>
       <Box marginTop={2}>
         <Typography variant="h6" fontWeight={500}>

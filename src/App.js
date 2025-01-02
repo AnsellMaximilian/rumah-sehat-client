@@ -78,6 +78,7 @@ import ConfigureOverallCost from "./pages/rs/products/ConfigureOverallCost";
 import DetailedProfitsIndex from "./pages/rs/profits/DetailedProfitsIndex";
 import Analytics from "./pages/rs/reports/Analytics";
 import DrStockReportIndex from "./pages/dr/reports/DrStockReportIndex";
+import BulkDraw from "./pages/rs/products/BulkDraw";
 
 function App() {
   return (
@@ -188,6 +189,7 @@ function App() {
                     path="configure-overall-cost"
                     element={<ConfigureOverallCost />}
                   />
+                  <Route path="bulk-draw" element={<BulkDraw />} />
                   <Route path="edit/:id" element={<ProductCreate edit />} />
                   <Route path=":id" element={<ProductShow />} />
                 </Route>
