@@ -333,16 +333,37 @@ export default function DrIdItemShow() {
       <Grid container spacing={2}>
         <Grid item xs={6}>
           <Paper sx={{ padding: 2, height: "100%" }}>
-            <Box marginBottom={2}>
-              <Typography variant="subtitle" fontWeight="bold" color="GrayText">
-                #{item.id}
-              </Typography>
-              <Box>
-                <Typography variant="h5" fontWeight="bold">
-                  {item.name}
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="start"
+            >
+              <Box marginBottom={2}>
+                <Typography
+                  variant="subtitle"
+                  fontWeight="bold"
+                  color="GrayText"
+                >
+                  #{item.id}
                 </Typography>
+                <Box>
+                  <Typography variant="h5" fontWeight="bold">
+                    {item.name}
+                  </Typography>
+                </Box>
               </Box>
+              <Stack direction="row" spacing={2}>
+                <Button
+                  variant="contained"
+                  component={RouterLink}
+                  color="warning"
+                  to={`/dr/id/items/edit/${id}`}
+                >
+                  Edit
+                </Button>
+              </Stack>
             </Box>
+
             <Stack spacing={2}>
               <Stack direction="row" spacing={2}>
                 <Typography fontWeight="bold">Keep Stock Since</Typography>
