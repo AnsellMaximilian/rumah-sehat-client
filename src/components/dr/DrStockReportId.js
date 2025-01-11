@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
 import { getProductStockColor } from "../../helpers/rs";
 import { Link } from "react-router-dom";
 
-export default function DrStockReport({ reportData }) {
+export default function DrStockReportId({ reportData }) {
   return (
     <Box component={Paper} marginTop={2}>
       <Box padding={2} backgroundColor="primary.main" color="white">

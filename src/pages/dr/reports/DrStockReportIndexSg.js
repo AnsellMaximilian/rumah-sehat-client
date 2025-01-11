@@ -6,16 +6,16 @@ import Box from "@mui/material/Box";
 import http from "../../../http-common";
 import { toast } from "react-toastify";
 import { copyElementToClipboard } from "../../../helpers/common";
-import DrStockReport from "../../../components/dr/DrStockReport";
+import DrStockReport from "../../../components/dr/DrStockReportSg";
 
-const DrStockReportIndex = () => {
+const DrStockReportIndexSg = () => {
   const reportRef = useRef();
 
   const [reportData, setReportData] = useState(null);
 
   useEffect(() => {
     (async () => {
-      const stock = (await http.get(`/dr/id/items/stock-report`)).data.data;
+      const stock = (await http.get(`/dr/sg/items/stock-report`)).data.data;
       setReportData(stock);
     })();
   }, []);
@@ -58,4 +58,4 @@ const DrStockReportIndex = () => {
   );
 };
 
-export default DrStockReportIndex;
+export default DrStockReportIndexSg;

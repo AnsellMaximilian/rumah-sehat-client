@@ -77,8 +77,9 @@ import DrLoanIndex from "./pages/dr/loans/LoanIndex";
 import ConfigureOverallCost from "./pages/rs/products/ConfigureOverallCost";
 import DetailedProfitsIndex from "./pages/rs/profits/DetailedProfitsIndex";
 import Analytics from "./pages/rs/reports/Analytics";
-import DrStockReportIndex from "./pages/dr/reports/DrStockReportIndex";
+import DrStockReportIndexId from "./pages/dr/reports/DrStockReportIndexId";
 import BulkDraw from "./pages/rs/products/BulkDraw";
+import DrStockReportIndexSg from "./pages/dr/reports/DrStockReportIndexSg";
 
 function App() {
   return (
@@ -374,7 +375,10 @@ function App() {
                   path="reports"
                   element={<DataLayout title="Reports" titleVariant="h5" />}
                 >
-                  <Route path="stock" element={<DrStockReportIndex />} />
+                  <Route path="stock">
+                    <Route path="id" element={<DrStockReportIndexId />} />
+                    <Route path="sg" element={<DrStockReportIndexSg />} />
+                  </Route>
                 </Route>
               </Route>
               <Route path="other" element={<h1>Other Page</h1>} />

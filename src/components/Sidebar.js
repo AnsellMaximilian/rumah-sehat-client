@@ -315,8 +315,14 @@ const Sidebar = () => {
       <Collapse in={drReportsOpen} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <SidebarLink
-            to="/dr/reports/stock"
-            text="Stock Report"
+            to="/dr/reports/stock/id"
+            text="Stock Report ID"
+            sx={{ pl: 4 }}
+            icon={<StockIcon />}
+          />
+          <SidebarLink
+            to="/dr/reports/stock/sg"
+            text="Stock Report SG"
             sx={{ pl: 4 }}
             icon={<StockIcon />}
           />
