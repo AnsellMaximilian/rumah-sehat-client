@@ -3,6 +3,10 @@ import Button from "@mui/material/Button";
 import Autocomplete from "@mui/material/Autocomplete";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
 import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
@@ -17,6 +21,8 @@ import NumericFormatRp from "../../../components/NumericFormatRp";
 import DeleteAlert from "../../../components/DeleteAlert";
 import { formQueryParams } from "../../../helpers/common";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 const ProductIndex = () => {
   const [products, setProducts] = useState([]);
@@ -29,6 +35,7 @@ const ProductIndex = () => {
   const [name, setName] = useState("");
   const [selectedSupplier, setSelectedSupplier] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [activeStatus, setActiveStatus] = useState("all");
 
   const [deleteMsg, setDeleteMsg] = useState("Loading...");
 
@@ -68,7 +75,7 @@ const ProductIndex = () => {
 
   useEffect(() => {
     (async () => {
-      setProducts((await http.get("/rs/products")).data.data);
+      setProducts((await http.get("/rs/products?activeStatus=all")).data.data);
       setSuppliers((await http.get("/rs/suppliers")).data.data);
       setCategories((await http.get("/rs/product-categories")).data.data);
     })();
@@ -87,9 +94,27 @@ const ProductIndex = () => {
       SupplierId: selectedSupplier ? selectedSupplier.id : undefined,
       name,
       ProductCategoryId: selectedCategory ? selectedCategory.id : undefined,
+      activeStatus,
     });
     // console.log(queryParams);
     setProducts((await http.get(`/rs/products?${queryParams}`)).data.data);
+  };
+
+  const cycleActiveStatus = async (id) => {
+    try {
+      const product = (
+        await http.patch(`/rs/products/${id}/cycle-active-status`)
+      ).data.data;
+      toast.success(`Updated Product #${product.id}`, { autoClose: 500 });
+      setProducts((prev) =>
+        prev.map((pro) => {
+          if (pro.id === id) return { ...pro, isActive: product.isActive };
+          return pro;
+        })
+      );
+    } catch (error) {
+      toast.error(error);
+    }
   };
 
   const columns = [
@@ -147,6 +172,25 @@ const ProductIndex = () => {
             : `Since ${params.row.keepStockSince}`}
         </Typography>
       ),
+    },
+    {
+      field: "isActive",
+      headerName: "Active",
+      width: 100,
+      align: "center",
+      renderCell: (params) => {
+        return (
+          <IconButton
+            color={params.row.isActive ? "success" : "error"}
+            onClick={(e) => {
+              e.stopPropagation();
+              cycleActiveStatus(params.row.id);
+            }}
+          >
+            {params.row.isActive ? <CheckCircleIcon /> : <CancelIcon />}
+          </IconButton>
+        );
+      },
     },
     {
       field: "actions",
@@ -210,7 +254,7 @@ const ProductIndex = () => {
           FILTERS
         </Typography>
         <Grid spacing={2} container marginTop={1}>
-          <Grid item xs={12}>
+          <Grid item xs={9}>
             <TextField
               fullWidth
               label="Name"
@@ -218,6 +262,26 @@ const ProductIndex = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
+          </Grid>
+          <Grid item xs={3}>
+            <FormControl margin="none" fullWidth>
+              <InputLabel id="demo-simple-select-label">
+                Active Status
+              </InputLabel>
+              <Select
+                size="small"
+                label="Active Status"
+                value={activeStatus}
+                fullWidth
+                onChange={(e) => {
+                  setActiveStatus(e.target.value);
+                }}
+              >
+                <MenuItem value="all">All</MenuItem>
+                <MenuItem value="active">Active</MenuItem>
+                <MenuItem value="inactive">Inactive</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={8}>
             <Autocomplete
@@ -282,6 +346,7 @@ const ProductIndex = () => {
             overallCost: product.overallCost,
             unit: product.unit,
             keepStockSince: product.keepStockSince,
+            isActive: product.isActive,
           }))}
           columns={columns}
         />
