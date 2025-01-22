@@ -12,6 +12,8 @@ import { toast } from "react-toastify";
 import NumericFormatRM from "../../../../components/NumericFormatRM";
 import NumericFormatRp from "../../../../components/NumericFormatRp";
 import DeleteAlert from "../../../../components/DeleteAlert";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 const DrMyItemIndex = () => {
   const [items, setItems] = useState([]);
@@ -30,9 +32,25 @@ const DrMyItemIndex = () => {
     })();
   };
 
+  const cycleActiveStatus = async (id) => {
+    try {
+      const item = (await http.patch(`/dr/my/items/${id}/cycle-active-status`))
+        .data.data;
+      toast.success(`Updated item #${item.id}`, { autoClose: 500 });
+      setItems((prev) =>
+        prev.map((cus) => {
+          if (cus.id === id) return { ...cus, isActive: item.isActive };
+          return cus;
+        })
+      );
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
   useEffect(() => {
     (async () => {
-      setItems((await http.get("/dr/my/items")).data.data);
+      setItems((await http.get("/dr/my/items?activeStatus=all")).data.data);
     })();
   }, []);
 
@@ -60,6 +78,26 @@ const DrMyItemIndex = () => {
       renderCell: (params) => (
         <NumericFormatRp value={params.row.deliveryCost} />
       ),
+    },
+
+    {
+      field: "isActive",
+      headerName: "Active",
+      width: 100,
+      align: "center",
+      renderCell: (params) => {
+        return (
+          <IconButton
+            color={params.row.isActive ? "success" : "error"}
+            onClick={(e) => {
+              e.stopPropagation();
+              cycleActiveStatus(params.row.id);
+            }}
+          >
+            {params.row.isActive ? <CheckCircleIcon /> : <CancelIcon />}
+          </IconButton>
+        );
+      },
     },
     {
       field: "actions",
@@ -104,6 +142,7 @@ const DrMyItemIndex = () => {
             priceRM: item.priceRM,
             deliveryCost: item.deliveryCost,
             points: item.points,
+            isActive: item.isActive,
           }))}
           columns={columns}
         />

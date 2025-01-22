@@ -14,6 +14,8 @@ import NumericFormatSGD from "../../../../components/NumericFormatSGD";
 import NumericFormatRp from "../../../../components/NumericFormatRp";
 import DeleteAlert from "../../../../components/DeleteAlert";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 const DrSgItemIndex = () => {
   const [items, setItems] = useState([]);
@@ -32,9 +34,25 @@ const DrSgItemIndex = () => {
     })();
   };
 
+  const cycleActiveStatus = async (id) => {
+    try {
+      const item = (await http.patch(`/dr/sg/items/${id}/cycle-active-status`))
+        .data.data;
+      toast.success(`Updated item #${item.id}`, { autoClose: 500 });
+      setItems((prev) =>
+        prev.map((cus) => {
+          if (cus.id === id) return { ...cus, isActive: item.isActive };
+          return cus;
+        })
+      );
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
   useEffect(() => {
     (async () => {
-      setItems((await http.get("/dr/sg/items")).data.data);
+      setItems((await http.get("/dr/sg/items?activeStatus=all")).data.data);
     })();
   }, []);
 
@@ -79,6 +97,25 @@ const DrSgItemIndex = () => {
       renderCell: (params) => (
         <NumericFormatRp value={params.row.recommendedDeliveryCost} />
       ),
+    },
+    {
+      field: "isActive",
+      headerName: "Active",
+      width: 100,
+      align: "center",
+      renderCell: (params) => {
+        return (
+          <IconButton
+            color={params.row.isActive ? "success" : "error"}
+            onClick={(e) => {
+              e.stopPropagation();
+              cycleActiveStatus(params.row.id);
+            }}
+          >
+            {params.row.isActive ? <CheckCircleIcon /> : <CancelIcon />}
+          </IconButton>
+        );
+      },
     },
     {
       field: "actions",
@@ -132,6 +169,7 @@ const DrSgItemIndex = () => {
             points: item.points,
             weight: item.weight,
             recommendedDeliveryCost: item.recommendedDeliveryCost,
+            isActive: item.isActive,
           }))}
           columns={columns}
         />
