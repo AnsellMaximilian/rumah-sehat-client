@@ -1,5 +1,11 @@
 import Card from "@mui/material/Card";
+import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -16,11 +22,16 @@ import DeleteAlert from "../../../../components/DeleteAlert";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
+import { formQueryParams } from "../../../../helpers/common";
 
 const DrSgItemIndex = () => {
   const [items, setItems] = useState([]);
 
   const [toDeleteId, setToDeleteId] = useState(null);
+
+  // filters
+  const [name, setName] = useState("");
+  const [activeStatus, setActiveStatus] = useState("all");
 
   const handleDelete = (id) => {
     (async () => {
@@ -32,6 +43,21 @@ const DrSgItemIndex = () => {
         toast.error(error);
       }
     })();
+  };
+
+  const handleClearFilter = async () => {
+    setName("");
+
+    setItems((await http.get("/dr/sg/items?activeStatus=all")).data.data);
+  };
+
+  const handleFilter = async () => {
+    const queryParams = formQueryParams({
+      name,
+      activeStatus,
+    });
+    // console.log(queryParams);
+    setItems((await http.get(`/dr/sg/items?${queryParams}`)).data.data);
   };
 
   const cycleActiveStatus = async (id) => {
@@ -159,7 +185,51 @@ const DrSgItemIndex = () => {
           New Item
         </Button>
       </Box>
-      <Card>
+      <Box marginTop={2}>
+        <Typography variant="h6" fontWeight={500}>
+          FILTERS
+        </Typography>
+        <Grid spacing={2} container marginTop={1}>
+          <Grid item xs={9}>
+            <TextField
+              fullWidth
+              label="Name"
+              size="small"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <FormControl margin="none" fullWidth>
+              <InputLabel id="demo-simple-select-label">
+                Active Status
+              </InputLabel>
+              <Select
+                size="small"
+                label="Active Status"
+                value={activeStatus}
+                fullWidth
+                onChange={(e) => {
+                  setActiveStatus(e.target.value);
+                }}
+              >
+                <MenuItem value="all">All</MenuItem>
+                <MenuItem value="active">Active</MenuItem>
+                <MenuItem value="inactive">Inactive</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
+        <Box display="flex" gap={2} marginTop={2}>
+          <Button variant="outlined" fullWidth onClick={handleClearFilter}>
+            Clear Filter
+          </Button>
+          <Button variant="contained" fullWidth onClick={handleFilter}>
+            Filter
+          </Button>
+        </Box>
+      </Box>
+      <Card sx={{ marginTop: 4 }}>
         <SmartTable
           rows={items.map((item) => ({
             id: item.id,
