@@ -1,6 +1,10 @@
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
 import Typography from "@mui/material/Typography";
 import Autocomplete from "@mui/material/Autocomplete";
 import Button from "@mui/material/Button";
@@ -28,10 +32,11 @@ export default function CustomerIndex() {
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [note, setNote] = useState("");
+  const [activeStatus, setActiveStatus] = useState("all");
 
   useEffect(() => {
     (async () => {
-      setCustomers((await http.get("/customers")).data.data);
+      setCustomers((await http.get("/customers?activeStatus=all")).data.data);
       setRegions((await http.get("/regions")).data.data);
     })();
   }, []);
@@ -58,7 +63,7 @@ export default function CustomerIndex() {
     setPhone("");
     setNote("");
     setSelectedRegion(null);
-    setCustomers((await http.get(`/customers`)).data.data);
+    setCustomers((await http.get(`/customers?activeStatus=all`)).data.data);
   };
 
   const handleFilter = async () => {
@@ -68,7 +73,7 @@ export default function CustomerIndex() {
       phone,
       note,
       RegionId: selectedRegion ? selectedRegion.id : undefined,
-      includeInactive: "true",
+      activeStatus,
     });
     // console.log(queryParams);
     setCustomers((await http.get(`/customers?${queryParams}`)).data.data);
@@ -105,32 +110,32 @@ export default function CustomerIndex() {
       headerName: "Region",
       width: 75,
     },
-    {
-      field: "rsMember",
-      headerName: "RS Member",
-      width: 100,
-      align: "center",
-      renderCell: (params) => {
-        return params.row.rsMember ? (
-          <CheckCircleIcon color="success" />
-        ) : (
-          <CancelIcon color="error" />
-        );
-      },
-    },
-    {
-      field: "receiveDrDiscount",
-      headerName: "Dr's Discount",
-      width: 100,
-      align: "center",
-      renderCell: (params) => {
-        return params.row.receiveDrDiscount ? (
-          <CheckCircleIcon color="success" />
-        ) : (
-          <CancelIcon color="error" />
-        );
-      },
-    },
+    // {
+    //   field: "rsMember",
+    //   headerName: "RS Member",
+    //   width: 100,
+    //   align: "center",
+    //   renderCell: (params) => {
+    //     return params.row.rsMember ? (
+    //       <CheckCircleIcon color="success" />
+    //     ) : (
+    //       <CancelIcon color="error" />
+    //     );
+    //   },
+    // },
+    // {
+    //   field: "receiveDrDiscount",
+    //   headerName: "Dr's Discount",
+    //   width: 100,
+    //   align: "center",
+    //   renderCell: (params) => {
+    //     return params.row.receiveDrDiscount ? (
+    //       <CheckCircleIcon color="success" />
+    //     ) : (
+    //       <CancelIcon color="error" />
+    //     );
+    //   },
+    // },
     {
       field: "isActive",
       headerName: "Active",
@@ -199,7 +204,7 @@ export default function CustomerIndex() {
           FILTERS
         </Typography>
         <Grid spacing={2} container marginTop={1}>
-          <Grid item xs={12}>
+          <Grid item xs={9}>
             <TextField
               fullWidth
               size="small"
@@ -207,6 +212,26 @@ export default function CustomerIndex() {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
             />
+          </Grid>
+          <Grid item xs={3}>
+            <FormControl margin="none" fullWidth>
+              <InputLabel id="demo-simple-select-label">
+                Active Status
+              </InputLabel>
+              <Select
+                size="small"
+                label="Active Status"
+                value={activeStatus}
+                fullWidth
+                onChange={(e) => {
+                  setActiveStatus(e.target.value);
+                }}
+              >
+                <MenuItem value="all">All</MenuItem>
+                <MenuItem value="active">Active</MenuItem>
+                <MenuItem value="inactive">Inactive</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
 
           <Grid item xs={6}>
