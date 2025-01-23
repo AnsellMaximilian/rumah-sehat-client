@@ -39,6 +39,7 @@ export default function ProductShow() {
   const [adjustDescription, setAdjustDescription] = useState("");
 
   const [toDeleteDrawId, setToDeleteDrawId] = useState(null);
+  const [toDeleteAdjustmentId, setToDeleteAdjustmentId] = useState(null);
 
   const handleDeleteDraw = (id) => {
     (async () => {
@@ -46,6 +47,18 @@ export default function ProductShow() {
         await http.delete(`/rs/draws/${id}`);
         refreshMetaData();
         toast.success("Draw deleted.");
+      } catch ({ response: { data: error } }) {
+        toast.error(error);
+      }
+    })();
+  };
+
+  const handleDeleteAdjustment = (id) => {
+    (async () => {
+      try {
+        await http.delete(`/rs/stock-adjustments/${id}`);
+        refreshMetaData();
+        toast.success("Stock Adjustment deleted.");
       } catch ({ response: { data: error } }) {
         toast.error(error);
       }
@@ -205,7 +218,7 @@ export default function ProductShow() {
         renderCell: (params) => {
           return (
             <>
-              {params.row.type === "DRAW" && (
+              {params.row.type === "DRAW" ? (
                 <IconButton
                   color="error"
                   onClick={(e) => {
@@ -215,7 +228,17 @@ export default function ProductShow() {
                 >
                   <Delete />
                 </IconButton>
-              )}
+              ) : params.row.type === "ADJUST" ? (
+                <IconButton
+                  color="error"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setToDeleteAdjustmentId(params.row.parentId);
+                  }}
+                >
+                  <Delete />
+                </IconButton>
+              ) : null}
             </>
           );
         },
@@ -485,6 +508,14 @@ export default function ProductShow() {
         handleDelete={handleDeleteDraw}
         setToDeleteId={setToDeleteDrawId}
         objectName="Draw"
+      />
+
+      <DeleteAlert
+        message="Are you sure you want to remove this adjustment?"
+        toDeleteId={toDeleteAdjustmentId}
+        handleDelete={handleDeleteAdjustment}
+        setToDeleteId={setToDeleteAdjustmentId}
+        objectName="Adjust"
       />
     </>
   ) : (
