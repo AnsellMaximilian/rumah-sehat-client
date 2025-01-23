@@ -57,12 +57,12 @@ const Sidebar = () => {
     <List component="nav" sx={{ maxHeight: "calc(100vh - 65px)" }}>
       <SidebarLink to="/" text="Dasbhoard" icon={<DashboardIcon />} />
       <SidebarLink to="/customers" text="Customers" icon={<PeopleIcon />} />
-      <SidebarLink
+      {/* <SidebarLink
         to="/transactions"
         text="Transactions"
         icon={<CurrencyExchangeIcon />}
-      />
-      <ListItemButton onClick={() => setExpensesOpen(!expensesOpen)}>
+      /> */}
+      {/* <ListItemButton onClick={() => setExpensesOpen(!expensesOpen)}>
         <ListItemIcon>
           <ExpenseIcon />
         </ListItemIcon>
@@ -84,7 +84,7 @@ const Sidebar = () => {
             sx={{ pl: 4 }}
           />
         </List>
-      </Collapse>
+      </Collapse> */}
       {/* <SidebarLink to="/regions" text="Regions" icon={<MyLocationIcon />} /> */}
       <Divider sx={{ my: 1 }} />
       <ListSubheader component="div" inset>
@@ -184,12 +184,12 @@ const Sidebar = () => {
             sx={{ pl: 4 }}
             icon={<ReportProblemIcon />}
           />
-          <SidebarLink
+          {/* <SidebarLink
             to="/rs/reports/profits"
             text="Profits"
             icon={<MoneyIcon />}
             sx={{ pl: 4 }}
-          />
+          /> */}
           <SidebarLink
             to="/rs/reports/detailed-profits"
             text="Detailed Profits"
