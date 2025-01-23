@@ -51,6 +51,8 @@ export default function DrSgItemShow() {
   const [returnDate, setReturnDate] = useState("");
   const [selectedReturnLoan, setSelectedReturnLoan] = useState(null);
 
+  const [toDeleteAdjustmentId, setToDeleteAdjustmentId] = useState(null);
+
   const refreshMetaData = useCallback(() => {
     (async () => {
       setStock((await http.get(`/dr/sg/items/${id}/stock`)).data.data);
@@ -80,6 +82,18 @@ export default function DrSgItemShow() {
     } catch (error) {
       toast.error(error?.message || "Unknown error");
     }
+  };
+
+  const handleDeleteAdjustment = (id) => {
+    (async () => {
+      try {
+        await http.delete(`/dr/sg/stock-adjustments/${id}`);
+        refreshMetaData();
+        toast.success("Stock Adjustment deleted.");
+      } catch ({ response: { data: error } }) {
+        toast.error(error);
+      }
+    })();
   };
 
   const handleLend = async () => {
@@ -215,7 +229,21 @@ export default function DrSgItemShow() {
         field: "actions",
         headerName: "Actions",
         renderCell: (params) => {
-          return <></>;
+          return (
+            <>
+              {params.row.type === "ADJUST" && (
+                <IconButton
+                  color="error"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setToDeleteAdjustmentId(params.row.parentId);
+                  }}
+                >
+                  <Delete />
+                </IconButton>
+              )}
+            </>
+          );
         },
         width: 200,
       },
@@ -569,6 +597,14 @@ export default function DrSgItemShow() {
         handleDelete={handleDeleteLoan}
         setToDeleteId={setToDeleteLoanId}
         objectName="Draw"
+      />
+
+      <DeleteAlert
+        message="Are you sure you want to remove this adjustment?"
+        toDeleteId={toDeleteAdjustmentId}
+        handleDelete={handleDeleteAdjustment}
+        setToDeleteId={setToDeleteAdjustmentId}
+        objectName="Adjustment"
       />
     </>
   ) : (
