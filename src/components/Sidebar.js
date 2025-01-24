@@ -17,7 +17,7 @@ import CategoryIcon from "@mui/icons-material/ManageSearch";
 import SupplierIcon from "@mui/icons-material/Inventory";
 import SyncIcon from "@mui/icons-material/Sync";
 import ShoppingCart from "@mui/icons-material/ShoppingCart";
-// import MyLocationIcon from "@mui/icons-material/MyLocation";
+import MyLocationIcon from "@mui/icons-material/MyLocation";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import ReportIcon from "@mui/icons-material/Assessment";
 import MoneyIcon from "@mui/icons-material/Paid";
@@ -85,7 +85,7 @@ const Sidebar = () => {
           />
         </List>
       </Collapse> */}
-      {/* <SidebarLink to="/regions" text="Regions" icon={<MyLocationIcon />} /> */}
+      <SidebarLink to="/regions" text="Regions" icon={<MyLocationIcon />} />
       <Divider sx={{ my: 1 }} />
       <ListSubheader component="div" inset>
         Rumah Sehat

@@ -80,6 +80,8 @@ import Analytics from "./pages/rs/reports/Analytics";
 import DrStockReportIndexId from "./pages/dr/reports/DrStockReportIndexId";
 import BulkDraw from "./pages/rs/products/BulkDraw";
 import DrStockReportIndexSg from "./pages/dr/reports/DrStockReportIndexSg";
+import RegionIndex from "./pages/regions/RegionIndex";
+import RegionCreate from "./pages/regions/RegionCreate";
 
 function App() {
   return (
@@ -99,6 +101,14 @@ function App() {
                 <Route path="create" element={<CustomerCreate />} />
                 <Route path=":id" element={<CustomerShow />} />
                 <Route path="edit/:id" element={<CustomerCreate edit />} />
+              </Route>
+              <Route
+                path="regions"
+                element={<DataLayout title="Regions" titleVariant="subtitle" />}
+              >
+                <Route path="" element={<RegionIndex />} />
+                <Route path="create" element={<RegionCreate />} />
+                <Route path="edit/:id" element={<RegionCreate edit />} />
               </Route>
               <Route
                 path="expenses"
