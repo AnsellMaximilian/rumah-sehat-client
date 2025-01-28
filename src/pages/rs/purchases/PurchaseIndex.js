@@ -1,12 +1,21 @@
 import Card from "@mui/material/Card";
+import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Autocomplete from "@mui/material/Autocomplete";
+import IconButton from "@mui/material/IconButton";
+import FormControl from "@mui/material/FormControl";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
+import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
 import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/ModeEdit";
-import { IconButton } from "@mui/material";
 import http from "../../../http-common";
 import SmartTable from "../../../components/SmartTable";
 import NumericFormatRp from "../../../components/NumericFormatRp";
@@ -18,10 +27,23 @@ import ReceiptIcon from "@mui/icons-material/Receipt";
 import moment from "moment";
 import DeleteAlert from "../../../components/DeleteAlert";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import { formQueryParams, getWeek } from "../../../helpers/common";
 
 const PurchaseIndex = () => {
   const [purchases, setPurchases] = useState([]);
   const [toDeleteId, setToDeleteId] = useState(null);
+
+  // Filters
+  const [suppliers, setSuppliers] = useState([]);
+  const [selectedSupplier, setSelectedSupplier] = useState(null);
+  const [filterId, setFilterId] = useState("");
+  const [purchaseInvoiceId, setPurchaseInvoiceId] = useState("");
+  const [invoiceStartDate, setInvoiceStartDate] = useState("");
+  const [invoiceEndDate, setInvoiceEndDate] = useState("");
+  const [deliveriesStartDate, setDeliveriesStartDate] = useState("");
+  const [deliveriesEndDate, setDeliveriesEndDate] = useState("");
+  const [paidStatus, setPaidStatus] = useState("all");
+  const [isInvoicedStatus, setIsInvoicedStatus] = useState("all");
 
   const handleDelete = (id) => {
     (async () => {
@@ -63,8 +85,54 @@ const PurchaseIndex = () => {
   useEffect(() => {
     (async () => {
       setPurchases((await http.get("/rs/purchases")).data.data);
+      setSuppliers((await http.get("/rs/suppliers")).data.data);
     })();
   }, []);
+
+  const handleSetInvoiceWeek = () => {
+    const { weekStart, weekEnd } = getWeek();
+
+    setInvoiceStartDate(weekStart);
+    setInvoiceEndDate(weekEnd);
+  };
+
+  const handleSetDeliveriesWeek = () => {
+    const { weekStart, weekEnd } = getWeek();
+
+    setDeliveriesStartDate(weekStart);
+    setDeliveriesEndDate(weekEnd);
+  };
+
+  const handleClearFilter = async () => {
+    setSelectedSupplier(null);
+    setFilterId("");
+    setDeliveriesEndDate("");
+    setDeliveriesStartDate("");
+    setInvoiceEndDate("");
+    setInvoiceStartDate("");
+    setPaidStatus("all");
+    setIsInvoicedStatus("all");
+    setPurchaseInvoiceId("");
+
+    setPurchases((await http.get("/rs/purchases")).data.data);
+  };
+
+  const handleFilter = async () => {
+    const queryParams = formQueryParams({
+      SupplierId: selectedSupplier ? selectedSupplier.id : undefined,
+      startDate: deliveriesStartDate,
+      endDate: deliveriesEndDate,
+      invoiceStartDate,
+      invoiceEndDate,
+      filterId,
+      purchaseInvoiceId,
+      paid: paidStatus === "all" ? undefined : paidStatus,
+
+      invoiced: isInvoicedStatus === "all" ? undefined : isInvoicedStatus,
+    });
+
+    setPurchases((await http.get(`/rs/purchases?${queryParams}`)).data.data);
+  };
 
   const columns = [
     { field: "id", headerName: "ID", width: 100 },
@@ -190,7 +258,187 @@ const PurchaseIndex = () => {
           Manage Purchase Invoices
         </Button>
       </Box>
-      <Card>
+      <Box marginTop={2}>
+        <Typography variant="h6" fontWeight={500}>
+          FILTERS
+        </Typography>
+        <Divider>
+          <Chip label="Purchase" />
+        </Divider>
+        <Grid spacing={2} container marginTop={1}>
+          <Grid item xs={2}>
+            <TextField
+              fullWidth
+              label="ID"
+              size="small"
+              type="number"
+              value={filterId}
+              onChange={(e) => setFilterId(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <TextField
+              fullWidth
+              label="Purchase Invoice ID"
+              size="small"
+              type="number"
+              value={purchaseInvoiceId}
+              onChange={(e) => setPurchaseInvoiceId(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <Autocomplete
+              value={selectedSupplier}
+              onChange={(e, newValue) => {
+                setSelectedSupplier(newValue);
+              }}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              renderOption={(props, option) => (
+                <li {...props} key={option.id}>
+                  <Typography>{option.name}</Typography>
+                </li>
+              )}
+              getOptionLabel={(option) => `(#${option.id}) ${option.name}`}
+              options={suppliers}
+              sx={{ width: "100%" }}
+              renderInput={(params) => (
+                <TextField {...params} label="Supplier" size="small" />
+              )}
+            />
+          </Grid>
+
+          <Grid item xs={2}>
+            <FormControl margin="none" fullWidth>
+              <InputLabel id="demo-simple-select-label">Paid Status</InputLabel>
+              <Select
+                size="small"
+                label="Paid Status"
+                value={paidStatus}
+                fullWidth
+                onChange={(e) => {
+                  setPaidStatus(e.target.value);
+                }}
+              >
+                <MenuItem value="all">All</MenuItem>
+                <MenuItem value="true">Paid</MenuItem>
+                <MenuItem value="false">Unpaid</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={2}>
+            <FormControl margin="none" fullWidth>
+              <InputLabel id="demo-simple-select-label">Invoiced</InputLabel>
+              <Select
+                size="small"
+                label="Invoiced"
+                value={isInvoicedStatus}
+                fullWidth
+                onChange={(e) => {
+                  setIsInvoicedStatus(e.target.value);
+                }}
+              >
+                <MenuItem value="all">All</MenuItem>
+                <MenuItem value="true">Invoiced</MenuItem>
+                <MenuItem value="false">Uninvoiced</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={5}>
+            <TextField
+              fullWidth
+              size="small"
+              label="Start Date"
+              type="date"
+              value={deliveriesStartDate}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={(e) => setDeliveriesStartDate(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={5}>
+            <TextField
+              fullWidth
+              size="small"
+              label="End Date"
+              type="date"
+              value={deliveriesEndDate}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={(e) => setDeliveriesEndDate(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <Box display="flex" height="100%">
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={handleSetDeliveriesWeek}
+              >
+                This Week
+              </Button>
+            </Box>
+          </Grid>
+          <Grid item xs={12}></Grid>
+        </Grid>
+
+        <Divider>
+          <Chip label="Invoice" />
+        </Divider>
+        <Grid spacing={2} container marginTop={1}>
+          <Grid item xs={5}>
+            <TextField
+              fullWidth
+              size="small"
+              label="Start Date"
+              type="date"
+              value={invoiceStartDate}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={(e) => setInvoiceStartDate(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={5}>
+            <TextField
+              fullWidth
+              size="small"
+              label="End Date"
+              type="date"
+              value={invoiceEndDate}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={(e) => setInvoiceEndDate(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <Box display="flex" height="100%">
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={handleSetInvoiceWeek}
+              >
+                This Week
+              </Button>
+            </Box>
+          </Grid>
+          <Grid item xs={12}></Grid>
+        </Grid>
+
+        <Box display="flex" gap={2}>
+          <Button variant="outlined" fullWidth onClick={handleClearFilter}>
+            Clear Filter
+          </Button>
+          <Button variant="contained" fullWidth onClick={handleFilter}>
+            Filter
+          </Button>
+        </Box>
+      </Box>
+      <Card sx={{ marginTop: 4 }}>
         <SmartTable
           rows={purchases.map((purchase) => ({
             id: purchase.id,

@@ -109,8 +109,8 @@ const PurchaseInvoiceIndex = () => {
   const handleFilter = async () => {
     const queryParams = formQueryParams({
       SupplierId: selectedSupplier ? selectedSupplier.id : undefined,
-      startDate: invoiceEndDate,
-      endDate: invoiceStartDate,
+      startDate: invoiceStartDate,
+      endDate: invoiceEndDate,
       deliveriesEndDate,
       deliveriesStartDate,
       filterId,
