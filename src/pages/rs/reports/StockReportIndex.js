@@ -7,6 +7,7 @@ import http from "../../../http-common";
 import { toast } from "react-toastify";
 import { copyElementToClipboard } from "../../../helpers/common";
 import StockReport from "../../../components/rs/StockReport";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 const StockReportIndex = () => {
   const reportRef = useRef();
@@ -32,11 +33,25 @@ const StockReportIndex = () => {
     }
   };
 
+  const refresh = async () => {
+    (async () => {
+      const stock = (await http.get(`/rs/products/stock-report`)).data.data;
+      setReportData(stock);
+    })();
+  };
+
   return reportData ? (
     <Box paddingBottom={2}>
       {
         <Box marginTop={2}>
           <Box display="flex" justifyContent="flex-end" gap={2}>
+            <Button
+              endIcon={<RefreshIcon />}
+              variant="outlined"
+              onClick={refresh}
+            >
+              Refresh
+            </Button>
             <Button
               endIcon={<ContentCopyIcon />}
               variant="outlined"
@@ -46,7 +61,7 @@ const StockReportIndex = () => {
             </Button>
           </Box>
           <div ref={reportRef}>
-            <StockReport reportData={reportData} />
+            <StockReport reportData={reportData} refresh={refresh} />
           </div>
         </Box>
       }

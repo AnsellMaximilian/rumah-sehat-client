@@ -7,10 +7,29 @@ import TableRow from "@mui/material/TableRow";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 import { getProductStockColor } from "../../helpers/rs";
 import { Link } from "react-router-dom";
+import http from "../../http-common";
+import { toast } from "react-toastify";
+import moment from "moment";
 
-export default function StockReport({ reportData }) {
+export default function StockReport({ reportData, refresh }) {
+  const handleMatchStock = async (id, stock) => {
+    try {
+      const body = {
+        qty: stock,
+        date: moment().format("YYYY-MM-DD"),
+        description: null,
+      };
+      const match = (await http.post(`/rs/products/${id}/match-stock`, body))
+        .data.data;
+      refresh();
+      toast.success(`Succesfully matched stock. ID: ${match.id}`);
+    } catch (error) {
+      toast.error(error?.message || "Unknown error");
+    }
+  };
   console.log(reportData);
   return (
     <Box component={Paper} marginTop={2}>
@@ -27,11 +46,13 @@ export default function StockReport({ reportData }) {
               <TableRow>
                 <TableCell>ID</TableCell>
                 <TableCell>Product</TableCell>
-                <TableCell align="right">In</TableCell>
+                {/* <TableCell align="right">In</TableCell>
                 <TableCell align="right">Out</TableCell>
                 <TableCell align="right">Drawn</TableCell>
-                <TableCell align="right">Adjusted</TableCell>
+                <TableCell align="right">Adjusted</TableCell> */}
                 <TableCell align="right">Available Stock</TableCell>
+                <TableCell align="right">Latest Stock Match</TableCell>
+                <TableCell align="right">Match Stock</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -52,7 +73,7 @@ export default function StockReport({ reportData }) {
                         <Link to={`/rs/products/${pr.id}`}>{pr.id}</Link>
                       </TableCell>
                       <TableCell>{pr.name}</TableCell>
-                      <TableCell align="right">
+                      {/* <TableCell align="right">
                         {parseFloat(pr.totalIn)}
                       </TableCell>
                       <TableCell align="right">
@@ -63,7 +84,7 @@ export default function StockReport({ reportData }) {
                       </TableCell>
                       <TableCell align="right">
                         {parseFloat(pr.totalAdjusted)}
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell align="right">
                         <Typography
                           fontSize={24}
@@ -75,6 +96,24 @@ export default function StockReport({ reportData }) {
                         >
                           {parseFloat(pr.stock)}
                         </Typography>
+                      </TableCell>
+                      <TableCell align="right">
+                        {pr.latestStockMatchDate
+                          ? `${pr.latestStockMatchDate} at ${parseFloat(
+                              pr.latestStockMatchQty
+                            )}`
+                          : "No matches"}
+                      </TableCell>
+                      <TableCell align="right">
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          onClick={() => {
+                            handleMatchStock(pr.id, pr.stock);
+                          }}
+                        >
+                          Match Stock
+                        </Button>
                       </TableCell>
                     </TableRow>
                   );
