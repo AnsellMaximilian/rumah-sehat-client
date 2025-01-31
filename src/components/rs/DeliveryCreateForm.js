@@ -62,6 +62,10 @@ export default function DeliveryCreateForm({
 
   const [isSubmitButtonDisabled, setIsSubmitButtonDisabled] = useState(false);
 
+  // Designated Sales
+  const [isLoadingDesignatedSales, setIsLoadingDesignatedSales] =
+    useState(false);
+
   useEffect(() => {
     (async () => {
       setCustomers((await http.get("/customers")).data.data);
@@ -445,7 +449,9 @@ export default function DeliveryCreateForm({
             {mode === "own" && (
               <Button
                 variant="outlined"
+                disabled={isLoadingDesignatedSales}
                 onClick={async () => {
+                  setIsLoadingDesignatedSales(true);
                   try {
                     const customerId = deliveryCustomer?.id;
                     if (!customerId)
@@ -466,7 +472,9 @@ export default function DeliveryCreateForm({
                       );
                     for (const sale of sales) {
                       const product = (
-                        await http.get(`/rs/products/${sale.ProductId}`)
+                        await http.get(
+                          `/rs/products/${sale.ProductId}?excludeDeliveries=true&excludePurchases=true`
+                        )
                       ).data.data;
                       handleAddDeliveryDetail({
                         key: uuidv4(),
@@ -485,6 +493,7 @@ export default function DeliveryCreateForm({
                     const errorMsg = errorValue ? errorValue : error.message;
                     toast.error(errorMsg);
                   }
+                  setIsLoadingDesignatedSales(false);
                 }}
               >
                 Add Purchase
