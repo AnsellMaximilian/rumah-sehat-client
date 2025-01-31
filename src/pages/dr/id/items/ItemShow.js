@@ -15,6 +15,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import http from "../../../../http-common";
 import Delete from "@mui/icons-material/Delete";
+import moment from "moment";
 
 import { toast } from "react-toastify";
 import IconButton from "@mui/material/IconButton";
@@ -29,6 +30,7 @@ export default function DrIdItemShow() {
   const [item, setItem] = useState(null);
   const [stock, setStock] = useState(0);
   const [loans, setLoans] = useState([]);
+  const [stockMatches, setStockMatches] = useState([]);
 
   const [itemHistory, setItemHistory] = useState(null);
 
@@ -56,6 +58,9 @@ export default function DrIdItemShow() {
   const refreshMetaData = useCallback(() => {
     (async () => {
       setStock((await http.get(`/dr/id/items/${id}/stock`)).data.data);
+      setStockMatches(
+        (await http.get(`/dr/id/items/${id}/stock-matches`)).data.data
+      );
       setLoans((await http.get(`/dr/id/loans?DrIdItemId=${id}`)).data.data);
       if (item.keepStockSince) {
         const his = (await http.get(`/dr/id/items/${id}/history`)).data.data;
@@ -63,6 +68,22 @@ export default function DrIdItemShow() {
       }
     })();
   }, [item, id]);
+
+  const handleMatchStock = async () => {
+    try {
+      const body = {
+        qty: stock,
+        date: moment(),
+        description: null,
+      };
+      const match = (await http.post(`/dr/id/items/${id}/match-stock`, body))
+        .data.data;
+      refreshMetaData();
+      toast.success(`Succesfully matched stock. ID: ${match.id}`);
+    } catch (error) {
+      toast.error(error?.message || "Unknown error");
+    }
+  };
 
   const handleAdjust = async () => {
     try {
@@ -139,6 +160,9 @@ export default function DrIdItemShow() {
       const customers = (await http.get(`/customers`)).data.data;
       setCustomers(customers);
       setStock((await http.get(`/dr/id/items/${id}/stock`)).data.data);
+      setStockMatches(
+        (await http.get(`/dr/id/items/${id}/stock-matches`)).data.data
+      );
       setLoans((await http.get(`/dr/id/loans?DrIdItemId=${id}`)).data.data);
 
       if (item.keepStockSince) {
@@ -403,9 +427,35 @@ export default function DrIdItemShow() {
         <Grid item xs={12}>
           <Paper sx={{ padding: 2, height: "100%" }}>
             <Stack spacing={2}>
-              <Typography variant="h4" fontWeight="bold">
-                Stock
-              </Typography>
+              <Stack direction="row" spacing={2} alignItems="center">
+                <Typography variant="h4" fontWeight="bold">
+                  Stock
+                </Typography>
+                <Typography>
+                  {item.keepStockSince ? `Since ${item.keepStockSince}` : ""}
+                </Typography>
+              </Stack>
+              <Stack direction="row" spacing={2} alignItems="center">
+                <Typography variant="subtitle" fontWeight="medium">
+                  Latest Stock Match
+                </Typography>
+                {stockMatches.length > 0 ? (
+                  <Typography>
+                    {moment(stockMatches[0].date).format("DD-MM-YYYY HH:mm:ss")}{" "}
+                    at {parseFloat(stockMatches[0].qty)}
+                  </Typography>
+                ) : (
+                  <Typography>No matches.</Typography>
+                )}
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={handleMatchStock}
+                >
+                  Match Stock
+                </Button>
+              </Stack>
+
               <Typography variant="h5" fontWeight="bold">
                 {item.keepStockSince ? stock : "Not keeping stock"}
               </Typography>
