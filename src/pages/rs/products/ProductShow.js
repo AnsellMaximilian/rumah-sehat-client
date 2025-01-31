@@ -110,7 +110,7 @@ export default function ProductShow() {
     try {
       const body = {
         qty: stock,
-        date: moment().format("YYYY-MM-DD"),
+        date: moment(),
         description: null,
       };
       const match = (await http.post(`/rs/products/${id}/match-stock`, body))
@@ -386,7 +386,8 @@ export default function ProductShow() {
                 </Typography>
                 {stockMatches.length > 0 ? (
                   <Typography>
-                    {stockMatches[0].date} at {parseFloat(stockMatches[0].qty)}
+                    {moment(stockMatches[0].date).format("DD-MM-YYYY HH:mm:ss")}{" "}
+                    at {parseFloat(stockMatches[0].qty)}
                   </Typography>
                 ) : (
                   <Typography>No matches.</Typography>

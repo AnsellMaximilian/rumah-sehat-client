@@ -99,9 +99,9 @@ export default function StockReport({ reportData, refresh }) {
                       </TableCell>
                       <TableCell align="right">
                         {pr.latestStockMatchDate
-                          ? `${pr.latestStockMatchDate} at ${parseFloat(
-                              pr.latestStockMatchQty
-                            )}`
+                          ? `${moment(pr.latestStockMatchDate).format(
+                              "DD-MM-YYYY HH:mm:ss"
+                            )} at ${parseFloat(pr.latestStockMatchQty)}`
                           : "No matches"}
                       </TableCell>
                       <TableCell align="right">
