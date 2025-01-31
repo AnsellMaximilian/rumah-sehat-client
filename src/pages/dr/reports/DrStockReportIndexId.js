@@ -7,6 +7,7 @@ import http from "../../../http-common";
 import { toast } from "react-toastify";
 import { copyElementToClipboard } from "../../../helpers/common";
 import DrStockReport from "../../../components/dr/DrStockReportId";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 const DrStockReportIndexId = () => {
   const reportRef = useRef();
@@ -32,13 +33,24 @@ const DrStockReportIndexId = () => {
     }
   };
 
-  console.log({ reportData });
-
+  const refresh = async () => {
+    (async () => {
+      const stock = (await http.get(`/dr/id/items/stock-report`)).data.data;
+      setReportData(stock);
+    })();
+  };
   return reportData ? (
     <Box paddingBottom={2}>
       {
         <Box marginTop={2}>
           <Box display="flex" justifyContent="flex-end" gap={2}>
+            <Button
+              endIcon={<RefreshIcon />}
+              variant="outlined"
+              onClick={refresh}
+            >
+              Refresh
+            </Button>
             <Button
               endIcon={<ContentCopyIcon />}
               variant="outlined"
@@ -48,7 +60,7 @@ const DrStockReportIndexId = () => {
             </Button>
           </Box>
           <div ref={reportRef}>
-            <DrStockReport reportData={reportData} />
+            <DrStockReport reportData={reportData} refresh={refresh} />
           </div>
         </Box>
       }

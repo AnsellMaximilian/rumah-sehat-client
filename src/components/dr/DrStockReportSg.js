@@ -9,8 +9,27 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import { getProductStockColor } from "../../helpers/rs";
 import { Link } from "react-router-dom";
+import http from "../../http-common";
+import { toast } from "react-toastify";
+import moment from "moment";
+import Button from "@mui/material/Button";
 
-export default function DrStockReportId({ reportData }) {
+export default function DrStockReportId({ reportData, refresh }) {
+  const handleMatchStock = async (id, stock) => {
+    try {
+      const body = {
+        qty: stock,
+        date: moment(),
+        description: null,
+      };
+      const match = (await http.post(`/dr/sg/items/${id}/match-stock`, body))
+        .data.data;
+      refresh();
+      toast.success(`Succesfully matched stock. ID: ${match.id}`);
+    } catch (error) {
+      toast.error(error?.message || "Unknown error");
+    }
+  };
   return (
     <Box component={Paper} marginTop={2}>
       <Box padding={2} backgroundColor="primary.main" color="white">
@@ -26,10 +45,12 @@ export default function DrStockReportId({ reportData }) {
               <TableRow>
                 <TableCell>ID</TableCell>
                 <TableCell>Item</TableCell>
-                <TableCell align="right">Out</TableCell>
+                {/* <TableCell align="right">Out</TableCell>
                 <TableCell align="right">Adjusted</TableCell>
-                <TableCell align="right">Loaned</TableCell>
+                <TableCell align="right">Loaned</TableCell> */}
                 <TableCell align="right">Available Stock</TableCell>
+                <TableCell align="right">Latest Stock Match</TableCell>
+                <TableCell align="right">Match Stock</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -49,7 +70,7 @@ export default function DrStockReportId({ reportData }) {
                     </TableCell>
                     <TableCell>{pr.name}</TableCell>
 
-                    <TableCell align="right">
+                    {/* <TableCell align="right">
                       {parseFloat(pr.totalOut)}
                     </TableCell>
 
@@ -58,8 +79,26 @@ export default function DrStockReportId({ reportData }) {
                     </TableCell>
                     <TableCell align="right">
                       {parseFloat(pr.totalLoaned)}
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell align="right">{parseFloat(pr.stock)}</TableCell>
+                    <TableCell align="right">
+                      {pr.latestStockMatchDate
+                        ? `${moment(pr.latestStockMatchDate).format(
+                            "DD-MM-YYYY HH:mm:ss"
+                          )} at ${parseFloat(pr.latestStockMatchQty)}`
+                        : "No matches"}
+                    </TableCell>
+                    <TableCell align="right">
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => {
+                          handleMatchStock(pr.id, pr.stock);
+                        }}
+                      >
+                        Match Stock
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 );
               })}
