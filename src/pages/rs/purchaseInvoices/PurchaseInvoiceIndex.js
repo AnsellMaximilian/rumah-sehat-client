@@ -75,7 +75,9 @@ const PurchaseInvoiceIndex = () => {
 
   useEffect(() => {
     (async () => {
-      setPurchaseInvoices((await http.get("/rs/purchase-invoices")).data.data);
+      setPurchaseInvoices(
+        (await http.get("/rs/purchase-invoices?paid=false")).data.data
+      );
       setSuppliers((await http.get("/rs/suppliers")).data.data);
     })();
   }, []);
@@ -103,7 +105,9 @@ const PurchaseInvoiceIndex = () => {
     setInvoiceStartDate("");
     setPaidStatus("all");
 
-    setPurchaseInvoices((await http.get("/rs/purchase-invoices")).data.data);
+    setPurchaseInvoices(
+      (await http.get("/rs/purchase-invoices?paid=false")).data.data
+    );
   };
 
   const handleFilter = async () => {
