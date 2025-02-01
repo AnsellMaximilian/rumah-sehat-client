@@ -26,7 +26,7 @@ export default function StockReport({ reportData, refresh }) {
     try {
       const body = {
         qty: stock,
-        date: moment().format("YYYY-MM-DD"),
+        date: moment(),
         description: null,
       };
       const match = (await http.post(`/rs/products/${id}/match-stock`, body))
