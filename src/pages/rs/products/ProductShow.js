@@ -13,6 +13,7 @@ import http from "../../../http-common";
 import Delete from "@mui/icons-material/Delete";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import moment from "moment";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 import { toast } from "react-toastify";
 import IconButton from "@mui/material/IconButton";
@@ -21,6 +22,14 @@ import AutoSelectTextField from "../../../components/AutoSelectTextField";
 import SmartTable from "../../../components/SmartTable";
 import DeleteAlert from "../../../components/DeleteAlert";
 import ProductAnalysis from "../../../components/rs/ProductAnalysis";
+import CustomDialog from "../../../components/Dialog";
+
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 
 export default function ProductShow() {
   const { id } = useParams();
@@ -40,6 +49,8 @@ export default function ProductShow() {
 
   const [toDeleteDrawId, setToDeleteDrawId] = useState(null);
   const [toDeleteAdjustmentId, setToDeleteAdjustmentId] = useState(null);
+
+  const [isStockMatchDialogOpen, setIsStockMatchDialogOpen] = useState(false);
 
   const handleDeleteDraw = (id) => {
     (async () => {
@@ -126,7 +137,7 @@ export default function ProductShow() {
     (async () => {
       setStock((await http.get(`/rs/products/${id}/stock`)).data.data);
       setStockMatches(
-        (await http.get(`/rs/products/${id}/stock-matches`)).data.data
+        (await http.get(`/rs/products/${id}/stock-matches?limit=10`)).data.data
       );
       if (product.keepStockSince) {
         const his = (await http.get(`/rs/products/${id}/history`)).data.data;
@@ -141,7 +152,7 @@ export default function ProductShow() {
       setProduct(product);
       setStock((await http.get(`/rs/products/${id}/stock`)).data.data);
       setStockMatches(
-        (await http.get(`/rs/products/${id}/stock-matches`)).data.data
+        (await http.get(`/rs/products/${id}/stock-matches?limit=10`)).data.data
       );
       if (product.keepStockSince) {
         const his = (await http.get(`/rs/products/${id}/history`)).data.data;
@@ -385,10 +396,26 @@ export default function ProductShow() {
                   Latest Stock Match
                 </Typography>
                 {stockMatches.length > 0 ? (
-                  <Typography>
-                    {moment(stockMatches[0].date).format("DD-MM-YYYY HH:mm:ss")}{" "}
-                    at {parseFloat(stockMatches[0].qty)}
-                  </Typography>
+                  <Stack
+                    direction={"row"}
+                    spacing={1}
+                    alignItems="center"
+                    justifyContent="end"
+                  >
+                    <Typography>
+                      {moment(stockMatches[0].date).format(
+                        "DD-MM-YYYY HH:mm:ss"
+                      )}{" "}
+                      at {parseFloat(stockMatches[0].qty)}
+                    </Typography>
+                    <IconButton
+                      onClick={() => {
+                        setIsStockMatchDialogOpen(true);
+                      }}
+                    >
+                      <VisibilityIcon color="primary" />
+                    </IconButton>
+                  </Stack>
                 ) : (
                   <Typography>No matches.</Typography>
                 )}
@@ -518,6 +545,37 @@ export default function ProductShow() {
         setToDeleteId={setToDeleteAdjustmentId}
         objectName="Adjust"
       />
+
+      <CustomDialog
+        action={null}
+        open={isStockMatchDialogOpen}
+        onClose={() => setIsStockMatchDialogOpen(false)}
+        title="Stock Matches"
+        description="Stock matches for the selected product"
+      >
+        <TableContainer sx={{ marginTop: 2 }}>
+          <Table aria-label="simple table" size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>Date</TableCell>
+                <TableCell>Qty</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {stockMatches.map((match) => {
+                return (
+                  <TableRow key={match.id}>
+                    <TableCell>
+                      {moment(match.date).format("DD-MM-YYYY HH:mm:ss")}
+                    </TableCell>
+                    <TableCell>{match.qty}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </CustomDialog>
     </>
   ) : (
     <h1>Loading...</h1>
