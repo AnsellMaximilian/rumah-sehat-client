@@ -79,7 +79,7 @@ const DrLoanIndex = () => {
 
   const columns = [
     { field: "id", headerName: "ID", width: 75 },
-    { field: "group", headerName: "Group", width: 100 },
+    { field: "group", headerName: "Group", width: 50 },
     { field: "date", headerName: "Date", width: 100 },
     {
       field: "customerName",
@@ -121,7 +121,7 @@ const DrLoanIndex = () => {
         );
       },
     },
-    { field: "lendType", headerName: "Type", width: 200 },
+    { field: "lendType", headerName: "Type", width: 50 },
     { field: "qty", headerName: "Qty", width: 50 },
     { field: "note", headerName: "Note", width: 100 },
     {
