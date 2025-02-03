@@ -81,7 +81,24 @@ const DrLoanIndex = () => {
     { field: "id", headerName: "ID", width: 75 },
     { field: "group", headerName: "Group", width: 100 },
     { field: "date", headerName: "Date", width: 100 },
-    { field: "customerName", headerName: "Customer", width: 200 },
+    {
+      field: "customerName",
+      headerName: "Customer",
+      width: 200,
+
+      renderCell: (params) => {
+        return (
+          <Link
+            color="primary"
+            component={RouterLink}
+            to={`/customers/${params.row.CustomerId}`}
+            underline="hover"
+          >
+            {params.row.customerName}
+          </Link>
+        );
+      },
+    },
     {
       field: "item",
       headerName: "Item",
@@ -186,6 +203,7 @@ const DrLoanIndex = () => {
             returnDate: loan.returnDate,
             group: loan.group,
             itemId: loan.itemId,
+            CustomerId: loan.CustomerId,
           }))}
           columns={columns}
         />
