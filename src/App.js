@@ -82,6 +82,7 @@ import BulkDraw from "./pages/rs/products/BulkDraw";
 import DrStockReportIndexSg from "./pages/dr/reports/DrStockReportIndexSg";
 import RegionIndex from "./pages/regions/RegionIndex";
 import RegionCreate from "./pages/regions/RegionCreate";
+import DeliveryTransactionIndex from "./pages/transactions/DeliveryTransactionIndex";
 
 function App() {
   return (
@@ -139,6 +140,7 @@ function App() {
                 }
               >
                 <Route path="" element={<TransactionIndex />} />
+                <Route path="delivery" element={<DeliveryTransactionIndex />} />
               </Route>
               <Route
                 path="rs"

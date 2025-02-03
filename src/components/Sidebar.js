@@ -58,8 +58,8 @@ const Sidebar = () => {
       <SidebarLink to="/" text="Dasbhoard" icon={<DashboardIcon />} />
       <SidebarLink to="/customers" text="Customers" icon={<PeopleIcon />} />
       <SidebarLink
-        to="/transactions"
-        text="Transactions"
+        to="/transactions/delivery"
+        text="Delivery Fees"
         icon={<CurrencyExchangeIcon />}
       />
       {/* <ListItemButton onClick={() => setExpensesOpen(!expensesOpen)}>

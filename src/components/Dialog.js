@@ -7,14 +7,13 @@ import Button from "@mui/material/Button";
 
 export default function CustomDialog({
   description,
-
   title,
-
   open,
   action,
   actionLabel,
   children,
   onClose,
+  maxWidth,
 }) {
   return (
     <Dialog
@@ -22,6 +21,7 @@ export default function CustomDialog({
       onClose={onClose}
       // full width
       fullWidth
+      maxWidth={maxWidth}
     >
       <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
       <DialogContent>
@@ -35,9 +35,7 @@ export default function CustomDialog({
         {action && (
           <Button
             variant="contained"
-            color="error"
             onClick={() => {
-              onClose();
               action();
             }}
             autoFocus
