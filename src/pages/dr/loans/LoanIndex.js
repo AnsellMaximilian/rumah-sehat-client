@@ -2,7 +2,7 @@ import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
-import Divider from "@mui/material/Divider";
+import Dialog from "@mui/material/Dialog";
 import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
@@ -12,7 +12,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Typography from "@mui/material/Typography";
 import Autocomplete from "@mui/material/Autocomplete";
-import CircularProgress from "@mui/material/CircularProgress";
+import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
@@ -35,6 +35,9 @@ import {
 const DrLoanIndex = () => {
   const [loans, setLoans] = useState([]);
 
+  const [returnDate, setReturnDate] = useState("");
+  const [selectedReturnLoan, setSelectedReturnLoan] = useState(null);
+
   const [toDeleteId, setToDeleteId] = useState(null);
 
   // FILTERS
@@ -46,7 +49,6 @@ const DrLoanIndex = () => {
     const idLoans = (await http.get(`/dr/id/loans?${queryParams}`)).data.data;
     const sgLoans = (await http.get(`/dr/sg/loans?${queryParams}`)).data.data;
 
-    console.log({ idLoans, sgLoans });
     return [
       ...idLoans.map((l) => ({ ...l, group: "ID", itemId: l.DrIdItemId })),
       ...sgLoans.map((l) => ({ ...l, group: "SG", itemId: l.DrSgItemId })),
@@ -59,6 +61,11 @@ const DrLoanIndex = () => {
       setCustomers((await http.get("/customers")).data.data);
     })();
   }, []);
+
+  const refreshMetaData = async () => {
+    setLoans(await getLoans());
+    setCustomers((await http.get("/customers")).data.data);
+  };
 
   const handleClearFilter = async () => {
     setSelectedCustomer(null);
@@ -75,6 +82,26 @@ const DrLoanIndex = () => {
       ...(lendType === "all" ? {} : { lendType }),
     });
     setLoans(await getLoans(queryParams));
+  };
+
+  const handleReturn = async () => {
+    try {
+      if (!returnDate) throw new Error("Please choose return date.");
+      if (!selectedReturnLoan) throw new Error("Please select loan to return.");
+      await http.patch(
+        `/dr/${selectedReturnLoan.group === "ID" ? "id" : "sg"}/loans/${
+          selectedReturnLoan.id
+        }/return`,
+        {
+          returnDate: returnDate,
+        }
+      );
+      refreshMetaData();
+      setReturnDate("");
+      setSelectedReturnLoan(null);
+    } catch (error) {
+      toast.error(error?.message || "Unknown error");
+    }
   };
 
   const columns = [
@@ -131,6 +158,25 @@ const DrLoanIndex = () => {
 
       renderCell: (params) =>
         params.row.returnDate ? params.row.returnDate : "Not returned.",
+    },
+    {
+      field: "returned",
+      headerName: "Returned",
+      renderCell: (params) => {
+        return params.row.isReturned && params.row.returnDate ? (
+          <Typography>{params.row.returnDate}</Typography>
+        ) : (
+          <Button
+            size="small"
+            variant="contained"
+            sx={{ fontSize: 10 }}
+            onClick={() => setSelectedReturnLoan(params.row)}
+          >
+            Return
+          </Button>
+        );
+      },
+      width: 200,
     },
   ];
   return (
@@ -204,10 +250,42 @@ const DrLoanIndex = () => {
             group: loan.group,
             itemId: loan.itemId,
             CustomerId: loan.CustomerId,
+            isReturned: loan.isReturned,
           }))}
           columns={columns}
         />
       </Card>
+
+      <Dialog
+        open={!!selectedReturnLoan}
+        onClose={() => setSelectedReturnLoan(null)}
+        maxWidth="xl"
+      >
+        {selectedReturnLoan && (
+          <Stack padding={4} spacing={2} minWidth={500}>
+            <Typography fontWeight="bold" fontSize={24}>
+              {selectedReturnLoan.lendType === "lend"
+                ? `Take ${selectedReturnLoan.qty} ${selectedReturnLoan.name} back from ${selectedReturnLoan.customerName}?`
+                : `Return ${selectedReturnLoan.qty} ${selectedReturnLoan.name} to ${selectedReturnLoan.customerName}?`}
+            </Typography>
+            <Stack spacing={2} direction="row">
+              <TextField
+                label="Return Date"
+                type="date"
+                value={returnDate}
+                onChange={(e) => setReturnDate(e.target.value)}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                fullWidth
+              />
+              <Button fullWidth variant="outlined" onClick={handleReturn}>
+                Return
+              </Button>
+            </Stack>
+          </Stack>
+        )}
+      </Dialog>
     </Box>
   );
 };
