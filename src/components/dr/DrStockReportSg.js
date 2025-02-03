@@ -33,8 +33,9 @@ export default function DrStockReportId({ reportData, refresh }) {
   return (
     <Box component={Paper} marginTop={2}>
       <Box padding={2} backgroundColor="primary.main" color="white">
-        <Box>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h6">Stock Report</Typography>
+          <Typography variant="body1">{reportData.length} items</Typography>
         </Box>
       </Box>
 

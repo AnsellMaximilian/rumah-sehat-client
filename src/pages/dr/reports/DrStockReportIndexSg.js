@@ -1,18 +1,20 @@
 import Button from "@mui/material/Button";
 
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Box from "@mui/material/Box";
 import http from "../../../http-common";
 import { toast } from "react-toastify";
 import { copyElementToClipboard } from "../../../helpers/common";
 import DrStockReport from "../../../components/dr/DrStockReportSg";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import TextField from "@mui/material/TextField";
 
 const DrStockReportIndexSg = () => {
   const reportRef = useRef();
 
   const [reportData, setReportData] = useState(null);
+  const [nameFilter, setNameFilter] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -37,10 +39,19 @@ const DrStockReportIndexSg = () => {
     (async () => {
       const stock = (await http.get(`/dr/sg/items/stock-report`)).data.data;
       setReportData(stock);
+      setNameFilter("");
     })();
   };
 
-  return reportData ? (
+  const filteredReportData = useMemo(() => {
+    if (!reportData) return null;
+
+    return reportData.filter((item) =>
+      item.name.toLowerCase().includes(nameFilter.toLowerCase())
+    );
+  }, [reportData, nameFilter]);
+
+  return filteredReportData ? (
     <Box paddingBottom={2}>
       {
         <Box marginTop={2}>
@@ -61,7 +72,7 @@ const DrStockReportIndexSg = () => {
             </Button>
           </Box>
           <div ref={reportRef}>
-            <DrStockReport reportData={reportData} refresh={refresh} />
+            <DrStockReport reportData={filteredReportData} refresh={refresh} />
           </div>
         </Box>
       }

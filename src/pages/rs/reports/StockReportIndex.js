@@ -43,12 +43,13 @@ const StockReportIndex = () => {
   };
 
   const filteredReportData = useMemo(() => {
+    if (!reportData) return null;
     return reportData.filter((item) =>
       item.name.toLowerCase().includes(nameFilter.toLowerCase())
     );
   }, [reportData, nameFilter]);
 
-  return reportData ? (
+  return filteredReportData ? (
     <Box paddingBottom={2}>
       {
         <Box marginTop={2}>
