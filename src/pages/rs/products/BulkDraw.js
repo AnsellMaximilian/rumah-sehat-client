@@ -75,13 +75,18 @@ export default function BulkDraw() {
   };
 
   const handleSubmit = async () => {
-    if (draws.length < 1) throw new Error("Please include at least one draw.");
-
-    for (const draw of draws) {
-      if (draw.amount < 1) throw new Error("Cannot draw 0 or negative items.");
-    }
-
     try {
+      if (draws.length < 1)
+        throw new Error("Please include at least one draw.");
+
+      for (const draw of draws) {
+        if (draw.amount < 1)
+          throw new Error("Cannot draw 0 or negative items.");
+
+        if (!(draw.ProductId && draw.product))
+          throw new Error("Each draw must have a product.");
+      }
+
       const body = {
         draws,
       };
@@ -187,8 +192,8 @@ export default function BulkDraw() {
                                   }
                                 : {
                                     ...draw,
-                                    product: newValue,
-                                    ProductId: newValue.id,
+                                    product: null,
+                                    ProductId: null,
                                   };
                             }
                             return currentDraw;
