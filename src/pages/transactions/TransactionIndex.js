@@ -23,6 +23,7 @@ import moment from "moment";
 import DeleteAlert from "../../components/DeleteAlert";
 import PayIcon from "@mui/icons-material/Paid";
 import AutoSelectTextField from "../../components/AutoSelectTextField";
+import { TRANSACTIONS } from "../../const";
 
 const TransactionIndex = () => {
   const [transactions, setTransactions] = useState([]);
@@ -54,7 +55,10 @@ const TransactionIndex = () => {
       setPurchaseInvoices(
         (await http.get("/rs/purchase-invoices?paid=false")).data.data
       );
-      setTransactions((await http.get("/transactions")).data.data);
+      setTransactions(
+        (await http.get(`/transactions?category=${TRANSACTIONS.ANSELL}`)).data
+          .data
+      );
     })();
   }, []);
 
@@ -70,6 +74,7 @@ const TransactionIndex = () => {
         PurchaseInvoiceId: selectedPurchaseInvoice
           ? selectedPurchaseInvoice.id
           : null,
+        category: TRANSACTIONS.ANSELL,
       };
       await http.post("/transactions", body);
       toast.success("Created transaction.");
@@ -77,7 +82,10 @@ const TransactionIndex = () => {
       setAmount(0);
       setSelectedPurchaseInvoice(null);
       setDescription("");
-      setTransactions((await http.get("/transactions")).data.data);
+      setTransactions(
+        (await http.get(`/transactions?category=${TRANSACTIONS.ANSELL}`)).data
+          .data
+      );
     } catch (error) {
       const errorValue = error?.response?.data?.error;
       const errorMsg = errorValue ? errorValue : error.message;
@@ -161,7 +169,6 @@ const TransactionIndex = () => {
             <Grid item xs={3}>
               <AutoSelectTextField
                 margin="none"
-                inputProps={{ tabIndex: -1 }}
                 label="Description"
                 fullWidth
                 value={description}
@@ -172,7 +179,6 @@ const TransactionIndex = () => {
               <AutoSelectTextField
                 margin="none"
                 type="number"
-                inputProps={{ tabIndex: -1 }}
                 label="Amount"
                 fullWidth
                 value={amount}

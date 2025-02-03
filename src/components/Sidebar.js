@@ -57,11 +57,11 @@ const Sidebar = () => {
     <List component="nav" sx={{ maxHeight: "calc(100vh - 65px)" }}>
       <SidebarLink to="/" text="Dasbhoard" icon={<DashboardIcon />} />
       <SidebarLink to="/customers" text="Customers" icon={<PeopleIcon />} />
-      {/* <SidebarLink
+      <SidebarLink
         to="/transactions"
         text="Transactions"
         icon={<CurrencyExchangeIcon />}
-      /> */}
+      />
       {/* <ListItemButton onClick={() => setExpensesOpen(!expensesOpen)}>
         <ListItemIcon>
           <ExpenseIcon />
