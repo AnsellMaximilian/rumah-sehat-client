@@ -1,7 +1,7 @@
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
-import Chip from "@mui/material/Chip";
+import Link from "@mui/material/Link";
 import Divider from "@mui/material/Divider";
 import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
@@ -16,7 +16,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import TextField from "@mui/material/TextField";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import Delete from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
 import http from "../../../http-common";
@@ -48,8 +48,8 @@ const DrLoanIndex = () => {
 
     console.log({ idLoans, sgLoans });
     return [
-      ...idLoans.map((l) => ({ ...l, group: "ID" })),
-      ...sgLoans.map((l) => ({ ...l, group: "SGss" })),
+      ...idLoans.map((l) => ({ ...l, group: "ID", itemId: l.DrIdItemId })),
+      ...sgLoans.map((l) => ({ ...l, group: "SG", itemId: l.DrSgItemId })),
     ];
   };
 
@@ -67,7 +67,7 @@ const DrLoanIndex = () => {
     setLoans(await getLoans());
   };
 
-  console.log(loans);
+  console.log({ loans });
 
   const handleFilter = async () => {
     const queryParams = formQueryParams({
@@ -82,7 +82,28 @@ const DrLoanIndex = () => {
     { field: "group", headerName: "Group", width: 100 },
     { field: "date", headerName: "Date", width: 100 },
     { field: "customerName", headerName: "Customer", width: 200 },
-    { field: "item", headerName: "Item", width: 200 },
+    {
+      field: "item",
+      headerName: "Item",
+      width: 200,
+
+      renderCell: (params) => {
+        return (
+          <Link
+            color="primary"
+            component={RouterLink}
+            to={
+              params.row.group === "ID"
+                ? `/dr/id/items/${params.row.itemId}`
+                : `/dr/sg/items/${params.row.itemId}`
+            }
+            underline="hover"
+          >
+            {params.row.item}
+          </Link>
+        );
+      },
+    },
     { field: "lendType", headerName: "Type", width: 200 },
     { field: "qty", headerName: "Qty", width: 50 },
     { field: "note", headerName: "Note", width: 100 },
@@ -164,6 +185,7 @@ const DrLoanIndex = () => {
             customerName: loan.Customer.fullName,
             returnDate: loan.returnDate,
             group: loan.group,
+            itemId: loan.itemId,
           }))}
           columns={columns}
         />
