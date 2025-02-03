@@ -56,6 +56,15 @@ const DrStockReportIndexSg = () => {
       {
         <Box marginTop={2}>
           <Box display="flex" justifyContent="flex-end" gap={2}>
+            <TextField
+              sx={{
+                flexGrow: 1,
+              }}
+              size="small"
+              label="Name"
+              value={nameFilter}
+              onChange={(e) => setNameFilter(e.target.value)}
+            />
             <Button
               endIcon={<RefreshIcon />}
               variant="outlined"
