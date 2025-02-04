@@ -239,12 +239,13 @@ const DeliveryTransactionIndex = () => {
 
   const dailyOutgoingAmount = useMemo(() => {
     if (!dateFilter) return null;
-    const totalDeliveries = deliveries.reduce((sum, d) => sum + d.cost, 0);
+    const totalDeliveries = deliveries
+      .filter((d) => d.date === dateFilter)
+      .reduce((sum, d) => sum + d.cost, 0);
 
-    const totalTransactions = transactions.reduce(
-      (sum, t) => sum + (t.amount < 0 ? -t.amount : 0),
-      0
-    );
+    const totalTransactions = transactions
+      .filter((t) => t.date === dateFilter)
+      .reduce((sum, t) => sum + (t.amount < 0 ? -t.amount : 0), 0);
 
     return totalDeliveries + totalTransactions;
   }, [deliveries, transactions, dateFilter]);
@@ -309,7 +310,7 @@ const DeliveryTransactionIndex = () => {
             <NumericFormatRp value={avaliableBalance} />
           </Typography>
         </Stack>
-        {dailyOutgoingAmount && (
+        {dailyOutgoingAmount != null && (
           <Stack sx={{ marginTop: "auto" }}>
             <Typography fontSize={14}>Outgoing</Typography>
             <Typography fontWeight="bold" fontSize={20}>
