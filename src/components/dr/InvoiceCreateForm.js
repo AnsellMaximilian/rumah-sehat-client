@@ -198,7 +198,7 @@ export default function InvoiceCreateForm({ editId, onSubmit, onCancel }) {
               >
                 {discountModels.map((discountModel) => (
                   <MenuItem value={discountModel.id} key={discountModel.id}>
-                    {discountModel.description}
+                    {discountModel.displayName}
                   </MenuItem>
                 ))}
               </Select>
