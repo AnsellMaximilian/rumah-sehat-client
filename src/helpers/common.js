@@ -1,5 +1,6 @@
 import html2canvas from "html2canvas";
 import moment from "moment";
+import { toast } from "react-toastify";
 
 export const getWeek = () => {
   const currentDate = moment();
@@ -127,3 +128,22 @@ export const rm = (num) =>
     currencySign: "accounting",
     minimumFractionDigits: 0,
   }).format(num);
+
+export const toastError = (error) => {
+  const errorValue = error?.response?.data?.error;
+  const errorMsg = errorValue ? errorValue : error.message;
+  toast.error(errorMsg);
+};
+
+export function getDateRange(startDate, endDate) {
+  let dates = [];
+  let currentDate = moment(startDate);
+  let finalDate = moment(endDate);
+
+  while (currentDate.isSameOrBefore(finalDate)) {
+    dates.push(currentDate.format("YYYY-MM-DD"));
+    currentDate.add(1, "day");
+  }
+
+  return dates;
+}

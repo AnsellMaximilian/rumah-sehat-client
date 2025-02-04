@@ -28,7 +28,12 @@ import PayIcon from "@mui/icons-material/Paid";
 import AutoSelectTextField from "../../components/AutoSelectTextField";
 import { TRANSACTIONS } from "../../const";
 import CustomDialog from "../../components/Dialog";
-import { formQueryParams, getWeek } from "../../helpers/common";
+import {
+  formQueryParams,
+  getDateRange,
+  getWeek,
+  toastError,
+} from "../../helpers/common";
 
 const DeliveryTransactionIndex = () => {
   const [transactions, setTransactions] = useState([]);
@@ -50,6 +55,10 @@ const DeliveryTransactionIndex = () => {
   const [endDate, setEndDate] = useState("");
 
   const [avaliableBalance, setAvaliableBalance] = useState(0);
+
+  const [dateRange, setDateRange] = useState([]);
+
+  const [dateFilter, setDateFilter] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -77,29 +86,39 @@ const DeliveryTransactionIndex = () => {
   const handleClearFilter = async () => {
     setStartDate("");
     setEndDate("");
+    setDateRange([]);
+    setDateFilter(null);
 
     refreshMetaData();
   };
 
   const handleFilter = async () => {
-    const transactionQueryParams = formQueryParams({
-      startDate,
-      endDate,
-      category: TRANSACTIONS.SITI_DELIVERY,
-    });
+    try {
+      if (startDate && endDate && startDate > endDate)
+        throw new Error("Start date can't be bigger than end date");
 
-    const deliveriesQueryParams = formQueryParams({
-      startDate,
-      endDate,
-      DeliveryTypeIds: `16,17,18,19`,
-    });
+      if (startDate && endDate) setDateRange(getDateRange(startDate, endDate));
+      const transactionQueryParams = formQueryParams({
+        startDate,
+        endDate,
+        category: TRANSACTIONS.SITI_DELIVERY,
+      });
 
-    setTransactions(
-      (await http.get(`/transactions?${transactionQueryParams}`)).data.data
-    );
-    setDeliveries(
-      (await http.get(`/rs/deliveries?${deliveriesQueryParams}`)).data.data
-    );
+      const deliveriesQueryParams = formQueryParams({
+        startDate,
+        endDate,
+        DeliveryTypeIds: `16,17,18,19`,
+      });
+
+      setTransactions(
+        (await http.get(`/transactions?${transactionQueryParams}`)).data.data
+      );
+      setDeliveries(
+        (await http.get(`/rs/deliveries?${deliveriesQueryParams}`)).data.data
+      );
+    } catch (error) {
+      toastError(error);
+    }
   };
 
   const refreshMetaData = async () => {
@@ -107,6 +126,7 @@ const DeliveryTransactionIndex = () => {
       (await http.get("/rs/purchase-invoices?paid=false")).data.data
     );
     setTransactions([]);
+    setDeliveries([]);
   };
 
   const handleSetWeek = () => {
@@ -156,7 +176,19 @@ const DeliveryTransactionIndex = () => {
       headerName: "Amount",
       width: 150,
 
-      renderCell: (params) => <NumericFormatRp value={params.row.amount} />,
+      renderCell: (params) => (
+        <Typography
+          color={
+            params.row.amount === 0
+              ? undefined
+              : params.row.amount > 0
+              ? "green"
+              : "red"
+          }
+        >
+          <NumericFormatRp value={params.row.amount} />
+        </Typography>
+      ),
     },
     {
       field: "PurchaseInvoiceId",
@@ -195,6 +227,18 @@ const DeliveryTransactionIndex = () => {
       width: 200,
     },
   ];
+
+  const transactionList = useMemo(() => {
+    return [
+      ...transactions,
+      ...deliveries.map((d) => ({
+        ...d,
+        id: `P-${d.id}`,
+        type: "OUTGOING",
+        amount: -d.cost,
+      })),
+    ].filter((t) => t.date === dateFilter || !dateFilter);
+  }, [transactions, deliveries, dateFilter]);
 
   return (
     <Box>
@@ -265,9 +309,23 @@ const DeliveryTransactionIndex = () => {
           Record
         </Button>
       </Stack>
+
+      {dateRange.length > 0 && (
+        <Stack direction="row" gap={2} mb={2} justifyContent="space-between">
+          {dateRange.map((d) => (
+            <Button
+              size="small"
+              variant={dateFilter === d ? "contained" : "outlined"}
+              onClick={() => setDateFilter(d)}
+            >
+              {d}
+            </Button>
+          ))}
+        </Stack>
+      )}
       <Card>
         <SmartTable
-          rows={transactions.map((transaction) => ({
+          rows={transactionList.map((transaction) => ({
             id: transaction.id,
             date: moment(transaction.date).format("YYYY-MM-DD"),
             type: transaction.type,
