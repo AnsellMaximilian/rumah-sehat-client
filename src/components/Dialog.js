@@ -25,9 +25,11 @@ export default function CustomDialog({
     >
       <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
       <DialogContent>
-        <DialogContentText id="alert-dialog-description">
-          {description}
-        </DialogContentText>
+        {!!description && (
+          <DialogContentText id="alert-dialog-description">
+            {description}
+          </DialogContentText>
+        )}
         {children}
       </DialogContent>
       <DialogActions>

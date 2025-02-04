@@ -83,6 +83,7 @@ import DrStockReportIndexSg from "./pages/dr/reports/DrStockReportIndexSg";
 import RegionIndex from "./pages/regions/RegionIndex";
 import RegionCreate from "./pages/regions/RegionCreate";
 import DeliveryTransactionIndex from "./pages/transactions/DeliveryTransactionIndex";
+import DrIdBundleIndex from "./pages/dr/id/bundles/BundleIndex";
 
 function App() {
   return (
@@ -296,6 +297,13 @@ function App() {
                     <Route path="edit/:id" element={<DrIdItemCreate edit />} />
                     <Route path=":id" element={<DrIdItemShow />} />
                   </Route>
+
+                  <Route
+                    path="bundles"
+                    element={<DataLayout title="Bundles" titleVariant="h5" />}
+                  >
+                    <Route path="" element={<DrIdBundleIndex />} />
+                  </Route>
                   <Route
                     path="deliveries"
                     element={
@@ -318,6 +326,16 @@ function App() {
                   <Route
                     path="items"
                     element={<DataLayout title="Items" titleVariant="h5" />}
+                  >
+                    <Route path="" element={<DrSgItemIndex />} />
+                    <Route path="create" element={<DrSgItemCreate />} />
+                    <Route path="edit/:id" element={<DrSgItemCreate edit />} />
+                    <Route path=":id" element={<DrSgItemShow />} />
+                  </Route>
+
+                  <Route
+                    path="bundles"
+                    element={<DataLayout title="Bundles" titleVariant="h5" />}
                   >
                     <Route path="" element={<DrSgItemIndex />} />
                     <Route path="create" element={<DrSgItemCreate />} />

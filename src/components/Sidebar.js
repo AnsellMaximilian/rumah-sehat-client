@@ -9,16 +9,17 @@ import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
 import StockIcon from "@mui/icons-material/AssignmentTurnedIn";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
 import ReceiptIcon from "@mui/icons-material/Receipt";
+import BundleIcon from "@mui/icons-material/Category";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 // import AdjustIcon from "@mui/icons-material/AutoFixNormal";
 import ProductIcon from "@mui/icons-material/Widgets";
-import ExpenseIcon from "@mui/icons-material/AttachMoney";
+// import ExpenseIcon from "@mui/icons-material/AttachMoney";
 import CategoryIcon from "@mui/icons-material/ManageSearch";
 import SupplierIcon from "@mui/icons-material/Inventory";
 import SyncIcon from "@mui/icons-material/Sync";
 import ShoppingCart from "@mui/icons-material/ShoppingCart";
 import MyLocationIcon from "@mui/icons-material/MyLocation";
-import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
+// import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import ReportIcon from "@mui/icons-material/Assessment";
 import MoneyIcon from "@mui/icons-material/Paid";
 import PanToolAltIcon from "@mui/icons-material/PanToolAlt";
@@ -48,11 +49,14 @@ const Sidebar = () => {
   const [rsDeliveryOpen, setRsDeliveryOpen] = useState(false);
   const [rsReportsOpen, setRsReportsOpen] = useState(false);
   const [drReportsOpen, setDrReportsOpen] = useState(false);
-  const [expensesOpen, setExpensesOpen] = useState(false);
+  // const [expensesOpen, setExpensesOpen] = useState(false);
 
   // Dr's secret
   const [drItemsOpen, setDrItemsOpen] = useState(false);
   const [drDeliveriesOpen, setDrDeliveriesOpen] = useState(false);
+
+  const [drBundlesOpen, setDrBundlesOpen] = useState(false);
+
   return (
     <List component="nav" sx={{ maxHeight: "calc(100vh - 65px)" }}>
       <SidebarLink to="/" text="Dasbhoard" icon={<DashboardIcon />} />
@@ -264,6 +268,29 @@ const Sidebar = () => {
             to="/dr/my/items"
             text="Malaysia"
             icon={<SanitizerIcon />}
+            sx={{ pl: 4 }}
+          />
+        </List>
+      </Collapse>
+      <ListItemButton onClick={() => setDrBundlesOpen(!drBundlesOpen)}>
+        <ListItemIcon>
+          <BundleIcon />
+        </ListItemIcon>
+        <ListItemText primary="Bundles" />
+        {drBundlesOpen ? <ExpandLess /> : <ExpandMore />}
+      </ListItemButton>
+      <Collapse in={drBundlesOpen} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <SidebarLink
+            to="/dr/id/bundles"
+            text="Indonesia"
+            icon={<BundleIcon />}
+            sx={{ pl: 4 }}
+          />
+          <SidebarLink
+            to="/dr/sg/bundles"
+            text="Singapore"
+            icon={<BundleIcon />}
             sx={{ pl: 4 }}
           />
         </List>
