@@ -1,14 +1,9 @@
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
 import { useEffect, useMemo, useState } from "react";
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
 import Delete from "@mui/icons-material/Delete";
-import Edit from "@mui/icons-material/ModeEdit";
 import {
   Autocomplete,
   Grid,
@@ -21,10 +16,8 @@ import http from "../../http-common";
 import SmartTable from "../../components/SmartTable";
 import NumericFormatRp from "../../components/NumericFormatRp";
 import { toast } from "react-toastify";
-import ShowIcon from "@mui/icons-material/RemoveRedEye";
 import moment from "moment";
 import DeleteAlert from "../../components/DeleteAlert";
-import PayIcon from "@mui/icons-material/Paid";
 import AutoSelectTextField from "../../components/AutoSelectTextField";
 import { TRANSACTIONS } from "../../const";
 import CustomDialog from "../../components/Dialog";
@@ -105,7 +98,7 @@ const DeliveryTransactionIndex = () => {
       });
 
       const deliveriesQueryParams = formQueryParams({
-        startDate,
+        startDate: startDate ? startDate : "2025-02-03",
         endDate,
         DeliveryTypeIds: `16,17,18,19`,
       });
@@ -115,6 +108,10 @@ const DeliveryTransactionIndex = () => {
       );
       setDeliveries(
         (await http.get(`/rs/deliveries?${deliveriesQueryParams}`)).data.data
+      );
+
+      setAvaliableBalance(
+        parseFloat((await http.get("/transactions/delivery-balance")).data.data)
       );
     } catch (error) {
       toastError(error);
@@ -167,7 +164,7 @@ const DeliveryTransactionIndex = () => {
   };
 
   const columns = [
-    { field: "id", headerName: "ID", width: 50 },
+    { field: "id", headerName: "ID", width: 75 },
     { field: "date", headerName: "Date", width: 150 },
     { field: "type", headerName: "Type", width: 150 },
     { field: "description", headerName: "Description", width: 150 },
@@ -240,6 +237,18 @@ const DeliveryTransactionIndex = () => {
     ].filter((t) => t.date === dateFilter || !dateFilter);
   }, [transactions, deliveries, dateFilter]);
 
+  const dailyOutgoingAmount = useMemo(() => {
+    if (!dateFilter) return null;
+    const totalDeliveries = deliveries.reduce((sum, d) => sum + d.cost, 0);
+
+    const totalTransactions = transactions.reduce(
+      (sum, t) => sum + (t.amount < 0 ? -t.amount : 0),
+      0
+    );
+
+    return totalDeliveries + totalTransactions;
+  }, [deliveries, transactions, dateFilter]);
+
   return (
     <Box>
       <Box mb={2}>
@@ -293,19 +302,26 @@ const DeliveryTransactionIndex = () => {
         </Box>
       </Box>
 
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={2}
-      >
+      <Stack direction="row" gap={2} alignItems="center" mb={2}>
         <Stack>
           <Typography>Available Balance</Typography>
           <Typography fontWeight="bold" fontSize={24}>
             <NumericFormatRp value={avaliableBalance} />
           </Typography>
         </Stack>
-        <Button variant="contained" onClick={() => setIsCreateFormOpen(true)}>
+        {dailyOutgoingAmount && (
+          <Stack sx={{ marginTop: "auto" }}>
+            <Typography fontSize={14}>Outgoing</Typography>
+            <Typography fontWeight="bold" fontSize={20}>
+              <NumericFormatRp value={dailyOutgoingAmount} />
+            </Typography>
+          </Stack>
+        )}
+        <Button
+          variant="contained"
+          sx={{ marginLeft: "auto" }}
+          onClick={() => setIsCreateFormOpen(true)}
+        >
           Record
         </Button>
       </Stack>
