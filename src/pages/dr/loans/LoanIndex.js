@@ -62,6 +62,19 @@ const DrLoanIndex = () => {
     })();
   }, []);
 
+  const handleDelete = (id_group) => {
+    (async () => {
+      const [id, group] = id_group.split("_");
+      try {
+        await http.delete(`/dr/${group === "ID" ? "id" : "sg"}/loans/${id}`);
+        refreshMetaData();
+        toast.success("Loan deleted.");
+      } catch ({ response: { data: error } }) {
+        toast.error(error);
+      }
+    })();
+  };
+
   const refreshMetaData = async () => {
     setLoans(await getLoans());
     setCustomers((await http.get("/customers")).data.data);
@@ -73,8 +86,6 @@ const DrLoanIndex = () => {
 
     setLoans(await getLoans());
   };
-
-  console.log({ loans });
 
   const handleFilter = async () => {
     const queryParams = formQueryParams({
@@ -151,14 +162,7 @@ const DrLoanIndex = () => {
     { field: "lendType", headerName: "Type", width: 50 },
     { field: "qty", headerName: "Qty", width: 50 },
     { field: "note", headerName: "Note", width: 100 },
-    {
-      field: "returnDate",
-      headerName: "returnDate",
-      width: 100,
 
-      renderCell: (params) =>
-        params.row.returnDate ? params.row.returnDate : "Not returned.",
-    },
     {
       field: "returned",
       headerName: "Returned",
@@ -174,6 +178,26 @@ const DrLoanIndex = () => {
           >
             Return
           </Button>
+        );
+      },
+      width: 200,
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      renderCell: (params) => {
+        return (
+          <>
+            <IconButton
+              color="error"
+              onClick={(e) => {
+                e.stopPropagation();
+                setToDeleteId(`${params.row.id}_${params.row.group}`);
+              }}
+            >
+              <Delete />
+            </IconButton>
+          </>
         );
       },
       width: 200,
@@ -286,6 +310,14 @@ const DrLoanIndex = () => {
           </Stack>
         )}
       </Dialog>
+
+      <DeleteAlert
+        message="Are you sure you want to remove this loan?"
+        toDeleteId={toDeleteId}
+        handleDelete={handleDelete}
+        setToDeleteId={setToDeleteId}
+        objectName="Draw"
+      />
     </Box>
   );
 };
