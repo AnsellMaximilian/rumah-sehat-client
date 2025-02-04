@@ -7,9 +7,6 @@ import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Typography from "@mui/material/Typography";
 import Autocomplete from "@mui/material/Autocomplete";
 import Stack from "@mui/material/Stack";
@@ -21,16 +18,9 @@ import Delete from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
 import http from "../../../http-common";
 import SmartTable from "../../../components/SmartTable";
-import NumericFormatRp from "../../../components/NumericFormatRp";
 import { toast } from "react-toastify";
-import ShowIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteAlert from "../../../components/DeleteAlert";
-import PayIcon from "@mui/icons-material/Paid";
-import {
-  formFileName,
-  formQueryParams,
-  getWeek,
-} from "../../../helpers/common";
+import { formQueryParams } from "../../../helpers/common";
 
 const DrLoanIndex = () => {
   const [loans, setLoans] = useState([]);
