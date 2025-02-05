@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import html2canvas from "html2canvas";
 import moment from "moment";
 import { toast } from "react-toastify";
@@ -130,8 +131,19 @@ export const rm = (num) =>
   }).format(num);
 
 export const toastError = (error) => {
-  const errorValue = error?.response?.data?.error;
-  const errorMsg = errorValue ? errorValue : error.message;
+  let errorMsg = "Unknown error";
+
+  if (error instanceof AxiosError) {
+    const {
+      response: { data: axiosErrMsg },
+    } = error;
+
+    errorMsg = axiosErrMsg;
+  } else {
+    const errorValue = error?.response?.data?.error;
+    errorMsg = errorValue ? errorValue : error.message;
+  }
+
   toast.error(errorMsg);
 };
 

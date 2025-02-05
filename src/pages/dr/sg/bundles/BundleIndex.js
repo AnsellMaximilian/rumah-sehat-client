@@ -33,9 +33,10 @@ import TableBody from "@mui/material/TableBody";
 import TableRow from "@mui/material/TableRow";
 import Cancel from "@mui/icons-material/Cancel";
 import Stack from "@mui/material/Stack";
+import Checkbox from "@mui/material/Checkbox";
 import AutoSelectTextField from "../../../../components/AutoSelectTextField";
 
-const DrIdBundleIndex = () => {
+const DrSgBundleIndex = () => {
   const [bundles, setBundles] = useState([]);
 
   const [toDeleteId, setToDeleteId] = useState(null);
@@ -56,7 +57,7 @@ const DrIdBundleIndex = () => {
   const handleDelete = (id) => {
     (async () => {
       try {
-        await http.delete(`/dr/id/bundles/${id}`);
+        await http.delete(`/dr/sg/bundles/${id}`);
         setBundles((bundles) => bundles.filter((bundle) => bundle.id !== id));
         toast.success("Bundle deleted.");
       } catch ({ response: { data: error } }) {
@@ -67,9 +68,9 @@ const DrIdBundleIndex = () => {
 
   useEffect(() => {
     (async () => {
-      setBundles((await http.get("/dr/id/bundles")).data.data);
+      setBundles((await http.get("/dr/sg/bundles")).data.data);
 
-      setItems((await http.get("/dr/id/items")).data.data);
+      setItems((await http.get("/dr/sg/items")).data.data);
     })();
   }, []);
 
@@ -85,10 +86,10 @@ const DrIdBundleIndex = () => {
       const bundleToEdit = bundles.find((b) => b.id === bundleToEditId);
 
       setFormMode(FORM_MODE.EDIT);
-      setSelectedParentItem(bundleToEdit.DrIdItem);
+      setSelectedParentItem(bundleToEdit.DrSgItem);
       setBundleItems(
-        bundleToEdit.DrIdBundleItems.map((bi) => ({
-          item: bi.DrIdItem,
+        bundleToEdit.DrSgBundleItems.map((bi) => ({
+          item: bi.DrSgItem,
           qty: parseFloat(bi.qty),
         }))
       );
@@ -158,8 +159,6 @@ const DrIdBundleIndex = () => {
   };
 
   const handleSubmitBundle = async () => {
-    console.log({ selectedParentItem, bundleItems });
-
     try {
       if (bundleItems.length === 0)
         throw new Error("Bundle must include at least one item");
@@ -178,17 +177,17 @@ const DrIdBundleIndex = () => {
       };
 
       if (bundleToEditId) {
-        await http.patch(`/dr/id/bundles/${bundleToEditId}`, body);
+        await http.patch(`/dr/sg/bundles/${bundleToEditId}`, body);
         toast.success("updated bundle");
       } else {
-        await http.post("/dr/id/bundles", body);
+        await http.post("/dr/sg/bundles", body);
         toast.success("Created bundle");
       }
 
       reset();
-      setBundles((await http.get("/dr/id/bundles")).data.data);
+      setBundles((await http.get("/dr/sg/bundles")).data.data);
 
-      setItems((await http.get("/dr/id/items")).data.data);
+      setItems((await http.get("/dr/sg/items")).data.data);
     } catch (error) {
       console.log(error);
       toastError(error);
@@ -266,10 +265,10 @@ const DrIdBundleIndex = () => {
         <SmartTable
           rows={bundles.map((bundle) => ({
             id: bundle.id,
-            name: bundle.DrIdItem.name,
-            priceRP: bundle.DrIdItem.priceRP,
-            points: bundle.DrIdItem.points,
-            isActive: bundle.DrIdItem.isActive,
+            name: bundle.DrSgItem.name,
+            priceRP: bundle.DrSgItem.priceRP,
+            points: bundle.DrSgItem.points,
+            isActive: bundle.DrSgItem.isActive,
           }))}
           columns={columns}
         />
@@ -436,7 +435,7 @@ const DrIdBundleIndex = () => {
           <Grid item xs={12}>
             <Stack direction="row" justifyContent="space-between">
               <Typography fontWeight="bold">Parent Item</Typography>
-              <Typography>{selectedBundle?.DrIdItem?.name}</Typography>
+              <Typography>{selectedBundle?.DrSgItem?.name}</Typography>
             </Stack>
           </Grid>
 
@@ -459,7 +458,7 @@ const DrIdBundleIndex = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {selectedBundle?.DrIdBundleItems.map((item) => (
+                  {selectedBundle?.DrSgBundleItems.map((item) => (
                     <TableRow
                       key={item.id}
                       sx={{
@@ -467,7 +466,7 @@ const DrIdBundleIndex = () => {
                       }}
                     >
                       <TableCell align="left">
-                        <Typography>{item.DrIdItem.name}</Typography>
+                        <Typography>{item.DrSgItem.name}</Typography>
                       </TableCell>
 
                       <TableCell align="right">
@@ -485,4 +484,4 @@ const DrIdBundleIndex = () => {
   );
 };
 
-export default DrIdBundleIndex;
+export default DrSgBundleIndex;
