@@ -6,6 +6,9 @@ import {
   Grid,
   ToggleButtonGroup,
   ToggleButton,
+  Checkbox,
+  FormGroup,
+  FormControlLabel,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -23,6 +26,9 @@ export default function DrIdItemCreate({ edit }) {
   const [keepStockSince, setKeepStockSince] = useState("");
   const [keepStock, setKeepStock] = useState(false);
 
+  // bundle
+  const [isBundle, setIsBundle] = useState(false);
+
   const { id } = useParams();
 
   useEffect(() => {
@@ -36,6 +42,8 @@ export default function DrIdItemCreate({ edit }) {
           setKeepStock(true);
           setKeepStockSince(moment(item.keepStockSince).format("yyyy-MM-DD"));
         }
+
+        setIsBundle(!!item.isBundle);
       }
     })();
   }, [edit, id]);
@@ -48,6 +56,7 @@ export default function DrIdItemCreate({ edit }) {
         priceRP: priceRP,
         points: points,
         keepStockSince: keepStock ? keepStockSince : null,
+        isBundle,
       };
 
       if (!edit) {
@@ -69,7 +78,7 @@ export default function DrIdItemCreate({ edit }) {
       </Typography>
       <Box component="form" onSubmit={onSubmit} noValidate sx={{ mt: 1 }}>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
+          <Grid item xs={11}>
             <TextField
               required
               fullWidth
@@ -78,6 +87,19 @@ export default function DrIdItemCreate({ edit }) {
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
+          </Grid>
+          <Grid item xs={1}>
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    onChange={(e) => setIsBundle(e.target.checked)}
+                    checked={isBundle}
+                  />
+                }
+                label="Bundle"
+              />
+            </FormGroup>
           </Grid>
           <Grid item xs={6}>
             <TextField

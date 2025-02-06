@@ -6,6 +6,9 @@ import {
   Grid,
   ToggleButton,
   ToggleButtonGroup,
+  Checkbox,
+  FormGroup,
+  FormControlLabel,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -25,6 +28,9 @@ export default function DrSgItemCreate({ edit }) {
   const [keepStockSince, setKeepStockSince] = useState("");
   const [keepStock, setKeepStock] = useState(false);
 
+  // Bundle
+  const [isBundle, setIsBundle] = useState(false);
+
   const { id } = useParams();
 
   useEffect(() => {
@@ -40,6 +46,8 @@ export default function DrSgItemCreate({ edit }) {
           setKeepStock(true);
           setKeepStockSince(moment(item.keepStockSince).format("yyyy-MM-DD"));
         }
+
+        setIsBundle(!!item.isBundle);
       }
     })();
   }, [edit, id]);
@@ -54,6 +62,7 @@ export default function DrSgItemCreate({ edit }) {
         points: points,
         weight: weight,
         keepStockSince: keepStock ? keepStockSince : null,
+        isBundle,
       };
       if (!edit) {
         await http.post("/dr/sg/items", body);
@@ -74,7 +83,7 @@ export default function DrSgItemCreate({ edit }) {
       </Typography>
       <Box component="form" onSubmit={onSubmit} noValidate sx={{ mt: 1 }}>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
+          <Grid item xs={11}>
             <TextField
               required
               fullWidth
@@ -83,6 +92,19 @@ export default function DrSgItemCreate({ edit }) {
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
+          </Grid>
+          <Grid item xs={1}>
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    onChange={(e) => setIsBundle(e.target.checked)}
+                    checked={isBundle}
+                  />
+                }
+                label="Bundle"
+              />
+            </FormGroup>
           </Grid>
           <Grid item xs={6}>
             <TextField
