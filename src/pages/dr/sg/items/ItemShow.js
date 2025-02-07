@@ -49,6 +49,9 @@ export default function DrSgItemShow() {
   const [lendDate, setLendDate] = useState("");
   const [toDeleteLoanId, setToDeleteLoanId] = useState(null);
 
+  // bundle
+  const [bundleLoans, setBundleLoans] = useState([]);
+
   // returns
   const [returnDate, setReturnDate] = useState("");
   const [selectedReturnLoan, setSelectedReturnLoan] = useState(null);
@@ -62,6 +65,9 @@ export default function DrSgItemShow() {
         (await http.get(`/dr/sg/items/${id}/stock-matches`)).data.data
       );
       setLoans((await http.get(`/dr/sg/loans?DrSgItemId=${id}`)).data.data);
+      setBundleLoans(
+        (await http.get(`/dr/sg/loans/bundle?DrSgItemId=${id}`)).data.data
+      );
       if (item.keepStockSince) {
         const his = (await http.get(`/dr/sg/items/${id}/history`)).data.data;
         setItemHistory(his);
@@ -164,6 +170,9 @@ export default function DrSgItemShow() {
         (await http.get(`/dr/sg/items/${id}/stock-matches`)).data.data
       );
       setLoans((await http.get(`/dr/sg/loans?DrSgItemId=${id}`)).data.data);
+      setBundleLoans(
+        (await http.get(`/dr/sg/loans/bundle?DrSgItemId=${id}`)).data.data
+      );
 
       if (item.keepStockSince) {
         const his = (await http.get(`/dr/sg/items/${id}/history`)).data.data;
