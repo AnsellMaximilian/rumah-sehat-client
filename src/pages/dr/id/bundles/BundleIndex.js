@@ -313,7 +313,7 @@ const DrIdBundleIndex = () => {
                 </li>
               )}
               getOptionLabel={(option) => `(#${option.id}) ${option.name}`}
-              options={items}
+              options={items.filter((i) => i.isBundle)}
               fullWidth
               renderInput={(params) => (
                 <TextField
