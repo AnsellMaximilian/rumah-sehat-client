@@ -39,7 +39,6 @@ const DrStockReportIndexId = () => {
     (async () => {
       const stock = (await http.get(`/dr/id/items/stock-report`)).data.data;
       setReportData(stock);
-      setNameFilter("");
     })();
   };
 

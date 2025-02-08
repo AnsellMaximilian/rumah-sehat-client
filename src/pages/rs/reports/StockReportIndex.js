@@ -38,7 +38,6 @@ const StockReportIndex = () => {
     (async () => {
       const stock = (await http.get(`/rs/products/stock-report`)).data.data;
       setReportData(stock);
-      setNameFilter("");
     })();
   };
 

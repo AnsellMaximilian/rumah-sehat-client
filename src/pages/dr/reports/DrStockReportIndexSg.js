@@ -39,7 +39,6 @@ const DrStockReportIndexSg = () => {
     (async () => {
       const stock = (await http.get(`/dr/sg/items/stock-report`)).data.data;
       setReportData(stock);
-      setNameFilter("");
     })();
   };
 
