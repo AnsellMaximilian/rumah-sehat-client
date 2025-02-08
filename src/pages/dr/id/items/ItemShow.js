@@ -198,12 +198,24 @@ export default function DrIdItemShow() {
 
   const historyColumns = useMemo(
     () => [
-      { field: "id", headerName: "ID", width: 125 },
-      { field: "date", headerName: "Date", width: 125 },
+      { field: "id", headerName: "ID", width: 75 },
+      {
+        field: "bundleItem",
+        headerName: "Bundle Item",
+        width: 100,
+        renderCell: (params) => {
+          return params.row.bundleItem ? (
+            <Typography>{params.row.bundleItem?.name}</Typography>
+          ) : (
+            <Typography>No</Typography>
+          );
+        },
+      },
+      { field: "date", headerName: "Date", width: 100 },
       {
         field: "flow",
         headerName: "Flow",
-        width: 130,
+        width: 50,
         renderCell: (params) => {
           return (
             <Typography
@@ -359,7 +371,13 @@ export default function DrIdItemShow() {
 
   const itemHistoryOrganized = useMemo(() => {
     if (!itemHistory) return null;
-    const deliveries = itemHistory.deliveryDetails.map((det) => ({
+    const deliveries = [
+      ...itemHistory.deliveryDetails,
+      ...itemHistory.bundleDeliveryDetails.map((bdd) => ({
+        ...bdd,
+        isBundle: true,
+      })),
+    ].map((det) => ({
       id: `out-${det.id}`,
       parentId: det.DrIdDelivery.id,
       flow: "OUT",
@@ -367,8 +385,16 @@ export default function DrIdItemShow() {
       amount: det.qty,
       date: det.DrIdDelivery.date,
       description: `Sold to ${det.DrIdDelivery.Customer.fullName}`,
+      isBundle: det.isBundle,
+      bundleItem: det.isBundle ? det.DrIdItem : null,
     }));
-    const adjustments = itemHistory.adjustments.map((det) => ({
+    const adjustments = [
+      ...itemHistory.adjustments,
+      ...itemHistory.bundleAdjustments.map((bdd) => ({
+        ...bdd,
+        isBundle: true,
+      })),
+    ].map((det) => ({
       id: `adj-${det.id}`,
       parentId: det.id,
       flow: det.amount < 0 ? "OUT" : "IN",
@@ -376,8 +402,16 @@ export default function DrIdItemShow() {
       amount: det.amount,
       date: det.date,
       description: det.description,
+      isBundle: det.isBundle,
+      bundleItem: det.isBundle ? det.DrIdItem : null,
     }));
-    const loans = itemHistory.loans.map((det) => ({
+    const loans = [
+      ...itemHistory.loans,
+      ...itemHistory.bundleLoans.map((bdd) => ({
+        ...bdd,
+        isBundle: true,
+      })),
+    ].map((det) => ({
       id: `loan-${det.id}`,
       parentId: det.id,
       flow: det.transactionValue < 0 ? "OUT" : "IN",
@@ -385,9 +419,17 @@ export default function DrIdItemShow() {
       amount: det.transactionValue,
       date: det.date,
       description: det.note,
+      isBundle: det.isBundle,
+      bundleItem: det.isBundle ? det.DrIdItem : null,
     }));
 
-    const returns = itemHistory.loans
+    const returns = [
+      ...itemHistory.loans,
+      ...itemHistory.bundleLoans.map((bdd) => ({
+        ...bdd,
+        isBundle: true,
+      })),
+    ]
       .filter((loan) => loan.returnDate)
       .map((det) => ({
         id: `return-${det.id}`,
@@ -625,6 +667,8 @@ export default function DrIdItemShow() {
                     flow: his.flow,
                     amount: his.amount,
                     description: his.description,
+                    isBundle: his.isBundle,
+                    bundleItem: his.bundleItem,
                   }))}
                   columns={historyColumns}
                 />
