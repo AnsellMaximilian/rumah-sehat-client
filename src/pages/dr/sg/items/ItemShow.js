@@ -290,7 +290,7 @@ export default function DrSgItemShow() {
       {
         field: "lendType",
         headerName: "Type",
-        width: 130,
+        width: 80,
       },
       {
         field: "customer",
@@ -319,7 +319,19 @@ export default function DrSgItemShow() {
             </Button>
           );
         },
-        width: 200,
+        width: 150,
+      },
+      {
+        field: "bundleItem",
+        headerName: "Bundle Item",
+        renderCell: (params) => {
+          return params.row.bundleItem ? (
+            <Typography>{params.row.bundleItem.name}</Typography>
+          ) : (
+            <Typography fontSize={12}>REGULAR</Typography>
+          );
+        },
+        width: 150,
       },
       {
         field: "actions",
@@ -579,7 +591,7 @@ export default function DrSgItemShow() {
                 Loans
               </Typography>
               <SmartTable
-                rows={loans.map((loan) => ({
+                rows={[...loans, ...bundleLoans].map((loan) => ({
                   id: loan.id,
                   date: loan.date,
                   customer: loan.customerFullName,
@@ -589,6 +601,8 @@ export default function DrSgItemShow() {
                   isReturned: loan.isReturned,
                   returnDate: loan.returnDate,
                   loanItem: loan,
+                  bundleItem:
+                    loan.DrSgItem?.id !== Number(id) ? loan.DrSgItem : null,
                 }))}
                 columns={lendColumns}
               />
