@@ -85,6 +85,7 @@ import RegionCreate from "./pages/regions/RegionCreate";
 import DeliveryTransactionIndex from "./pages/transactions/DeliveryTransactionIndex";
 import DrIdBundleIndex from "./pages/dr/id/bundles/BundleIndex";
 import DrSgBundleIndex from "./pages/dr/sg/bundles/BundleIndex";
+import NoteIndex from "./pages/notes/NoteIndex";
 
 function App() {
   return (
@@ -408,6 +409,12 @@ function App() {
                     <Route path="sg" element={<DrStockReportIndexSg />} />
                   </Route>
                 </Route>
+              </Route>
+              <Route
+                path="notes"
+                element={<DataLayout title="Notes" titleVariant="subtitle" />}
+              >
+                <Route path="" element={<NoteIndex />} />
               </Route>
               <Route path="other" element={<h1>Other Page</h1>} />
               <Route path="*" element={<h1>404 Not Found</h1>} />
