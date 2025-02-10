@@ -86,6 +86,7 @@ import DeliveryTransactionIndex from "./pages/transactions/DeliveryTransactionIn
 import DrIdBundleIndex from "./pages/dr/id/bundles/BundleIndex";
 import DrSgBundleIndex from "./pages/dr/sg/bundles/BundleIndex";
 import NoteIndex from "./pages/notes/NoteIndex";
+import TodoIndex from "./pages/todos/TodoIndex";
 
 function App() {
   return (
@@ -415,6 +416,12 @@ function App() {
                 element={<DataLayout title="Notes" titleVariant="subtitle" />}
               >
                 <Route path="" element={<NoteIndex />} />
+              </Route>
+              <Route
+                path="todos"
+                element={<DataLayout title="Todos" titleVariant="subtitle" />}
+              >
+                <Route path="" element={<TodoIndex />} />
               </Route>
               <Route path="other" element={<h1>Other Page</h1>} />
               <Route path="*" element={<h1>404 Not Found</h1>} />
