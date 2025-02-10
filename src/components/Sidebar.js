@@ -33,6 +33,8 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import LocalShipping from "@mui/icons-material/LocalShipping";
 // import LocalHospital from "@mui/icons-material/LocalHospital";
+import TodoIcon from "@mui/icons-material/PlaylistAddCheck";
+import NotesIcon from "@mui/icons-material/TextSnippet";
 
 const SidebarLink = ({ to, text, icon, ...rest }) => {
   return (
@@ -355,6 +357,12 @@ const Sidebar = () => {
           />
         </List>
       </Collapse>
+      <Divider sx={{ my: 1 }} />
+      <ListSubheader component="div" inset>
+        Misc
+      </ListSubheader>
+      <SidebarLink to="/notes" text="Notes" icon={<NotesIcon />} />
+      <SidebarLink to="/todos" text="Todos" icon={<TodoIcon />} />
     </List>
   );
 };
