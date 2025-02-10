@@ -16,7 +16,7 @@ import SmartTable from "../../components/SmartTable";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Box from "@mui/material/Box";
-import { Link } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/ModeEdit";
 import { IconButton } from "@mui/material";
@@ -27,6 +27,9 @@ import { FORM_MODE } from "../../const";
 import CustomDialog from "../../components/Dialog";
 
 export default function TodoIndex() {
+  const [searchParams] = useSearchParams();
+  const isDoneQueryParam = searchParams.get("isDone");
+
   const [todos, setTodos] = useState([]);
 
   // filter
@@ -42,9 +45,16 @@ export default function TodoIndex() {
 
   useEffect(() => {
     (async () => {
-      setTodos((await http.get("/todos")).data.data);
+      const isDoneParamValid =
+        isDoneQueryParam === "true" || isDoneQueryParam === "false";
+      const queryParams = formQueryParams({
+        isDone: isDoneParamValid ? isDoneQueryParam : undefined,
+      });
+
+      if (isDoneParamValid) setDoneFilter(isDoneQueryParam);
+      setTodos((await http.get(`/todos?${queryParams}`)).data.data);
     })();
-  }, []);
+  }, [isDoneQueryParam]);
 
   const [toDeleteId, setToDeleteId] = useState(null);
   const handleDelete = (id) => {
@@ -206,7 +216,7 @@ export default function TodoIndex() {
           FILTERS
         </Typography>
         <Grid spacing={2} container marginTop={1}>
-          <Grid item xs={12}>
+          <Grid item xs={10}>
             <TextField
               fullWidth
               size="small"
@@ -214,6 +224,24 @@ export default function TodoIndex() {
               value={titleFilter}
               onChange={(e) => setTitleFilter(e.target.value)}
             />
+          </Grid>
+          <Grid item xs={2}>
+            <FormControl margin="none" fullWidth>
+              <InputLabel id="demo-simple-select-label">Done Status</InputLabel>
+              <Select
+                size="small"
+                label="Done Status"
+                value={doneFilter}
+                fullWidth
+                onChange={(e) => {
+                  setDoneFilter(e.target.value);
+                }}
+              >
+                <MenuItem value="all">All</MenuItem>
+                <MenuItem value="true">Done</MenuItem>
+                <MenuItem value="false">Pending</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={12}>
             <TextField

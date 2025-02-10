@@ -71,7 +71,7 @@ export default function Dashboard() {
           <DashboardModule
             title={`Pending Todos (${todos.length})`}
             linkText={`See more (${todos.slice(5).length})`}
-            linkTo="/todos"
+            linkTo="/todos?isDone=false"
             rows={todos
               .map((td) => ({
                 id: td.id,
