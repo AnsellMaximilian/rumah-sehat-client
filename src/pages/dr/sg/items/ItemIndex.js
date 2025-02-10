@@ -32,6 +32,7 @@ const DrSgItemIndex = () => {
   // filters
   const [name, setName] = useState("");
   const [activeStatus, setActiveStatus] = useState("all");
+  const [bundleStatus, setBundleStatus] = useState("all");
 
   const handleDelete = (id) => {
     (async () => {
@@ -55,6 +56,7 @@ const DrSgItemIndex = () => {
     const queryParams = formQueryParams({
       name,
       activeStatus,
+      isBundle: bundleStatus === "all" ? undefined : bundleStatus,
     });
     // console.log(queryParams);
     setItems((await http.get(`/dr/sg/items?${queryParams}`)).data.data);
@@ -190,7 +192,7 @@ const DrSgItemIndex = () => {
           FILTERS
         </Typography>
         <Grid spacing={2} container marginTop={1}>
-          <Grid item xs={9}>
+          <Grid item xs={8}>
             <TextField
               fullWidth
               label="Name"
@@ -199,7 +201,7 @@ const DrSgItemIndex = () => {
               onChange={(e) => setName(e.target.value)}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={2}>
             <FormControl margin="none" fullWidth>
               <InputLabel id="demo-simple-select-label">
                 Active Status
@@ -216,6 +218,26 @@ const DrSgItemIndex = () => {
                 <MenuItem value="all">All</MenuItem>
                 <MenuItem value="active">Active</MenuItem>
                 <MenuItem value="inactive">Inactive</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={2}>
+            <FormControl margin="none" fullWidth>
+              <InputLabel id="demo-simple-select-label">
+                Bundle Status
+              </InputLabel>
+              <Select
+                size="small"
+                label="Bundle Status"
+                value={bundleStatus}
+                fullWidth
+                onChange={(e) => {
+                  setBundleStatus(e.target.value);
+                }}
+              >
+                <MenuItem value="all">All</MenuItem>
+                <MenuItem value="true">Bundle</MenuItem>
+                <MenuItem value="false">Singular</MenuItem>
               </Select>
             </FormControl>
           </Grid>
