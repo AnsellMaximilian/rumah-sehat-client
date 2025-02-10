@@ -17,6 +17,8 @@ export default function Dashboard() {
 
   const [pendingInvoices, setPendingInvoices] = useState([]);
 
+  const [todos, setTodos] = useState([]);
+
   const [info, setInfo] = useState(null);
 
   useEffect(() => {
@@ -34,6 +36,7 @@ export default function Dashboard() {
       setDanglingPurchases(
         (await http.get("/rs/purchases?invoiced=false")).data.data
       );
+      setTodos((await http.get("/todos?isDone=false")).data.data);
 
       setInfo((await http.get("/info")).data.data);
     })();
@@ -62,6 +65,26 @@ export default function Dashboard() {
             <DashboardInfo label="Database" value={info?.dbName} />
             <DashboardInfo label="Timestamp" value={info?.serverTimestamp} />
           </Paper>
+        </Grid>
+
+        <Grid item xs={6} container alignItems="stretch">
+          <DashboardModule
+            title={`Pending Todos (${todos.length})`}
+            linkText={`See more (${todos.slice(5).length})`}
+            linkTo="/todos"
+            rows={todos
+              .map((td) => ({
+                id: td.id,
+                title: td.title,
+                description: td.description,
+              }))
+              .slice(0, 5)}
+            columns={[
+              getTableColumn("ID", "id"),
+              getTableColumn("Title", "title"),
+              getTableColumn("Description", "description"),
+            ]}
+          />
         </Grid>
 
         <Grid item xs={6} container alignItems="stretch">
