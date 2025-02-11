@@ -18,6 +18,8 @@ import { toast } from "react-toastify";
 import PurchaseAdjustmentForm from "../../../components/rs/PurchaseAdjustmentForm";
 import SmartTable from "../../../components/SmartTable";
 import NumericFormatRp from "../../../components/NumericFormatRp";
+import { Link as RouterLink } from "react-router-dom";
+import PrintIcon from "@mui/icons-material/Print";
 
 export default function SupplierShow() {
   const { id } = useParams();
@@ -162,20 +164,46 @@ export default function SupplierShow() {
   return supplier ? (
     <>
       <Grid container spacing={2}>
-        <Grid item xs={6}>
+        <Grid item xs={12}>
           <Paper sx={{ padding: 2, height: "100%" }}>
-            <Box display="flex" flexDirection="column">
-              <Typography variant="subtitle" fontWeight="bold" color="GrayText">
-                #{supplier.id}
-              </Typography>
-              <Typography variant="h5" fontWeight="bold" lineHeight={0.7}>
-                {supplier.name}
-              </Typography>
-            </Box>
-            <Box display="flex" flexWrap="wrap" gap={2} marginTop={2}>
-              {/* <ValueDisplay value={supplier.phone} label="Phone" />
-              <ValueDisplay value={supplier.Region.name} label="Region" />
-              <ValueDisplay value={supplier.address} label="Address" /> */}
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="start"
+            >
+              <Box marginBottom={2}>
+                <Typography
+                  variant="subtitle"
+                  fontWeight="bold"
+                  color="GrayText"
+                >
+                  #{supplier.id}
+                </Typography>
+                <Box>
+                  <Typography variant="h5" fontWeight="bold" lineHeight={0.7}>
+                    {supplier.name}
+                  </Typography>
+                </Box>
+              </Box>
+              <Stack direction="row" spacing={2}>
+                <Button
+                  href={` http://localhost:1107/rs/products/print?SupplierId=${id}`}
+                  target="__blank"
+                  component="a"
+                  variant="contained"
+                  color="error"
+                >
+                  <PrintIcon color="white" />
+                </Button>
+                <Button
+                  variant="contained"
+                  component={RouterLink}
+                  color="warning"
+                  to={`/rs/suppliers/edit/${id}`}
+                >
+                  Edit
+                </Button>
+              </Stack>
             </Box>
           </Paper>
         </Grid>
