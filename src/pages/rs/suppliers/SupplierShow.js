@@ -187,7 +187,7 @@ export default function SupplierShow() {
               </Box>
               <Stack direction="row" spacing={2}>
                 <Button
-                  href={` http://localhost:1107/rs/products/print?SupplierId=${id}`}
+                  href={` http://localhost:1107/rs/products/print?SupplierId=${id}&includeUnit=true`}
                   target="__blank"
                   component="a"
                   variant="contained"
