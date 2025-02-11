@@ -22,6 +22,7 @@ import ShowIcon from "@mui/icons-material/RemoveRedEye";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { formQueryParams } from "../../../../helpers/common";
+import BulkLoanForm from "../../../../components/dr/id/BulkLoanForm";
 
 const DrIdItemIndex = () => {
   const [items, setItems] = useState([]);
@@ -32,6 +33,9 @@ const DrIdItemIndex = () => {
   const [name, setName] = useState("");
   const [activeStatus, setActiveStatus] = useState("all");
   const [bundleStatus, setBundleStatus] = useState("all");
+
+  // bulk loan
+  const [isBulkLoanOpen, setIsBulkLoanOpen] = useState(false);
 
   const handleDelete = (id) => {
     (async () => {
@@ -155,9 +159,12 @@ const DrIdItemIndex = () => {
   ];
   return (
     <Box>
-      <Box paddingBottom={2}>
+      <Box paddingBottom={2} display="flex" gap={2} justifyContent="start">
         <Button variant="contained" component={Link} to={"/dr/id/items/create"}>
           New Item
+        </Button>
+        <Button variant="outlined" onClick={() => setIsBulkLoanOpen(true)}>
+          Loan
         </Button>
       </Box>
       <Box marginTop={2}>
@@ -243,6 +250,8 @@ const DrIdItemIndex = () => {
         setToDeleteId={setToDeleteId}
         objectName="Item"
       />
+
+      <BulkLoanForm isOpen={isBulkLoanOpen} setIsOpen={setIsBulkLoanOpen} />
     </Box>
   );
 };
