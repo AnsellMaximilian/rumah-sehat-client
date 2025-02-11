@@ -48,7 +48,11 @@ export default function ProductCreate({ edit }) {
       if (categories.length > 0) setSelectedCategoryId(categories[0].id);
 
       if (edit) {
-        const product = (await http.get(`/rs/products/${id}`)).data.data;
+        const product = (
+          await http.get(
+            `/rs/products/${id}?excludeDeliveries=true&excludePurchases=true`
+          )
+        ).data.data;
         setName(product.name);
         setPrice(product.price);
         setResellerPrice(product.resellerPrice ? product.resellerPrice : null);
