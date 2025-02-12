@@ -24,6 +24,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { formQueryParams } from "../../../../helpers/common";
 import BulkLoanForm from "../../../../components/dr/sg/BulkLoanForm";
+import BulkAdjustForm from "../../../../components/dr/sg/BulkAdjustForm";
 
 const DrSgItemIndex = () => {
   const [items, setItems] = useState([]);
@@ -37,6 +38,9 @@ const DrSgItemIndex = () => {
 
   // bulk loan
   const [isBulkLoanOpen, setIsBulkLoanOpen] = useState(false);
+
+  // bulk adjustment
+  const [isBulkAdjustmentOpen, setIsBulkAdjustmentOpen] = useState(false);
 
   const handleDelete = (id) => {
     (async () => {
@@ -193,6 +197,12 @@ const DrSgItemIndex = () => {
         <Button variant="outlined" onClick={() => setIsBulkLoanOpen(true)}>
           Loan
         </Button>
+        <Button
+          variant="outlined"
+          onClick={() => setIsBulkAdjustmentOpen(true)}
+        >
+          Adjust
+        </Button>
       </Box>
       <Box marginTop={2}>
         <Typography variant="h6" fontWeight={500}>
@@ -283,6 +293,11 @@ const DrSgItemIndex = () => {
       />
 
       <BulkLoanForm isOpen={isBulkLoanOpen} setIsOpen={setIsBulkLoanOpen} />
+
+      <BulkAdjustForm
+        isOpen={isBulkAdjustmentOpen}
+        setIsOpen={setIsBulkAdjustmentOpen}
+      />
     </Box>
   );
 };
