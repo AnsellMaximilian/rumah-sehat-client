@@ -18,6 +18,7 @@ import moment from "moment";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useState } from "react";
 import CustomDialog from "../Dialog";
+import CheckIcon from "@mui/icons-material/Check";
 
 export default function StockReport({ reportData, refresh }) {
   const [selectedStockMatches, setSelectedStockMatches] = useState([]);
@@ -139,6 +140,11 @@ export default function StockReport({ reportData, refresh }) {
                               <VisibilityIcon color="primary" />
                             </IconButton>
                           )}
+                          {pr.latestStockMatchDate &&
+                            moment(pr.latestStockMatchDate).isSame(
+                              moment(),
+                              "day"
+                            ) && <CheckIcon color="success" />}
                         </Stack>
                       </TableCell>
                       <TableCell align="right">
