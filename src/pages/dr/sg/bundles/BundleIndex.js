@@ -76,7 +76,7 @@ const DrSgBundleIndex = () => {
 
   useEffect(() => {
     const uniqueItems = items.filter(
-      (i) => !!!bundleItems.find((bi) => bi.item.id === i.id)
+      (i) => !!!bundleItems.find((bi) => bi.item.id === i.id) && !i.isBundle
     );
     setUniqueItems(uniqueItems);
   }, [bundleItems, items]);
@@ -312,7 +312,9 @@ const DrSgBundleIndex = () => {
                 </li>
               )}
               getOptionLabel={(option) => `(#${option.id}) ${option.name}`}
-              options={items.filter((i) => i.isBundle)}
+              options={items.filter(
+                (i) => i.isBundle && bundles.every((b) => b.DrSgItemId !== i.id)
+              )}
               fullWidth
               renderInput={(params) => (
                 <TextField
