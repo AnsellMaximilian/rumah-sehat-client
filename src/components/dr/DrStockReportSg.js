@@ -13,8 +13,15 @@ import http from "../../http-common";
 import { toast } from "react-toastify";
 import moment from "moment";
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import Stack from "@mui/material/Stack";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { useState } from "react";
+import CustomDialog from "../Dialog";
 
 export default function DrStockReportId({ reportData, refresh }) {
+  const [selectedStockMatches, setSelectedStockMatches] = useState([]);
+
   const handleMatchStock = async (id, stock) => {
     try {
       const body = {
@@ -26,6 +33,17 @@ export default function DrStockReportId({ reportData, refresh }) {
         .data.data;
       refresh();
       toast.success(`Succesfully matched stock. ID: ${match.id}`);
+    } catch (error) {
+      toast.error(error?.message || "Unknown error");
+    }
+  };
+
+  const handleGetSelectedStockMatches = async (id) => {
+    try {
+      const matches = (
+        await http.get(`/dr/sg/items/${id}/stock-matches?limit=10`)
+      ).data.data;
+      setSelectedStockMatches(matches);
     } catch (error) {
       toast.error(error?.message || "Unknown error");
     }
@@ -83,11 +101,29 @@ export default function DrStockReportId({ reportData, refresh }) {
                     </TableCell> */}
                     <TableCell align="right">{parseFloat(pr.stock)}</TableCell>
                     <TableCell align="right">
-                      {pr.latestStockMatchDate
-                        ? `${moment(pr.latestStockMatchDate).format(
-                            "DD-MM-YYYY HH:mm:ss"
-                          )} at ${parseFloat(pr.latestStockMatchQty)}`
-                        : "No matches"}
+                      <Stack
+                        direction={"row"}
+                        spacing={1}
+                        alignItems="center"
+                        justifyContent="end"
+                      >
+                        <Typography>
+                          {pr.latestStockMatchDate
+                            ? `${moment(pr.latestStockMatchDate).format(
+                                "DD-MM-YYYY HH:mm:ss"
+                              )} at ${parseFloat(pr.latestStockMatchQty)}`
+                            : "No matches"}
+                        </Typography>
+                        {pr.latestStockMatchDate && (
+                          <IconButton
+                            onClick={() => {
+                              handleGetSelectedStockMatches(pr.id);
+                            }}
+                          >
+                            <VisibilityIcon color="primary" />
+                          </IconButton>
+                        )}
+                      </Stack>
                     </TableCell>
                     <TableCell align="right">
                       <Button
@@ -107,6 +143,36 @@ export default function DrStockReportId({ reportData, refresh }) {
           </Table>
         </TableContainer>
       </Box>
+      <CustomDialog
+        action={null}
+        open={selectedStockMatches.length > 0}
+        onClose={() => setSelectedStockMatches([])}
+        title="Stock Matches"
+        description="Stock matches for the selected product"
+      >
+        <TableContainer sx={{ marginTop: 2 }}>
+          <Table aria-label="simple table" size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>Date</TableCell>
+                <TableCell>Qty</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {selectedStockMatches.map((match) => {
+                return (
+                  <TableRow key={match.id}>
+                    <TableCell>
+                      {moment(match.date).format("DD-MM-YYYY HH:mm:ss")}
+                    </TableCell>
+                    <TableCell>{match.qty}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </CustomDialog>
     </Box>
   );
 }
