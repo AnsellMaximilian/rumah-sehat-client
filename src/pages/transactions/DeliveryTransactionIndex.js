@@ -335,7 +335,7 @@ const DeliveryTransactionIndex = () => {
               key={d}
               size="small"
               variant={dateFilter === d ? "contained" : "outlined"}
-              onClick={() => setDateFilter(d)}
+              onClick={() => setDateFilter(dateFilter === d ? null : d)}
             >
               {d}
             </Button>
