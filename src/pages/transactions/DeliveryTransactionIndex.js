@@ -165,13 +165,13 @@ const DeliveryTransactionIndex = () => {
 
   const columns = [
     { field: "id", headerName: "ID", width: 75 },
-    { field: "date", headerName: "Date", width: 150 },
-    { field: "type", headerName: "Type", width: 150 },
-    { field: "description", headerName: "Description", width: 150 },
+    { field: "date", headerName: "Date", width: 100 },
+    { field: "type", headerName: "Type", width: 100 },
+    { field: "description", headerName: "Description", width: 300 },
     {
       field: "amount",
       headerName: "Amount",
-      width: 150,
+      width: 120,
 
       renderCell: (params) => (
         <Typography
@@ -233,7 +233,7 @@ const DeliveryTransactionIndex = () => {
         id: `D-${d.id}`,
         type: "OUTGOING",
         amount: -d.cost,
-        description: `Delivery ${d.id} to ${d.customerFullname} by ${d.DeliveryType.name}`,
+        description: `Delivery #${d.id} to ${d.customerFullName} by ${d.DeliveryType.name}`,
       })),
     ].filter((t) => t.date === dateFilter || !dateFilter);
   }, [transactions, deliveries, dateFilter]);
