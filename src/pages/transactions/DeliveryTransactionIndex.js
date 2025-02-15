@@ -331,6 +331,7 @@ const DeliveryTransactionIndex = () => {
         <Stack direction="row" gap={2} mb={2} justifyContent="space-between">
           {dateRange.map((d) => (
             <Button
+              key={d}
               size="small"
               variant={dateFilter === d ? "contained" : "outlined"}
               onClick={() => setDateFilter(d)}
