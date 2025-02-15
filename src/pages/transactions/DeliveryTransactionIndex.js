@@ -230,9 +230,10 @@ const DeliveryTransactionIndex = () => {
       ...transactions,
       ...deliveries.map((d) => ({
         ...d,
-        id: `P-${d.id}`,
+        id: `D-${d.id}`,
         type: "OUTGOING",
         amount: -d.cost,
+        description: `Delivery ${d.id} to ${d.customerFullname} by ${d.DeliveryType.name}`,
       })),
     ].filter((t) => t.date === dateFilter || !dateFilter);
   }, [transactions, deliveries, dateFilter]);
