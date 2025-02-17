@@ -80,7 +80,7 @@ export default function BulkDraw() {
         throw new Error("Please include at least one draw.");
 
       for (const draw of draws) {
-        if (draw.amount < 1)
+        if (draw.amount <= 0)
           throw new Error("Cannot draw 0 or negative items.");
 
         if (!(draw.ProductId && draw.product))
