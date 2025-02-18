@@ -2,15 +2,7 @@ import React, { useEffect, useState } from "react";
 import http from "../../../http-common";
 import Box from "@mui/material/Box";
 import { v4 as uuidv4 } from "uuid";
-
-import FormControl from "@mui/material/FormControl";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import InputLabel from "@mui/material/InputLabel";
 import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 import Table from "@mui/material/Table";
@@ -31,6 +23,7 @@ export default function BulkDraw() {
   const [products, setProducts] = useState([]);
   const [date, setDate] = useState(moment().format("yyyy-MM-DD"));
   const [draws, setDraws] = useState([]);
+  const [universalDescription, setUniversalDescription] = useState("");
 
   const navigate = useNavigate();
 
@@ -88,7 +81,10 @@ export default function BulkDraw() {
       }
 
       const body = {
-        draws,
+        draws: draws.map((d) => ({
+          ...d,
+          description: d.description ? d.description : universalDescription,
+        })),
       };
 
       await http.post(`/rs/draws/bulk-draw`, body);
@@ -114,6 +110,14 @@ export default function BulkDraw() {
             InputLabelProps={{
               shrink: true,
             }}
+          />
+          <TextField
+            multiline
+            margin="none"
+            label="Universal Note"
+            value={universalDescription}
+            onChange={(e) => setUniversalDescription(e.target.value)}
+            rows={3}
           />
         </Box>
       </Box>
