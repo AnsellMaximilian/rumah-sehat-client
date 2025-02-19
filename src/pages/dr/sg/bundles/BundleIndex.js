@@ -10,7 +10,8 @@ import InputLabel from "@mui/material/InputLabel";
 import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
+import Link from "@mui/material/Link";
 import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/ModeEdit";
 import { IconButton } from "@mui/material";
@@ -196,7 +197,23 @@ const DrSgBundleIndex = () => {
 
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
-    { field: "name", headerName: "Name", width: 220 },
+    {
+      field: "name",
+      headerName: "Name",
+      width: 220,
+      renderCell: (params) => {
+        return (
+          <Link
+            color="primary"
+            component={RouterLink}
+            to={`/dr/sg/items/${params.row.parentId}`}
+            underline="hover"
+          >
+            {params.row.name}
+          </Link>
+        );
+      },
+    },
     {
       field: "priceRP",
       headerName: "Price (Rp)",
@@ -269,6 +286,7 @@ const DrSgBundleIndex = () => {
             priceRP: bundle.DrSgItem.priceRP,
             points: bundle.DrSgItem.points,
             isActive: bundle.DrSgItem.isActive,
+            parentId: bundle.DrSgItemId,
           }))}
           columns={columns}
         />
