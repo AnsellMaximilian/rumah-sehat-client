@@ -20,6 +20,7 @@ import SmartTable from "../../../components/SmartTable";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import { Link as RouterLink } from "react-router-dom";
 import PrintIcon from "@mui/icons-material/Print";
+import ValueDisplay from "../../../components/ValueDisplay";
 
 export default function SupplierShow() {
   const { id } = useParams();
@@ -204,6 +205,16 @@ export default function SupplierShow() {
                   Edit
                 </Button>
               </Stack>
+            </Box>
+            <Box display="flex" flexWrap="wrap" gap={2} marginTop={2}>
+              <ValueDisplay
+                value={supplier.accountNumber || "-"}
+                label="Account Number"
+              />
+              <ValueDisplay
+                value={supplier.accountName || "-"}
+                label="Account Name"
+              />
             </Box>
           </Paper>
         </Grid>
