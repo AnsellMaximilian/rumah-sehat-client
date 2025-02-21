@@ -11,7 +11,7 @@ import Typography from "@mui/material/Typography";
 import Autocomplete from "@mui/material/Autocomplete";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Box from "@mui/material/Box";
 import { Link as RouterLink } from "react-router-dom";
 import Delete from "@mui/icons-material/Delete";
@@ -32,8 +32,11 @@ const DrLoanIndex = () => {
 
   // FILTERS
   const [customers, setCustomers] = useState([]);
+  const [drIdItems, setDrIdItems] = useState([]);
+  const [drSgItems, setDrSgItems] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [lendType, setLendType] = useState("all");
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const getLoans = async (queryParams = "") => {
     const idLoans = (await http.get(`/dr/id/loans?${queryParams}`)).data.data;
@@ -49,6 +52,9 @@ const DrLoanIndex = () => {
     (async () => {
       setLoans(await getLoans());
       setCustomers((await http.get("/customers")).data.data);
+
+      setDrIdItems((await http.get("/dr/id/items?activeStatus=all")).data.data);
+      setDrSgItems((await http.get("/dr/sg/items?activeStatus=all")).data.data);
     })();
   }, []);
 
@@ -68,11 +74,14 @@ const DrLoanIndex = () => {
   const refreshMetaData = async () => {
     setLoans(await getLoans());
     setCustomers((await http.get("/customers")).data.data);
+    setDrIdItems((await http.get("/dr/id/items?activeStatus=all")).data.data);
+    setDrSgItems((await http.get("/dr/sg/items?activeStatus=all")).data.data);
   };
 
   const handleClearFilter = async () => {
     setSelectedCustomer(null);
     setLendType("all");
+    setSelectedItem(null);
 
     setLoans(await getLoans());
   };
@@ -81,6 +90,8 @@ const DrLoanIndex = () => {
     const queryParams = formQueryParams({
       CustomerId: selectedCustomer ? selectedCustomer.id : undefined,
       ...(lendType === "all" ? {} : { lendType }),
+      DrSgItemId: selectedItem ? selectedItem.id : undefined,
+      DrIdItemId: selectedItem ? selectedItem.id : undefined,
     });
     setLoans(await getLoans(queryParams));
   };
@@ -193,6 +204,22 @@ const DrLoanIndex = () => {
       width: 200,
     },
   ];
+
+  const allItems = useMemo(
+    () => [
+      ...drIdItems.map((i) => ({
+        ...i,
+        uniqueKey: `id-${i.id}`,
+        itemType: "ID",
+      })),
+      ...drSgItems.map((i) => ({
+        ...i,
+        uniqueKey: `sg-${i.id}`,
+        itemType: "SG",
+      })),
+    ],
+    [drIdItems, drSgItems]
+  );
   return (
     <Box>
       <Box marginTop={2}>
@@ -200,7 +227,7 @@ const DrLoanIndex = () => {
           FILTERS
         </Typography>
         <Grid spacing={2} container marginTop={1}>
-          <Grid item xs={8}>
+          <Grid item xs={4}>
             <Autocomplete
               value={selectedCustomer}
               onChange={(e, newValue) => {
@@ -217,6 +244,28 @@ const DrLoanIndex = () => {
               sx={{ width: "100%" }}
               renderInput={(params) => (
                 <TextField {...params} label="Customer" size="small" />
+              )}
+            />
+          </Grid>
+
+          <Grid item xs={4}>
+            <Autocomplete
+              value={selectedItem}
+              onChange={(e, newValue) => {
+                setSelectedItem(newValue);
+              }}
+              isOptionEqualToValue={(option, value) =>
+                option.uniqueKey === value.uniqueKey
+              }
+              getOptionLabel={(option) => option.name}
+              renderOption={(props, option) => (
+                <li {...props} key={option.uniqueKey}>
+                  #{option.itemType} - {option.name}
+                </li>
+              )}
+              options={allItems}
+              renderInput={(params) => (
+                <TextField {...params} label="Item" size="small" />
               )}
             />
           </Grid>
