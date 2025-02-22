@@ -10,18 +10,16 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import Typography from "@mui/material/Typography";
-import Autocomplete from "@mui/material/Autocomplete";
 import Button from "@mui/material/Button";
 import SmartTable from "../../components/SmartTable";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Box from "@mui/material/Box";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/ModeEdit";
 import { IconButton } from "@mui/material";
 import { toast } from "react-toastify";
-import ShowIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteAlert from "../../components/DeleteAlert";
 import { FORM_MODE } from "../../const";
 import CustomDialog from "../../components/Dialog";
@@ -67,6 +65,16 @@ export default function TodoIndex() {
         toast.error(error);
       }
     })();
+  };
+
+  const handleDeleteDoneTodos = async () => {
+    try {
+      await http.delete("/todos/done");
+      setTodos((prev) => prev.filter((todo) => !todo.isDone));
+      toast.success("Deleted done todos.");
+    } catch (error) {
+      toastError(error);
+    }
   };
 
   const handleClearFilter = async () => {
@@ -203,12 +211,24 @@ export default function TodoIndex() {
 
   return (
     <Box>
-      <Box paddingBottom={2}>
+      <Box
+        paddingBottom={2}
+        display={"flex"}
+        justifyContent={"flex-start"}
+        gap={2}
+      >
         <Button
           variant="contained"
           onClick={() => setFormMode(FORM_MODE.CREATE)}
         >
           New Todo
+        </Button>
+        <Button
+          variant="outlined"
+          color="error"
+          onClick={handleDeleteDoneTodos}
+        >
+          Delete Done
         </Button>
       </Box>
       <Box marginTop={2}>
