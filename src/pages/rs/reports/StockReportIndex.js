@@ -1,5 +1,8 @@
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Box from "@mui/material/Box";
@@ -8,12 +11,14 @@ import { toast } from "react-toastify";
 import { copyElementToClipboard } from "../../../helpers/common";
 import StockReport from "../../../components/rs/StockReport";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import moment from "moment";
 
 const StockReportIndex = () => {
   const reportRef = useRef();
 
   const [reportData, setReportData] = useState(null);
   const [nameFilter, setNameFilter] = useState("");
+  const [unmatchedFilter, setUnmatchedFilter] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -30,7 +35,6 @@ const StockReportIndex = () => {
       }
     } catch (error) {
       toast.error(error.message);
-      console.log(error.message);
     }
   };
 
@@ -43,10 +47,15 @@ const StockReportIndex = () => {
 
   const filteredReportData = useMemo(() => {
     if (!reportData) return null;
-    return reportData.filter((item) =>
-      item.name.toLowerCase().includes(nameFilter.toLowerCase())
-    );
-  }, [reportData, nameFilter]);
+
+    return reportData.filter((item) => {
+      return (
+        item.name.toLowerCase().includes(nameFilter.toLowerCase()) &&
+        (!unmatchedFilter ||
+          !moment(item.latestStockMatchDate).isSame(moment(), "day"))
+      );
+    });
+  }, [reportData, nameFilter, unmatchedFilter]);
 
   return filteredReportData ? (
     <Box paddingBottom={2}>
@@ -62,6 +71,17 @@ const StockReportIndex = () => {
               value={nameFilter}
               onChange={(e) => setNameFilter(e.target.value)}
             />
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    onChange={(e) => setUnmatchedFilter(e.target.checked)}
+                    checked={unmatchedFilter}
+                  />
+                }
+                label="Unmatched?"
+              />
+            </FormGroup>
             <Button
               endIcon={<RefreshIcon />}
               variant="outlined"
