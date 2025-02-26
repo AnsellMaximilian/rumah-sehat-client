@@ -7,7 +7,6 @@ import TableRow from "@mui/material/TableRow";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import { getProductStockColor } from "../../helpers/rs";
 import { Link } from "react-router-dom";
 import http from "../../http-common";
 import { toast } from "react-toastify";
