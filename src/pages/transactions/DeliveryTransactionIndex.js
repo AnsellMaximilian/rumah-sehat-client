@@ -100,7 +100,7 @@ const DeliveryTransactionIndex = () => {
       const deliveriesQueryParams = formQueryParams({
         startDate: startDate ? startDate : "2025-02-03",
         endDate,
-        DeliveryTypeIds: `16,17,18,19`,
+        DeliveryTypeIds: `16,17,18,19,20`,
       });
 
       setTransactions(
