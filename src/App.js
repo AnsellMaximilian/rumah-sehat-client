@@ -23,6 +23,9 @@ import DrInvoiceIndex from "./pages/dr/invoices/InvoiceIndex";
 import DrInvoiceManage from "./pages/dr/invoices/InvoiceManage";
 import DrInvoiceCreate from "./pages/dr/invoices/InvoiceCreate";
 import DrInvoiceShow from "./pages/dr/invoices/InvoiceShow";
+import DrInvoiceCollectionIndex from "./pages/dr/invoices/CollectionIndex";
+import DrInvoiceCollectionCreate from "./pages/dr/invoices/CollectionCreate";
+import DrInvoiceCollectionShow from "./pages/dr/invoices/CollectionShow";
 import SupplierIndex from "./pages/rs/suppliers/SupplierIndex";
 import SupplierCreate from "./pages/rs/suppliers/SupplierCreate";
 import ProductCategoryIndex from "./pages/rs/productCategories/ProductCategoryIndex";
@@ -281,6 +284,19 @@ function App() {
                   <Route path="manage" element={<DrInvoiceManage />} />
                   <Route path="create" element={<DrInvoiceCreate />} />
                   <Route path=":id" element={<DrInvoiceShow />} />
+                  <Route
+                    path="collections"
+                    element={
+                      <DataLayout
+                        title="Invoice Collections"
+                        titleVariant="h5"
+                      />
+                    }
+                  >
+                    <Route path="" element={<DrInvoiceCollectionIndex />} />
+                    <Route path="create" element={<DrInvoiceCollectionCreate />} />
+                    <Route path=":id" element={<DrInvoiceCollectionShow />} />
+                  </Route>
                 </Route>
                 <Route
                   path="id"

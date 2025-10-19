@@ -56,6 +56,7 @@ const Sidebar = () => {
   // Dr's secret
   const [drItemsOpen, setDrItemsOpen] = useState(false);
   const [drDeliveriesOpen, setDrDeliveriesOpen] = useState(false);
+  const [drInvoicesOpen, setDrInvoicesOpen] = useState(false);
 
   const [drBundlesOpen, setDrBundlesOpen] = useState(false);
 
@@ -328,7 +329,29 @@ const Sidebar = () => {
           />
         </List>
       </Collapse>
-      <SidebarLink to="/dr/invoices" text="Invoices" icon={<ReceiptIcon />} />
+      <ListItemButton onClick={() => setDrInvoicesOpen(!drInvoicesOpen)}>
+        <ListItemIcon>
+          <ReceiptIcon />
+        </ListItemIcon>
+        <ListItemText primary="Invoices" />
+        {drInvoicesOpen ? <ExpandLess /> : <ExpandMore />}
+      </ListItemButton>
+      <Collapse in={drInvoicesOpen} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <SidebarLink
+            to="/dr/invoices"
+            text="Invoices"
+            icon={<ReceiptIcon />}
+            sx={{ pl: 4 }}
+          />
+          <SidebarLink
+            to="/dr/invoices/collections"
+            text="Invoice Collections"
+            icon={<ReceiptIcon />}
+            sx={{ pl: 4 }}
+          />
+        </List>
+      </Collapse>
       <SidebarLink
         to="/dr/discount-models"
         text="Discount Models"
