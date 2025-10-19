@@ -2,6 +2,7 @@ import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Autocomplete from "@mui/material/Autocomplete";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -16,18 +17,53 @@ import moment from "moment";
 
 const ProductsReport = () => {
   const [products, setProducts] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
 
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedSupplier, setSelectedSupplier] = useState(null);
 
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
   const [reportData, setReportData] = useState(null);
 
+  const location = useLocation();
+  const navigate = useNavigate();
+
   useEffect(() => {
     (async () => {
-      setProducts((await http.get("/rs/products")).data.data);
+      const [productsRes, suppliersRes] = await Promise.all([
+        http.get("/rs/products"),
+        http.get("/rs/suppliers"),
+      ]);
+      setProducts(productsRes.data.data);
+      setSuppliers(suppliersRes.data.data);
+
+      // Initialize from URL
+      const params = new URLSearchParams(location.search);
+      const s = params.get("startDate") || "";
+      const e = params.get("endDate") || "";
+      const productId = params.get("productId");
+      const supplierId = params.get("supplierId");
+      setStartDate(s);
+      setEndDate(e);
+      if (productId) {
+        const found = productsRes.data.data.find(
+          (p) => String(p.id) === productId
+        );
+        if (found) setSelectedProduct(found);
+      }
+      if (supplierId) {
+        const found = suppliersRes.data.data.find(
+          (sp) => String(sp.id) === supplierId
+        );
+        if (found) {
+          setSelectedSupplier(found);
+          setSelectedProduct(null);
+        }
+      }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -38,7 +74,7 @@ const ProductsReport = () => {
 
   useEffect(() => {
     setReportData(null);
-  }, [startDate, endDate, selectedProduct]);
+  }, [startDate, endDate, selectedProduct, selectedSupplier]);
 
   const handleSetWeek = () => {
     const { weekStart, weekEnd } = getWeek();
@@ -49,16 +85,21 @@ const ProductsReport = () => {
 
   const handleSubmit = async () => {
     try {
-      if (selectedProduct === null) throw new Error("Select product.");
+      if (!selectedProduct && !selectedSupplier)
+        throw new Error("Select product or supplier.");
       if (!startDate || !endDate) throw new Error("Please input both dates.");
-      const products = (
-        await http.get(
-          `/rs/reports/products?startDate=${startDate}&endDate=${endDate}&productId=${selectedProduct.id}`
-        )
-      ).data.data;
+      let productsData;
+      if (selectedSupplier) {
+        const search = `?startDate=${startDate}&endDate=${endDate}&supplierId=${selectedSupplier.id}`;
+        productsData = (await http.get(`/rs/reports/products-by-supplier${search}`)).data.data;
+        navigate({ search });
+      } else {
+        const search = `?startDate=${startDate}&endDate=${endDate}&productId=${selectedProduct.id}`;
+        productsData = (await http.get(`/rs/reports/products${search}`)).data.data;
+        navigate({ search });
+      }
 
-      setReportData(products);
-      console.log(products);
+      setReportData(productsData);
     } catch (error) {
       toast.error(error);
     }
@@ -71,11 +112,12 @@ const ProductsReport = () => {
             Filter Products Report
           </Typography>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <Autocomplete
             value={selectedProduct}
             onChange={(e, newValue) => {
               setSelectedProduct(newValue);
+              if (newValue) setSelectedSupplier(null);
             }}
             isOptionEqualToValue={(option, value) => option.id === value.id}
             getOptionLabel={(option) => option.name}
@@ -85,7 +127,26 @@ const ProductsReport = () => {
               </li>
             )}
             options={products}
-            renderInput={(params) => <TextField {...params} fullWidth />}
+            renderInput={(params) => <TextField {...params} fullWidth label="Product" />}
+            disabled={!!selectedSupplier}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <Autocomplete
+            value={selectedSupplier}
+            onChange={(e, newValue) => {
+              setSelectedSupplier(newValue);
+              if (newValue) setSelectedProduct(null);
+            }}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            getOptionLabel={(option) => option.name}
+            renderOption={(props, option) => (
+              <li {...props} key={option.id}>
+                {option.name}
+              </li>
+            )}
+            options={suppliers}
+            renderInput={(params) => <TextField {...params} fullWidth label="Supplier" />}
           />
         </Grid>
 
@@ -126,7 +187,7 @@ const ProductsReport = () => {
           </Button>
         </Grid>
       </Grid>
-      {reportData && selectedProduct && (
+      {reportData && (selectedProduct || selectedSupplier) && (
         <Box component={Paper} marginTop={2}>
           <Box padding={2} backgroundColor="primary.main" color="white">
             <Box marginBottom={1}>
@@ -134,7 +195,9 @@ const ProductsReport = () => {
             </Box>
             <Grid container spacing={2}>
               <Grid item xs={6}>
-                <Typography variant="h5">{selectedProduct.name}</Typography>
+                <Typography variant="h5">
+                  {selectedProduct ? selectedProduct.name : selectedSupplier.name}
+                </Typography>
                 <Typography variant="subtitle1">
                   {moment(startDate).format("DD MMMM YYYY")} -{" "}
                   {moment(endDate).format("DD MMMM YYYY")}
