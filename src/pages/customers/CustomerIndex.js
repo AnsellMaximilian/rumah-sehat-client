@@ -99,6 +99,7 @@ export default function CustomerIndex() {
   const columns = [
     { field: "id", headerName: "ID", width: 50 },
     { field: "fullName", headerName: "Full Name", width: 250 },
+    { field: "accountName", headerName: "Account Name", width: 220 },
     { field: "phone", headerName: "Phone", width: 130 },
     {
       field: "address",
@@ -301,6 +302,7 @@ export default function CustomerIndex() {
           rows={customers.map((customer) => ({
             id: customer.id,
             fullName: customer.fullName,
+            accountName: customer.accountName,
             phone: customer.phone,
             address: customer.address,
             region: customer.Region?.name,

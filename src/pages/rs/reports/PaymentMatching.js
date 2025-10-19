@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -135,6 +135,7 @@ export default function PaymentMatching() {
     const params = new URLSearchParams(location.search);
     const m = params.get("margin");
     if (m) setMargin(parseInt(m, 10));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
