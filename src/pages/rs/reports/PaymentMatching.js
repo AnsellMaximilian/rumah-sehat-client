@@ -11,6 +11,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import PayIcon from "@mui/icons-material/Paid";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
@@ -50,6 +54,7 @@ function parseCSVContent(text) {
     );
 
   const entries = [];
+  let idx = 0;
   for (const raw of dataLines) {
     const line = raw.startsWith("'") ? raw.slice(1) : raw;
     const parts = line.split(",");
@@ -75,6 +80,7 @@ function parseCSVContent(text) {
     }
 
     entries.push({
+      id: idx++,
       date: tanggal,
       description: keterangan,
       amount,
@@ -87,7 +93,7 @@ function parseCSVContent(text) {
 }
 
 function buildMatch(invoice, txs, margin) {
-  const result = { name: false, amount: false, exact: false };
+  const result = { name: false, amount: false, exact: false, tx: null };
   if (!invoice) return result;
   const invTotal = invoice.totalPrice || 0;
   const accountName = (invoice.Customer?.accountName || "")
@@ -98,6 +104,7 @@ function buildMatch(invoice, txs, margin) {
   // Evaluate best tx
   let best = null;
   for (const tx of txs) {
+    if (tx.type !== "CR") continue; // only credits
     const isName = accountName && tx.name?.toUpperCase().includes(accountName);
     const diff = Math.abs((tx.amount || 0) - invTotal);
     const isExact = diff === 0;
@@ -112,13 +119,14 @@ function buildMatch(invoice, txs, margin) {
     }
   }
   if (!best) return result;
-  return { name: best.isName, amount: best.isAmount, exact: best.isExact };
+  return { name: best.isName, amount: best.isAmount, exact: best.isExact, tx: best.tx };
 }
 
 export default function PaymentMatching() {
   const [invoices, setInvoices] = useState([]);
   const [csvTxs, setCsvTxs] = useState([]);
   const [margin, setMargin] = useState(5000);
+  const [csvDialogOpen, setCsvDialogOpen] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -217,6 +225,24 @@ export default function PaymentMatching() {
       },
     },
     {
+      headerName: "CSV Name",
+      field: "csvName",
+      width: 220,
+      valueGetter: (params) => {
+        const m = buildMatch(params.row, csvTxs, margin);
+        return m.tx ? m.tx.name : "";
+      },
+    },
+    {
+      headerName: "CSV Amount",
+      field: "csvAmount",
+      width: 160,
+      renderCell: (params) => {
+        const m = buildMatch(params.row, csvTxs, margin);
+        return m.tx ? <NumericFormatRp value={m.tx.amount} /> : "";
+      },
+    },
+    {
       headerName: "Actions",
       field: "actions",
       width: 120,
@@ -228,6 +254,7 @@ export default function PaymentMatching() {
             onClick={async (e) => {
               e.stopPropagation();
               try {
+                const m = buildMatch(params.row, csvTxs, margin);
                 // pending -> paid in one cycle
                 const inv = (
                   await http.patch(`/rs/invoices/${params.row.id}/cycle-status`)
@@ -236,6 +263,9 @@ export default function PaymentMatching() {
                 setInvoices((prev) =>
                   prev.filter((i) => i.id !== params.row.id)
                 );
+                if (m.tx) {
+                  setCsvTxs((prev) => prev.filter((t) => t.id !== m.tx.id));
+                }
               } catch (err) {
                 toast.error("Failed to update status");
               }
@@ -286,6 +316,11 @@ export default function PaymentMatching() {
             </Button>
           </Grid>
           <Grid item>
+            <Button variant="outlined" disabled={csvTxs.length === 0} onClick={() => setCsvDialogOpen(true)}>
+              View CSV Values ({csvTxs.length})
+            </Button>
+          </Grid>
+          <Grid item>
             <TextField
               size="small"
               type="number"
@@ -307,6 +342,45 @@ export default function PaymentMatching() {
       </Card>
 
       <SmartTable rows={invoices} columns={columns} />
+
+      <Dialog open={csvDialogOpen} onClose={() => setCsvDialogOpen(false)} maxWidth="md" fullWidth>
+        <DialogTitle>Parsed CSV Values</DialogTitle>
+        <DialogContent dividers>
+          <Box
+            display="grid"
+            gridTemplateColumns="160px 1fr 220px 140px"
+            gap={1}
+            sx={{ fontSize: 14, fontWeight: 600, mb: 1 }}
+          >
+            <div>Date</div>
+            <div>Description</div>
+            <div>Name</div>
+            <div>Amount</div>
+          </Box>
+          {csvTxs.map((tx) => (
+            <Box
+              key={tx.id}
+              display="grid"
+              gridTemplateColumns="160px 1fr 220px 140px"
+              gap={1}
+              sx={{ fontSize: 14, py: 0.5, borderBottom: "1px solid #eee" }}
+            >
+              <div>{tx.date}</div>
+              <div>{tx.description}</div>
+              <div>{tx.name}</div>
+              <div>
+                <NumericFormatRp value={tx.amount} />
+              </div>
+            </Box>
+          ))}
+          {csvTxs.length === 0 && (
+            <Typography color="text.secondary">No CSV rows loaded.</Typography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setCsvDialogOpen(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
