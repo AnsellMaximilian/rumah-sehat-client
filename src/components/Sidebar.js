@@ -191,6 +191,12 @@ const Sidebar = () => {
             sx={{ pl: 4 }}
             icon={<ReportProblemIcon />}
           />
+          <SidebarLink
+            to="/rs/reports/payment-matching"
+            text="Payment Matching"
+            sx={{ pl: 4 }}
+            icon={<MoneyIcon />}
+          />
           {/* <SidebarLink
             to="/rs/reports/profits"
             text="Profits"

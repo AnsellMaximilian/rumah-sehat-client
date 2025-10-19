@@ -74,6 +74,7 @@ import FullReport from "./pages/rs/reports/FullReport";
 import FinancialReport from "./pages/rs/reports/FinancialReport";
 import TransactionIndex from "./pages/transactions/TransactionIndex";
 import OutstandingCustomers from "./pages/rs/reports/OutstandingCustomers";
+import PaymentMatching from "./pages/rs/reports/PaymentMatching";
 import DrIdItemShow from "./pages/dr/id/items/ItemShow";
 import DrSgItemShow from "./pages/dr/sg/items/ItemShow";
 import DrLoanIndex from "./pages/dr/loans/LoanIndex";
@@ -260,6 +261,10 @@ function App() {
                   <Route
                     path="outstanding-customers"
                     element={<OutstandingCustomers />}
+                  />
+                  <Route
+                    path="payment-matching"
+                    element={<PaymentMatching />}
                   />
                   <Route path="products" element={<ProductsReport />} />
                   <Route path="compare" element={<CompareReport />} />
