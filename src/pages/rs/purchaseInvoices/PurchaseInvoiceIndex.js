@@ -10,6 +10,8 @@ import Grid from "@mui/material/Grid";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import ButtonBase from "@mui/material/ButtonBase";
+import Tooltip from "@mui/material/Tooltip";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
@@ -25,6 +27,39 @@ import moment from "moment";
 import DeleteAlert from "../../../components/DeleteAlert";
 import PayIcon from "@mui/icons-material/Paid";
 import { formQueryParams, getWeek } from "../../../helpers/common";
+
+const copyToClipboard = async (value, description) => {
+  try {
+    await navigator.clipboard.writeText(String(value));
+    toast.success(`Copied ${description}.`, { autoClose: 1000 });
+  } catch {
+    toast.error(`Failed to copy ${description}.`);
+  }
+};
+
+const CopyableValue = ({ value, description, children }) => (
+  <Tooltip title={`Copy ${description}`}>
+    <ButtonBase
+      component="span"
+      onClick={(event) => {
+        event.stopPropagation();
+        copyToClipboard(value, description);
+      }}
+      sx={{
+        borderRadius: 1,
+        cursor: "copy",
+        font: "inherit",
+        px: 0.5,
+        "&:hover": {
+          backgroundColor: "action.hover",
+          textDecoration: "underline",
+        },
+      }}
+    >
+      {children}
+    </ButtonBase>
+  </Tooltip>
+);
 
 const PurchaseInvoiceIndex = () => {
   const [purchaseInvoices, setPurchaseInvoices] = useState([]);
@@ -127,14 +162,33 @@ const PurchaseInvoiceIndex = () => {
   };
 
   const columns = [
-    { field: "id", headerName: "ID", width: 100 },
+    {
+      field: "id",
+      headerName: "ID",
+      width: 100,
+      renderCell: (params) => (
+        <CopyableValue
+          value={params.row.id}
+          description={`invoice #${params.row.id}`}
+        >
+          {params.row.id}
+        </CopyableValue>
+      ),
+    },
     { field: "date", headerName: "Date", width: 150 },
     { field: "supplier", headerName: "Supplier", width: 100 },
     {
       field: "totalPrice",
       headerName: "Total",
       width: 100,
-      renderCell: (params) => <NumericFormatRp value={params.row.totalPrice} />,
+      renderCell: (params) => {
+        const rawTotal = Number(params.row.totalPrice).toString();
+        return (
+          <CopyableValue value={rawTotal} description={`total ${rawTotal}`}>
+            <NumericFormatRp value={params.row.totalPrice} />
+          </CopyableValue>
+        );
+      },
     },
 
     {
