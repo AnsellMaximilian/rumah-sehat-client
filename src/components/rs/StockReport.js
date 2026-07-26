@@ -19,9 +19,38 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useState } from "react";
 import CustomDialog from "../Dialog";
 import CheckIcon from "@mui/icons-material/Check";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 
 export default function StockReport({ reportData, refresh }) {
   const [selectedStockMatches, setSelectedStockMatches] = useState([]);
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const [menuProduct, setMenuProduct] = useState(null);
+  const [productToStopTracking, setProductToStopTracking] = useState(null);
+
+  const handleCloseMenu = () => {
+    setMenuAnchorEl(null);
+    setMenuProduct(null);
+  };
+
+  const handleStopStockTracking = async () => {
+    try {
+      await http.patch(
+        `/rs/products/${productToStopTracking.id}/stop-stock-tracking`
+      );
+      setProductToStopTracking(null);
+      refresh();
+      toast.success(
+        `Stopped tracking stock for ${productToStopTracking.name}.`
+      );
+    } catch (error) {
+      toast.error(error?.response?.data || error?.message || "Unknown error");
+    }
+  };
 
   const handleMatchStock = async (id, stock) => {
     try {
@@ -64,6 +93,7 @@ export default function StockReport({ reportData, refresh }) {
           <Table sx={{ minWidth: 650 }} aria-label="simple table" size="small">
             <TableHead>
               <TableRow>
+                <TableCell padding="checkbox" aria-label="Product actions" />
                 <TableCell>ID</TableCell>
                 <TableCell>Product</TableCell>
                 {/* <TableCell align="right">In</TableCell>
@@ -84,13 +114,36 @@ export default function StockReport({ reportData, refresh }) {
                       key={pr.id}
                       sx={{
                         padding: 4,
+                        transition: "background-color 120ms ease-in-out",
+                        "&:hover": {
+                          backgroundColor: "action.hover",
+                        },
                         ">td": {
                           fontSize: "20px",
                         },
                       }}
                     >
+                      <TableCell padding="checkbox">
+                        <IconButton
+                          size="small"
+                          aria-label={`Actions for ${pr.name}`}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setMenuAnchorEl(event.currentTarget);
+                            setMenuProduct(pr);
+                          }}
+                        >
+                          <MoreVertIcon />
+                        </IconButton>
+                      </TableCell>
                       <TableCell>
-                        <Link to={`/rs/products/${pr.id}`}>{pr.id}</Link>
+                        <Link
+                          to={`/rs/products/${pr.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {pr.id}
+                        </Link>
                       </TableCell>
                       <TableCell>{pr.name}</TableCell>
                       {/* <TableCell align="right">
@@ -166,6 +219,24 @@ export default function StockReport({ reportData, refresh }) {
         </TableContainer>
       </Box>
 
+      <Menu
+        anchorEl={menuAnchorEl}
+        open={Boolean(menuAnchorEl)}
+        onClose={handleCloseMenu}
+      >
+        <MenuItem
+          onClick={() => {
+            setProductToStopTracking(menuProduct);
+            handleCloseMenu();
+          }}
+        >
+          <ListItemIcon>
+            <Inventory2OutlinedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Stop tracking stock</ListItemText>
+        </MenuItem>
+      </Menu>
+
       <CustomDialog
         action={null}
         open={selectedStockMatches.length > 0}
@@ -196,6 +267,19 @@ export default function StockReport({ reportData, refresh }) {
           </Table>
         </TableContainer>
       </CustomDialog>
+
+      <CustomDialog
+        open={Boolean(productToStopTracking)}
+        onClose={() => setProductToStopTracking(null)}
+        action={handleStopStockTracking}
+        actionLabel="Stop Tracking"
+        title="Stop tracking stock?"
+        description={
+          productToStopTracking
+            ? `${productToStopTracking.name} will be removed from this stock report. Its product and history will not be deleted.`
+            : ""
+        }
+      />
     </Box>
   );
 }
