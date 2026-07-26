@@ -26,6 +26,7 @@ export default function ProductCreate({ edit }) {
   const [cost, setCost] = useState(0);
   const [overallCost, setOverallCost] = useState(0);
   const [unit, setUnit] = useState("");
+  const [aliases, setAliases] = useState("");
   const [selectedSupplierId, setSelectedSupplierId] = useState(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
 
@@ -50,7 +51,7 @@ export default function ProductCreate({ edit }) {
       if (edit) {
         const product = (
           await http.get(
-            `/rs/products/${id}?excludeDeliveries=true&excludePurchases=true`
+            `/rs/products/${id}?excludeDeliveries=true&excludePurchases=true&includeAliases=true`
           )
         ).data.data;
         setName(product.name);
@@ -62,6 +63,7 @@ export default function ProductCreate({ edit }) {
         setSelectedCategoryId(product.ProductCategoryId);
         setSelectedSupplierId(product.SupplierId);
         setUnit(product.unit);
+        setAliases((product.aliases || []).join("\n"));
         if (product.keepStockSince) {
           setKeepStock(true);
           setKeepStockSince(
@@ -87,6 +89,7 @@ export default function ProductCreate({ edit }) {
         ProductCategoryId: selectedCategoryId,
         unit: unit ? unit : null,
         keepStockSince: keepStock ? keepStockSince : null,
+        aliases: aliases.split("\n"),
       };
 
       if (!edit) {
@@ -200,6 +203,16 @@ export default function ProductCreate({ edit }) {
               label="Unit"
               value={unit || ""}
               onChange={(e) => setUnit(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              multiline
+              minRows={3}
+              label="Aliases (one per line)"
+              value={aliases}
+              onChange={(e) => setAliases(e.target.value)}
             />
           </Grid>
           <Grid item xs={2}>
