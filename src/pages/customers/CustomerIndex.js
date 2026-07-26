@@ -13,7 +13,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/ModeEdit";
 import { IconButton } from "@mui/material";
@@ -21,12 +21,14 @@ import { toast } from "react-toastify";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
 import http from "../../http-common";
 import DeleteAlert from "../../components/DeleteAlert";
-import { formQueryParams } from "../../helpers/common";
 
 export default function CustomerIndex() {
   const [customers, setCustomers] = useState([]);
 
   const [regions, setRegions] = useState([]);
+  const [regionsLoaded, setRegionsLoaded] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchQuery = searchParams.toString();
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [fullName, setFullName] = useState("");
   const [address, setAddress] = useState("");
@@ -36,10 +38,54 @@ export default function CustomerIndex() {
 
   useEffect(() => {
     (async () => {
-      setCustomers((await http.get("/customers?activeStatus=all")).data.data);
       setRegions((await http.get("/regions")).data.data);
+      setRegionsLoaded(true);
     })();
   }, []);
+
+  useEffect(() => {
+    if (!regionsLoaded) return;
+
+    const params = new URLSearchParams(searchQuery);
+    const queryFullName = params.get("fullName") || "";
+    const queryAddress = params.get("address") || "";
+    const queryPhone = params.get("phone") || "";
+    const queryNote = params.get("note") || "";
+    const regionId = params.get("RegionId");
+    const requestedActiveStatus = params.get("activeStatus");
+    const queryActiveStatus = ["active", "inactive"].includes(
+      requestedActiveStatus
+    )
+      ? requestedActiveStatus
+      : "all";
+
+    setFullName(queryFullName);
+    setAddress(queryAddress);
+    setPhone(queryPhone);
+    setNote(queryNote);
+    setSelectedRegion(
+      regions.find((region) => String(region.id) === regionId) || null
+    );
+    setActiveStatus(queryActiveStatus);
+
+    const apiParams = new URLSearchParams();
+    if (queryFullName) apiParams.set("fullName", queryFullName);
+    if (queryAddress) apiParams.set("address", queryAddress);
+    if (queryPhone) apiParams.set("phone", queryPhone);
+    if (queryNote) apiParams.set("note", queryNote);
+    if (regionId) apiParams.set("RegionId", regionId);
+    apiParams.set("activeStatus", queryActiveStatus);
+
+    let cancelled = false;
+    (async () => {
+      const response = await http.get(`/customers?${apiParams.toString()}`);
+      if (!cancelled) setCustomers(response.data.data);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [regions, regionsLoaded, searchQuery]);
 
   const [toDeleteId, setToDeleteId] = useState(null);
 
@@ -57,26 +103,25 @@ export default function CustomerIndex() {
     })();
   };
 
-  const handleClearFilter = async () => {
+  const handleClearFilter = () => {
     setFullName("");
     setAddress("");
     setPhone("");
     setNote("");
     setSelectedRegion(null);
-    setCustomers((await http.get(`/customers?activeStatus=all`)).data.data);
+    setActiveStatus("all");
+    setSearchParams({});
   };
 
-  const handleFilter = async () => {
-    const queryParams = formQueryParams({
-      fullName,
-      address,
-      phone,
-      note,
-      RegionId: selectedRegion ? selectedRegion.id : undefined,
-      activeStatus,
-    });
-    // console.log(queryParams);
-    setCustomers((await http.get(`/customers?${queryParams}`)).data.data);
+  const handleFilter = () => {
+    const params = new URLSearchParams();
+    if (fullName.trim()) params.set("fullName", fullName.trim());
+    if (address.trim()) params.set("address", address.trim());
+    if (phone.trim()) params.set("phone", phone.trim());
+    if (note.trim()) params.set("note", note.trim());
+    if (selectedRegion) params.set("RegionId", selectedRegion.id);
+    if (activeStatus !== "all") params.set("activeStatus", activeStatus);
+    setSearchParams(params);
   };
 
   const cycleActiveStatus = async (id) => {
@@ -183,6 +228,8 @@ export default function CustomerIndex() {
               color="primary"
               to={`/customers/${params.row.id}`}
               component={Link}
+              target="_blank"
+              rel="noopener noreferrer"
             >
               <ShowIcon />
             </IconButton>

@@ -10,7 +10,7 @@ import InputLabel from "@mui/material/InputLabel";
 import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/ModeEdit";
 import IconButton from "@mui/material/IconButton";
@@ -19,7 +19,6 @@ import SmartTable from "../../../components/SmartTable";
 import { toast } from "react-toastify";
 import NumericFormatRp from "../../../components/NumericFormatRp";
 import DeleteAlert from "../../../components/DeleteAlert";
-import { formQueryParams } from "../../../helpers/common";
 import ShowIcon from "@mui/icons-material/RemoveRedEye";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -31,6 +30,9 @@ const ProductIndex = () => {
   //filters
   const [suppliers, setSuppliers] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [lookupsLoaded, setLookupsLoaded] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchQuery = searchParams.toString();
 
   const [name, setName] = useState("");
   const [selectedSupplier, setSelectedSupplier] = useState(null);
@@ -75,29 +77,73 @@ const ProductIndex = () => {
 
   useEffect(() => {
     (async () => {
-      setProducts((await http.get("/rs/products?activeStatus=all")).data.data);
-      setSuppliers((await http.get("/rs/suppliers")).data.data);
-      setCategories((await http.get("/rs/product-categories")).data.data);
+      const [suppliersResponse, categoriesResponse] = await Promise.all([
+        http.get("/rs/suppliers"),
+        http.get("/rs/product-categories"),
+      ]);
+      setSuppliers(suppliersResponse.data.data);
+      setCategories(categoriesResponse.data.data);
+      setLookupsLoaded(true);
     })();
   }, []);
 
-  const handleClearFilter = async () => {
+  useEffect(() => {
+    if (!lookupsLoaded) return;
+
+    const params = new URLSearchParams(searchQuery);
+    const queryName = params.get("name") || "";
+    const supplierId = params.get("SupplierId");
+    const categoryId = params.get("ProductCategoryId");
+    const requestedActiveStatus = params.get("activeStatus");
+    const queryActiveStatus = ["active", "inactive"].includes(
+      requestedActiveStatus
+    )
+      ? requestedActiveStatus
+      : "all";
+
+    setName(queryName);
+    setSelectedSupplier(
+      suppliers.find((supplier) => String(supplier.id) === supplierId) || null
+    );
+    setSelectedCategory(
+      categories.find((category) => String(category.id) === categoryId) || null
+    );
+    setActiveStatus(queryActiveStatus);
+
+    const apiParams = new URLSearchParams();
+    if (queryName) apiParams.set("name", queryName);
+    if (supplierId) apiParams.set("SupplierId", supplierId);
+    if (categoryId) apiParams.set("ProductCategoryId", categoryId);
+    apiParams.set("activeStatus", queryActiveStatus);
+
+    let cancelled = false;
+    (async () => {
+      const response = await http.get(`/rs/products?${apiParams.toString()}`);
+      if (!cancelled) setProducts(response.data.data);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [categories, lookupsLoaded, searchQuery, suppliers]);
+
+  const handleClearFilter = () => {
     setSelectedSupplier(null);
     setSelectedCategory(null);
     setName("");
-
-    setProducts((await http.get("/rs/products")).data.data);
+    setActiveStatus("all");
+    setSearchParams({});
   };
 
-  const handleFilter = async () => {
-    const queryParams = formQueryParams({
-      SupplierId: selectedSupplier ? selectedSupplier.id : undefined,
-      name,
-      ProductCategoryId: selectedCategory ? selectedCategory.id : undefined,
-      activeStatus,
-    });
-    // console.log(queryParams);
-    setProducts((await http.get(`/rs/products?${queryParams}`)).data.data);
+  const handleFilter = () => {
+    const params = new URLSearchParams();
+    if (selectedSupplier) params.set("SupplierId", selectedSupplier.id);
+    if (name.trim()) params.set("name", name.trim());
+    if (selectedCategory) {
+      params.set("ProductCategoryId", selectedCategory.id);
+    }
+    if (activeStatus !== "all") params.set("activeStatus", activeStatus);
+    setSearchParams(params);
   };
 
   const cycleActiveStatus = async (id) => {
@@ -218,6 +264,8 @@ const ProductIndex = () => {
               color="primary"
               component={Link}
               to={`/rs/products/${params.row.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
             >
               <ShowIcon />
             </IconButton>
