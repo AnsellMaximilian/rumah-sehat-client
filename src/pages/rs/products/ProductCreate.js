@@ -27,6 +27,8 @@ export default function ProductCreate({ edit }) {
   const [overallCost, setOverallCost] = useState(0);
   const [unit, setUnit] = useState("");
   const [aliases, setAliases] = useState("");
+  const [description, setDescription] = useState("");
+  const [notes, setNotes] = useState("");
   const [selectedSupplierId, setSelectedSupplierId] = useState(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
 
@@ -51,7 +53,7 @@ export default function ProductCreate({ edit }) {
       if (edit) {
         const product = (
           await http.get(
-            `/rs/products/${id}?excludeDeliveries=true&excludePurchases=true&includeAliases=true`
+            `/rs/products/${id}?excludeDeliveries=true&excludePurchases=true&includeAliases=true&includeDetails=true`
           )
         ).data.data;
         setName(product.name);
@@ -64,6 +66,8 @@ export default function ProductCreate({ edit }) {
         setSelectedSupplierId(product.SupplierId);
         setUnit(product.unit);
         setAliases((product.aliases || []).join("\n"));
+        setDescription(product.description || "");
+        setNotes(product.notes || "");
         if (product.keepStockSince) {
           setKeepStock(true);
           setKeepStockSince(
@@ -90,6 +94,8 @@ export default function ProductCreate({ edit }) {
         unit: unit ? unit : null,
         keepStockSince: keepStock ? keepStockSince : null,
         aliases: aliases.split("\n"),
+        description,
+        notes,
       };
 
       if (!edit) {
@@ -213,6 +219,26 @@ export default function ProductCreate({ edit }) {
               label="Aliases (one per line)"
               value={aliases}
               onChange={(e) => setAliases(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              fullWidth
+              multiline
+              minRows={4}
+              label="Description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              fullWidth
+              multiline
+              minRows={4}
+              label="Notes"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
             />
           </Grid>
           <Grid item xs={2}>
