@@ -27,6 +27,7 @@ export default function CustomerCreate({ edit }) {
   const [note, setNote] = useState("");
   const [accountName, setAccountName] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
+  const [aliases, setAliases] = useState("");
 
   const { id } = useParams();
 
@@ -40,7 +41,9 @@ export default function CustomerCreate({ edit }) {
     (async () => {
       if (regions.length > 0) setSelectedRegionId(regions[0].id);
       if (edit) {
-        const customer = (await http.get(`/customers/${id}`)).data.data;
+        const customer = (
+          await http.get(`/customers/${id}?includeAliases=true`)
+        ).data.data;
         setFullName(customer.fullName);
         setAddress(customer.address || "");
         setNote(customer.note || "");
@@ -50,6 +53,7 @@ export default function CustomerCreate({ edit }) {
 
         setAccountName(customer.accountName || "");
         setAccountNumber(customer.accountNumber || "");
+        setAliases((customer.aliases || []).join("\n"));
 
         if (customer.RegionId) setSelectedRegionId(customer.RegionId);
       }
@@ -69,6 +73,7 @@ export default function CustomerCreate({ edit }) {
         RegionId: selectedRegionId,
         accountName,
         accountNumber,
+        aliases: aliases.split("\n"),
       };
 
       if (!edit) {
@@ -174,6 +179,16 @@ export default function CustomerCreate({ edit }) {
             multiline
             value={note}
             rows={2}
+          />
+        </Box>
+        <Box>
+          <TextField
+            fullWidth
+            label="Aliases (one per line)"
+            onChange={(e) => setAliases(e.target.value)}
+            multiline
+            value={aliases}
+            rows={3}
           />
         </Box>
         <Box display="flex" gap={2}>
