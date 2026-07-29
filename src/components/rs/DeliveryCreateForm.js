@@ -32,6 +32,7 @@ import http from "../../http-common";
 import AutoSelectTextField from "../AutoSelectTextField";
 import { getPurchaseSubtotal, getSubtotal } from "../../helpers/rs";
 import NumericFormatRp from "../NumericFormatRp";
+import SupplierDeliveryJsonImportDialog from "./SupplierDeliveryJsonImportDialog";
 
 export default function DeliveryCreateForm({
   invoice,
@@ -59,6 +60,7 @@ export default function DeliveryCreateForm({
   // Supplier Mode
   const [supplierId, setSupplierId] = useState(null);
   const [supplierCost, setSupplierCost] = useState(0);
+  const [isJsonImportOpen, setIsJsonImportOpen] = useState(false);
 
   const [isSubmitButtonDisabled, setIsSubmitButtonDisabled] = useState(false);
 
@@ -499,6 +501,14 @@ export default function DeliveryCreateForm({
                 Add Purchase
               </Button>
             )}
+            {mode === "supplier" && !editId && (
+              <Button
+                variant="outlined"
+                onClick={() => setIsJsonImportOpen(true)}
+              >
+                Import JSON
+              </Button>
+            )}
             <Button
               variant="outlined"
               onClick={() => handleAddDeliveryDetail()}
@@ -732,6 +742,39 @@ export default function DeliveryCreateForm({
               {editId ? "Update" : "Create"}
             </Button>
           </Box>
+          <SupplierDeliveryJsonImportDialog
+            open={isJsonImportOpen}
+            onClose={() => setIsJsonImportOpen(false)}
+            hasExistingRows={deliveryDetails.length > 0}
+            context={{
+              invoice,
+              customers,
+              suppliers,
+              deliveryTypes,
+              products,
+            }}
+            onImport={(draft) => {
+              setMode("supplier");
+              setDeliveryDate(draft.date);
+              setDeliveryNote(draft.note);
+              setDeliveryTypeId(draft.deliveryType.id);
+              setCost(draft.deliveryCost);
+              setDeliveryCustomer(draft.customer);
+              setSupplierId(draft.supplier.id);
+              setSupplierCost(draft.supplierCost);
+              setDeliveryDetails(
+                draft.details.map((detail) => ({
+                  ...detail,
+                  key: uuidv4(),
+                }))
+              );
+              toast.success(
+                `Loaded ${draft.details.length} product row${
+                  draft.details.length === 1 ? "" : "s"
+                }. Review before creating.`
+              );
+            }}
+          />
         </Box>
       </Box>
     ) : (

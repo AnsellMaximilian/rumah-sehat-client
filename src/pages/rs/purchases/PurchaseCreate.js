@@ -29,6 +29,7 @@ import NumericFormatRp from "../../../components/NumericFormatRp";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 import AutoSelectTextField from "../../../components/AutoSelectTextField";
+import PurchaseJsonImportDialog from "../../../components/rs/PurchaseJsonImportDialog";
 
 export default function PurchaseCreate({ edit }) {
   // Invoice details
@@ -48,6 +49,7 @@ export default function PurchaseCreate({ edit }) {
   const [displayDesignatedCustomerColumn, setDisplayDesignatedCustomerColumn] =
     useState(false);
   const [makePurchaseInvoice, setMakePurchaseInvoice] = useState(false);
+  const [isJsonImportOpen, setIsJsonImportOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -266,6 +268,14 @@ export default function PurchaseCreate({ edit }) {
           >
             Products
           </Box>
+          {!edit && (
+            <Button
+              variant="outlined"
+              onClick={() => setIsJsonImportOpen(true)}
+            >
+              Import JSON
+            </Button>
+          )}
           <Button
             variant="contained"
             sx={{ boxShadow: "none" }}
@@ -484,6 +494,31 @@ export default function PurchaseCreate({ edit }) {
           {edit ? "Update" : "Create"}
         </Fab>
       </Box>
+      <PurchaseJsonImportDialog
+        open={isJsonImportOpen}
+        onClose={() => setIsJsonImportOpen(false)}
+        hasExistingRows={purchaseDetails.length > 0}
+        context={{ suppliers, products }}
+        onImport={(draft) => {
+          setSelectedSupplierId(draft.supplier.id);
+          setDate(draft.date);
+          setNote(draft.note);
+          setCost(draft.deliveryCost);
+          setMakePurchaseInvoice(draft.makePurchaseInvoice);
+          setDisplayDesignatedCustomerColumn(false);
+          setPurchaseDetails(
+            draft.details.map((detail) => ({
+              ...detail,
+              key: uuidv4(),
+            }))
+          );
+          toast.success(
+            `Loaded ${draft.details.length} product row${
+              draft.details.length === 1 ? "" : "s"
+            }. Review before creating.`
+          );
+        }}
+      />
     </Box>
   ) : (
     <h1>Loading...</h1>
