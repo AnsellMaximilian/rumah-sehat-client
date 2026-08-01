@@ -52,6 +52,27 @@ test("accepts the complete invoice-reader result containing purchasePayload", ()
   expect(draft.details).toHaveLength(1);
 });
 
+test("accepts a review file containing proposedDraft.purchasePayload", () => {
+  const draft = parsePurchaseDraft(
+    JSON.stringify({
+      schemaVersion: "rumah-sehat-slip-review-v1",
+      proposedDraft: { readyToPaste: true, purchasePayload: payload },
+    }),
+    context
+  );
+
+  expect(draft.details).toHaveLength(1);
+});
+
+test("explains when a review-only file has no purchase payload", () => {
+  expect(() =>
+    parsePurchaseDraft(
+      JSON.stringify({ proposedDraft: null, readyToPaste: false }),
+      context
+    )
+  ).toThrow("No purchasePayload was found");
+});
+
 test("rejects customer-designated rows", () => {
   expect(() =>
     parsePurchaseDraft(

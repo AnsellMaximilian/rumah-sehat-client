@@ -42,17 +42,15 @@ export default function SupplierDeliveryJsonImportDialog({
       <DialogContent>
         <DialogContentText marginBottom={2}>
           Paste a reviewed deliveryPayload from the invoice reader. Loading it
-          fills this form only; it does not create the delivery.
+          fills this form only; it does not create the delivery. A missing or
+          null InvoiceId binds the draft to the invoice currently open. When
+          both InvoiceId and CustomerId are null, the customer also binds to
+          the open invoice.
         </DialogContentText>
         {hasExistingRows && (
           <Alert severity="warning" sx={{ marginBottom: 2 }}>
             Loading a draft will replace the product rows currently in this
             form.
-          </Alert>
-        )}
-        {error && (
-          <Alert severity="error" sx={{ marginBottom: 2 }}>
-            {error}
           </Alert>
         )}
         <TextField
@@ -61,7 +59,7 @@ export default function SupplierDeliveryJsonImportDialog({
           multiline
           minRows={14}
           label="Supplier delivery JSON"
-          placeholder={'{\n  "InvoiceId": 9249,\n  "mode": "supplier",\n  ...\n}'}
+          placeholder={'{\n  "InvoiceId": null,\n  "mode": "supplier",\n  ...\n}'}
           value={rawJson}
           onChange={(event) => {
             setRawJson(event.target.value);
@@ -69,6 +67,11 @@ export default function SupplierDeliveryJsonImportDialog({
           }}
           inputProps={{ spellCheck: false }}
         />
+        {error && (
+          <Alert severity="error" sx={{ marginTop: 2 }}>
+            {error}
+          </Alert>
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>

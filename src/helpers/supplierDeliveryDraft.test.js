@@ -64,6 +64,60 @@ test("accepts the complete invoice-reader result containing deliveryPayload", ()
   expect(draft.details).toHaveLength(1);
 });
 
+test("accepts a review file containing proposedDraft.deliveryPayload", () => {
+  const draft = parseSupplierDeliveryDraft(
+    JSON.stringify({
+      schemaVersion: "rumah-sehat-slip-review-v1",
+      proposedDraft: { readyToPaste: true, deliveryPayload: payload },
+    }),
+    context
+  );
+
+  expect(draft.invoiceId).toBe(9249);
+  expect(draft.details).toHaveLength(1);
+});
+
+test("explains when a review-only file has no delivery payload", () => {
+  expect(() =>
+    parseSupplierDeliveryDraft(
+      JSON.stringify({ proposedDraft: null, readyToPaste: false }),
+      context
+    )
+  ).toThrow("No deliveryPayload was found");
+});
+
+test("binds a null or missing InvoiceId to the invoice currently open", () => {
+  for (const draftPayload of [
+    { ...payload, InvoiceId: null },
+    Object.fromEntries(Object.entries(payload).filter(([key]) => key !== "InvoiceId")),
+  ]) {
+    const draft = parseSupplierDeliveryDraft(JSON.stringify(draftPayload), context);
+    expect(draft.invoiceId).toBe(9249);
+    expect(draft.bindsToOpenInvoice).toBe(true);
+  }
+});
+
+test("binds null invoice and customer IDs to the currently open invoice", () => {
+  const draft = parseSupplierDeliveryDraft(
+    JSON.stringify({ ...payload, InvoiceId: null, CustomerId: null }),
+    context
+  );
+
+  expect(draft.invoiceId).toBe(9249);
+  expect(draft.customer).toBe(context.customers[0]);
+  expect(draft.bindsToOpenInvoice).toBe(true);
+  expect(draft.bindsCustomerToOpenInvoice).toBe(true);
+});
+
+test("rejects a null customer when the payload names an invoice", () => {
+  expect(() =>
+    parseSupplierDeliveryDraft(
+      JSON.stringify({ ...payload, CustomerId: null }),
+      context
+    )
+  ).toThrow("CustomerId may be null only when InvoiceId is also null");
+});
+
 test("rejects a draft for a different open invoice", () => {
   expect(() =>
     parseSupplierDeliveryDraft(
@@ -71,6 +125,15 @@ test("rejects a draft for a different open invoice", () => {
       context
     )
   ).toThrow("invoice #9250, but invoice #9249 is open");
+});
+
+test("rejects a draft for a different customer even when InvoiceId is null", () => {
+  expect(() =>
+    parseSupplierDeliveryDraft(
+      JSON.stringify({ ...payload, InvoiceId: null, CustomerId: 92 }),
+      context
+    )
+  ).toThrow("invoice #9249 belongs to customer #91");
 });
 
 test("rejects products that do not belong to the selected supplier", () => {

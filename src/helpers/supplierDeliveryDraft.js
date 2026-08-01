@@ -62,10 +62,17 @@ export const parseSupplierDeliveryDraft = (
   }
 
   const root = requireObject(parsed, "Imported JSON");
-  const payload = requireObject(
-    root.deliveryPayload === undefined ? root : root.deliveryPayload,
-    "deliveryPayload"
-  );
+  const payloadCandidate =
+    root.deliveryPayload ??
+    root.proposedDraft?.deliveryPayload ??
+    root.proposedPayload ??
+    (root.mode !== undefined ? root : null);
+  if (!payloadCandidate) {
+    throw new Error(
+      "No deliveryPayload was found. This review file may still require customer or product confirmation."
+    );
+  }
+  const payload = requireObject(payloadCandidate, "deliveryPayload");
 
   if (payload.mode !== "supplier") {
     throw new Error('mode must be "supplier".');
@@ -74,14 +81,46 @@ export const parseSupplierDeliveryDraft = (
     throw new Error("Only new supplier deliveries can be imported.");
   }
 
-  const invoiceId = requireId(payload.InvoiceId, "InvoiceId");
-  if (invoiceId !== Number(invoice.id)) {
+  const bindsToOpenInvoice =
+    payload.InvoiceId === null || payload.InvoiceId === undefined;
+  const invoiceId = bindsToOpenInvoice
+    ? requireId(invoice.id, "Open invoice ID")
+    : requireId(payload.InvoiceId, "InvoiceId");
+  if (!bindsToOpenInvoice && invoiceId !== Number(invoice.id)) {
     throw new Error(
       `This draft belongs to invoice #${invoiceId}, but invoice #${invoice.id} is open.`
     );
   }
 
-  const customerId = requireId(payload.CustomerId, "CustomerId");
+  const openInvoiceCustomerId = Number(
+    invoice.CustomerId ?? invoice.Customer?.id
+  );
+  const bindsCustomerToOpenInvoice =
+    payload.CustomerId === null || payload.CustomerId === undefined;
+  if (bindsCustomerToOpenInvoice && !bindsToOpenInvoice) {
+    throw new Error(
+      "CustomerId may be null only when InvoiceId is also null."
+    );
+  }
+  if (
+    bindsCustomerToOpenInvoice &&
+    (!Number.isInteger(openInvoiceCustomerId) || openInvoiceCustomerId <= 0)
+  ) {
+    throw new Error("The open invoice does not have an available customer.");
+  }
+  const customerId = bindsCustomerToOpenInvoice
+    ? openInvoiceCustomerId
+    : requireId(payload.CustomerId, "CustomerId");
+  if (
+    !bindsCustomerToOpenInvoice &&
+    Number.isInteger(openInvoiceCustomerId) &&
+    openInvoiceCustomerId > 0 &&
+    customerId !== openInvoiceCustomerId
+  ) {
+    throw new Error(
+      `This draft belongs to customer #${customerId}, but invoice #${invoice.id} belongs to customer #${openInvoiceCustomerId}.`
+    );
+  }
   const supplierId = requireId(payload.SupplierId, "SupplierId");
   const deliveryTypeId = requireId(payload.DeliveryTypeId, "DeliveryTypeId");
   const customer = findById(customers, customerId, "Customer");
@@ -133,6 +172,8 @@ export const parseSupplierDeliveryDraft = (
 
   return {
     invoiceId,
+    bindsToOpenInvoice,
+    bindsCustomerToOpenInvoice,
     customer,
     supplier,
     deliveryType,

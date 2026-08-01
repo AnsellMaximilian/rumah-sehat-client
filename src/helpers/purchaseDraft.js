@@ -59,10 +59,16 @@ export const parsePurchaseDraft = (rawJson, { suppliers, products }) => {
   }
 
   const root = requireObject(parsed, "Imported JSON");
-  const payload = requireObject(
-    root.purchasePayload === undefined ? root : root.purchasePayload,
-    "purchasePayload"
-  );
+  const payloadCandidate =
+    root.purchasePayload ??
+    root.proposedDraft?.purchasePayload ??
+    (root.purchaseDetails !== undefined ? root : null);
+  if (!payloadCandidate) {
+    throw new Error(
+      "No purchasePayload was found. This review file may not be a direct-stock purchase or may still require confirmation."
+    );
+  }
+  const payload = requireObject(payloadCandidate, "purchasePayload");
 
   const supplierId = requireId(payload.SupplierId, "SupplierId");
   const supplier = findById(suppliers, supplierId, "Supplier");

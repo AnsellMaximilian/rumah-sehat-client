@@ -50,11 +50,6 @@ export default function PurchaseJsonImportDialog({
             form.
           </Alert>
         )}
-        {error && (
-          <Alert severity="error" sx={{ marginBottom: 2 }}>
-            {error}
-          </Alert>
-        )}
         <TextField
           autoFocus
           fullWidth
@@ -69,6 +64,11 @@ export default function PurchaseJsonImportDialog({
           }}
           inputProps={{ spellCheck: false }}
         />
+        {error && (
+          <Alert severity="error" sx={{ marginTop: 2 }}>
+            {error}
+          </Alert>
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>

@@ -771,6 +771,12 @@ export default function DeliveryCreateForm({
               toast.success(
                 `Loaded ${draft.details.length} product row${
                   draft.details.length === 1 ? "" : "s"
+                }${
+                  draft.bindsCustomerToOpenInvoice
+                    ? ` and bound them to open invoice #${draft.invoiceId} and its customer`
+                    : draft.bindsToOpenInvoice
+                    ? ` and bound them to open invoice #${draft.invoiceId}`
+                    : ""
                 }. Review before creating.`
               );
             }}
